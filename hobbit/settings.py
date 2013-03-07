@@ -126,7 +126,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'south',
-    'apps.accounts'
+    'apps.accounts',
+    'lib.common',
 )
 
 AUTH_USER_MODEL = 'accounts.User'
