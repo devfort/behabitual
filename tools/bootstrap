@@ -30,6 +30,22 @@ bootstrap_requirements () {
   pip install -r requirements.txt
 }
 
+bootstrap_db () {
+  status "Running initial database setup"
+  if psql -l > /dev/null; then
+    status "Found a DB user, not creating a new one"
+  else
+    status "Creating a DB user"
+    sudo -u postgres createuser --superuser $USER
+  fi
+  if psql hobbit -c 'SELECT 1;' > /dev/null; then
+    status "Found a base database, not creating a new one"
+  else
+    status "Creating a base database"
+    createdb -E UTF8 -T template0 hobbit
+  fi
+}
+
 bootstrap_django () {
   status "Running initial database migrations"
   python manage.py syncdb --migrate
@@ -50,7 +66,8 @@ bootstrap_app () {
 
 main () {
   check_venv
-  bootstrap_requirements 
+  bootstrap_db
+  bootstrap_requirements
   bootstrap_django
   bootstrap_app
   status 'All done'
