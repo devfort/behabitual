@@ -3,9 +3,9 @@ Hobbit
 
 Helping you form hobbits. Or maybe habits. But hobbits are better.
 
-1. Make a virtualenv 
+1. Make a virtualenv and move into it
 
-    mkvirtualenv hobbit
+    mkvirtualenv hobbit && cd hobbit
 
 2. Bootstrap your installation (provide super user details when prompted)
 
