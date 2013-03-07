@@ -12,7 +12,7 @@ class UserManager(user_models.BaseUserManager):
 
     def create_user(self, email=None, password=None, **extra_fields):
         """
-        Creates and saves a User with the given username, email and password.
+        Creates and saves a User with the given email and password.
         """
         now = timezone.now()
         email = UserManager.normalize_email(email)
