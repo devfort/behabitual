@@ -17,6 +17,7 @@ urlpatterns = patterns('',
         'apps.accounts.views.password_reset_confirm',
         {'post_reset_redirect': '/'},
         name='password_reset_confirm'),
+    url(r'^_;', include('apps.autologin.urls')),
 
 ) + patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', {'template_name': 'accounts/login.html'}, name='login'),

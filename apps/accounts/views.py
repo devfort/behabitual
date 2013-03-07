@@ -9,6 +9,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import TemplateView
 
+
 class LogoutView(TemplateView):
     """
     Logs the user out.
@@ -25,6 +26,7 @@ class LogoutView(TemplateView):
     def post(self, request):
         logout(self.request)
         return HttpResponseRedirect(self.get_next_url())
+
 
 @sensitive_post_parameters()
 @never_cache
