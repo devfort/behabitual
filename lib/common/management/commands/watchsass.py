@@ -10,7 +10,7 @@ from watchdog.tricks import ShellCommandTrick
 
 class SassCompilerTrick(ShellCommandTrick):
 
-    def __init__(self, sass_dir='assets/scss', output_file='assets/main.css'):
+    def __init__(self, sass_dir='scss', output_file='assets/main.css'):
         self.sass_dir = sass_dir
         self.output_file = output_file
 
