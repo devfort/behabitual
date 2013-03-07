@@ -1,3 +1,4 @@
 /.env
 *.pyc
 /.sass-cache/
+assets/hobbit.css
