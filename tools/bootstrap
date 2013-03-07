@@ -37,10 +37,18 @@ bootstrap_django () {
   python manage.py createsuperuser
 }
 
+bootstrap_app () {
+  if [ ! -e .env ]; then
+    status "Copying .env.example to .env"
+    cp .env.example .env
+  fi
+}
+
 main () {
   check_venv
   bootstrap_requirements 
   bootstrap_django
+  bootstrap_app
   status 'All done'
 }
 
