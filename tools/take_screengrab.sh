@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+sleep 2
 
 cd ${SCREENGRAB_DIR:=${HOME}/Desktop/screengrabs}
 webkit2png                      \
