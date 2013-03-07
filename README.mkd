@@ -17,3 +17,10 @@ Helping you form hobbits. Or maybe habits. But hobbits are better.
 
 4. Open your web browser to http://localhost:8000/
 
+Next time:
+
+1. Load the virtualenv and move into it
+
+    workon hobbit && cd hobbit
+
+2. Continue the above from step 3
