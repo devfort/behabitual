@@ -1,0 +1,19 @@
+Hobbit
+======
+
+Helping you form hobbits. Or maybe habits. But hobbits are better.
+
+1. Make a virtualenv 
+
+    mkvirtualenv hobbit
+
+2. Bootstrap your installation (provide super user details when prompted)
+
+    ./tools/bootstrap
+
+3. Run the dev server
+
+    honcho start
+
+4. Open your web browser to http://localhost:8000/
+

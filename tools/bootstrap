@@ -1,0 +1,47 @@
+#!/bin/sh
+
+: ${VIRTUAL_ENV:=}
+
+set -eu
+
+cd "$(dirname "$0")"
+cd ..
+
+status () {
+  echo "---> $@" >&2
+}
+
+error () {
+  echo "ERROR: $@" >&2
+  exit 1
+}
+
+check_venv () {
+  if [ -n "$VIRTUAL_ENV" ]; then
+    status "Found virtualenv '${VIRTUAL_ENV##*/}'"
+    return 0
+  fi
+
+  error 'Please create and activate a virtualenv first (e.g. "mkvirtualenv hobbit")!'
+} 
+
+bootstrap_requirements () {
+  status "Installing requirements"
+  pip install -r requirements.txt
+}
+
+bootstrap_django () {
+  status "Running initial database migrations"
+  python manage.py syncdb --migrate
+  status "Creating an application superuser"
+  python manage.py createsuperuser
+}
+
+main () {
+  check_venv
+  bootstrap_requirements 
+  bootstrap_django
+  status 'All done'
+}
+
+main
