@@ -1,4 +1,4 @@
-@mixin contain {
+.contain {
     &:after {
         content:            '';
         clear:              both;
