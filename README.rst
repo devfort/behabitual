@@ -19,4 +19,7 @@ Enter an email and password for yourself that you'll remember.
 
 4. Run the dev server
 
-    python manage.py runserver
+    honcho start
+
+5. Open your web browser to http://localhost:8000/
+
