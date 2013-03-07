@@ -4,7 +4,7 @@
 {% block body %}
 	<h3>BOOM</h3>
 	{% block content %}
-		<form action="" method="post" class='registration'>
+		<form action="" method="post">
 		    {% csrf_token %}
 		    {% for field in form %}
           {{ field.label_tag }}
