@@ -33,8 +33,12 @@ bootstrap_requirements () {
 bootstrap_django () {
   status "Running initial database migrations"
   python manage.py syncdb --migrate
-  status "Creating an application superuser"
-  python manage.py createsuperuser
+  if test "$(python manage.py listsuperusers)"; then
+    status "Found some superusers, not creating a new one"
+  else
+    status "Creating an application superuser"
+    python manage.py createsuperuser
+  fi
 }
 
 bootstrap_app () {
