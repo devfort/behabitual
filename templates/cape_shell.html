@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang='en-gb'>
+  <head>
+    <meta charset='UTF-8'>
+    <title>{% block pagetitle %}SET A TITLE{% endblock %}</title>
+    {% comment %} OH NOES NO INTERNET
+    <!--[if lt IE 9]>
+    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    {% endcomment %}
+    <script src='/js/html5shiv.js'></script>
+    
+    {% block head-icons %}{% endblock %}
+    {% block head-links %}{% endblock %}
+    {% block head-alternate %}{% endblock %}
+    {% block head-css %}{% endblock %}
+    {% block head-meta %}{% endblock %}
+    
+    <script>
+      window.CAPE = {};
+      window.CAPE.stage = function(stage) {
+        document.documentElement.className = 'js-' + stage;
+      }
+      CAPE.timeout = setTimeout( CAPE.stage('timeout'), 5000 );
+      CAPE.stage('capable');
+    </script>
+  </head>
+  <body {% block body-attributes %}{% endblock %} class='{% block body-class %}{% endblock %}'>
+    
+    {% block body-sheath %}{% endblock %}
+    
+    <script>
+      {% block javascript-variables %}{% endblock %}
+    </script>
+    {% block javascript-libraries %}{% endblock %}
+    <script>
+      {% block javascript-enhance %}{% endblock %}
+      clearTimeout(CAPE.timeout);
+      CAPE.stage('ready');
+    </script>
+    {% block javascript-asynchronous %}{% endblock %}
+  </body>
+</html>
