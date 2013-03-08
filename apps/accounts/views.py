@@ -1,6 +1,7 @@
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
+import django.contrib.auth.views
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
@@ -8,6 +9,8 @@ from django.utils.http import base36_to_int
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import TemplateView
+
+from util.render_to_email import render_to_email
 
 
 class LogoutView(TemplateView):
@@ -77,3 +80,15 @@ def password_reset_confirm(request, uidb36=None, token=None,
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
                             current_app=current_app)
+
+
+def password_change(request, *args, **kwargs):
+    response = django.contrib.auth.views.password_change(request, *args, **kwargs)
+    if request.method == 'POST' and response.status_code == 302:
+        render_to_email(
+            text_template='accounts/emails/password_changed.txt',
+            html_template='accounts/emails/password_changed.html',
+            to=(request.user,),
+            subject='Your password has been changed',
+        )
+    return response

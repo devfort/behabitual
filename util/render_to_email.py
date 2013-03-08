@@ -1,4 +1,7 @@
+from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth import get_user_model
+from django.template import Context
+from django.template.loader import render_to_string
 
 
 def render_to_string_with_autoescape_off(template_name, dictionary=None,
@@ -53,7 +56,7 @@ def render_to_email(
     context['subject'] = subject
     text = render_to_string_with_autoescape_off([text_template], context)
     html = render_to_string([html_template], context)
-    
+
     msg = EmailMultiAlternatives(subject, text, to=to_addresses)
     msg.attach_alternative(html, 'text/html')
     if send:

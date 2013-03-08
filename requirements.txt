@@ -2,3 +2,5 @@ Django==1.5
 south==0.7.6
 psycopg2==2.4.6
 honcho==0.3.1
+django-webtest
+webtest
