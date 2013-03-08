@@ -47,7 +47,7 @@ class Habit(models.Model):
         default='day',
     )
     start = models.DateField()
-    target_count = models.PositiveIntegerField(default=1)
+    target_value = models.PositiveIntegerField(default=1)
 
     def get_current_time_period(self):
         return get_time_period(datetime.date.today())
@@ -150,6 +150,11 @@ class Habit(models.Model):
 
         record_habit_data.send(sender=self)
 
+    def get_buckets(self, order_by='index'):
+        return self.buckets.filter(
+            resolution=self.resolution,
+        ).order_by(order_by)
+
     def __unicode__(self):
         return 'Habit(start=%s resolution=%s)' % (self.start, self.resolution)
 
@@ -184,6 +189,9 @@ class Bucket(models.Model):
         choices=zip(RESOLUTIONS, RESOLUTION_NAMES),
         default='day',
     )
+
+    def is_succeeding(self):
+        return self.value >= self.habit.target_value
 
     class Meta(object):
         unique_together = ['habit', 'resolution', 'index']
