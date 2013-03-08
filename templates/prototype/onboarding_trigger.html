@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>On Boarding - Set Up</title>
+</head>
+<body>
+
+<p>Starting a new habit is about adding it to your daily routine. If you associate a regular task with your new habit (ie. <a href="">creating a trigger</a>), you’ll find it easier to adopt.</p>
+
+<p>eg. After you <strong>put your cereal bowl in the sink</strong>, then you <strong>brush your teeth</strong>.</p>
+
+<p>We can email you a reminder about your trigger.</p>
+
+<form action="onboarding_trigger_confirm.html">
+	<fieldset>
+	<p><label for="trigger_email">My email</label> <input type="email" name="trigger_email" id="trigger_email"></p>
+    <p>
+        <label for="trigger_trigger">When I</label> <input type="text" name="trigger_trigger" id="trigger_trigger" placeholder="close the dishwasher">,
+        <label for="trigger_habbit">then I</label> <input type="text" name="trigger_habbit" id="trigger_habbit" value="brush my teeth" readonly>.
+    </p>
+    </fieldset>
+    <fieldset>
+		<legend>When should we send this?</legend>
+        Every
+        <ul>
+        	<li><input type="checkbox" name="trigger_monday" id="trigger_monday"><label for="trigger_monday"><b>Every</b> Monday</label></li>
+            <li><input type="checkbox" name="trigger_tuesday" id="trigger_tuesday"><label for="trigger_tuesday"><b>Every</b> Tuesday</label></li>
+            <li><input type="checkbox" name="trigger_wednesday" id="trigger_wednesday"><label for="trigger_wednesday"><b>Every</b> Wednesday</label></li>
+            <li><input type="checkbox" name="trigger_thursday" id="trigger_thursday"><label for="trigger_thursday"><b>Every</b> Thursday</label></li>
+            <li><input type="checkbox" name="trigger_friday" id="trigger_friday"><label for="trigger_friday"><b>Every</b> Friday</label></li>
+            <li><input type="checkbox" name="trigger_saturday" id="trigger_saturday"><label for="trigger_saturday"><b>Every</b> Saturday</label></li>
+            <li><input type="checkbox" name="trigger_sunday" id="trigger_sunday"><label for="trigger_sunday"><b>Every</b> Sunday</label></li>
+        </ul>
+        at 
+        <b><label for="trigger_hours">Hours</label></b>
+        <select name="trigger_hours" id="trigger_hours">
+        	<option>00</option>
+            <option>01</option>
+            <option>02</option>
+            <option>03</option>
+            <!-- ect -->
+        </select>
+        :
+         <b><label for="trigger_minutes">Minutes</label></b>
+        <select name="trigger_minutes" id="trigger_minutes">
+        	<option>00</option>
+            <option>15</option>
+            <option>30</option>
+            <option>45</option>
+        </select>  
+    </fieldset>
+    <button type="submit" class="action">Remind me</button>
+</form>
+
+<p>
+	<a href="onboarding_trigger_summary.html">Skip this step.</a>
+</p>
+
+</body>
+</html>
