@@ -44,6 +44,7 @@ class Habit(models.Model):
         default='day',
     )
     start = models.DateField()
+    target_count = models.PositiveIntegerField(default=1)
 
     def get_current_time_period(self):
         return get_time_period(datetime.date.today())
