@@ -12,19 +12,18 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import TemplateView
 
-from lib.statsd import Statsd
+from lib.metrics import statsd
 from util.render_to_email import render_to_email
 
 
 @receiver(user_logged_out)
 def record_statsd_logged_out(sender, **kwargs):
-    print("User logged out SHABBA!")
-    Statsd.increment('user.logged_out')
+    statsd.incr('user.logouts')
+
 
 @receiver(user_logged_in)
 def record_statsd_logged_in(sender, **kwargs):
-    print("User logged IN MOFO!")
-    Statsd.increment('user.logged_out')
+    statsd.incr('user.logins')
 
 
 class LogoutView(TemplateView):

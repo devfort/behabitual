@@ -161,3 +161,9 @@ LOGGING = {
         },
     }
 }
+
+# Configure the global Statsd host
+
+# STATSD_HOST = 'localhost'
+# STATSD_PORT = 8125
+# STATSD_PREFIX = ''
