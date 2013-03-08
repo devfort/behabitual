@@ -35,17 +35,22 @@ def most_periods_succeeding_in_a_row(habit):
         return None
     longest_past_streak = None
     current_streak = 0
-    
+    previous_index = buckets[0].index + 1
+
     for bucket in buckets:
-        if bucket.is_succeeding():
+        if bucket.is_succeeding() and bucket.index == previous_index - 1:
             if longest_past_streak is None:
                 current_streak += 1
             else:
                 longest_past_streak += 1
-                if longest_past_streak > current_streak:
+                if longest_past_streak >= current_streak:
                     return None
         else:
-            longest_past_streak = 0
+            if bucket.is_succeeding():
+                longest_past_streak = 1
+            else:
+                longest_past_streak = 0
+        previous_index = bucket.index
     
     return "WHOO!"
 

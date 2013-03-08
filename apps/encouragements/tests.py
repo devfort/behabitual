@@ -63,6 +63,26 @@ class MostPeriodsSucceedingInARow(TestCase):
         periods = most_periods_succeeding_in_a_row(h)
         self.assertIsNotNone(periods)
 
+    def test_current_success_in_a_row_equal_to_previous_success(self):
+        days = [
+            datetime.date(2013, 1, 1),
+            datetime.date(2013, 1, 2),
+            datetime.date(2013, 1, 4),
+            datetime.date(2013, 1, 5)
+        ]
+        h = Habit.objects.create(
+            start=days[0],
+            user=self.user,
+            resolution='day',
+        )
+
+        for day in days:
+            h.record(h.get_time_period(day), 1)
+
+        periods = most_periods_succeeding_in_a_row(h)
+        self.assertIsNone(periods)
+
+
     def test_thingy(self):
         today = datetime.date(2013, 1, 1)
         h = Habit.objects.create(
@@ -74,8 +94,8 @@ class MostPeriodsSucceedingInARow(TestCase):
         periods = most_periods_succeeding_in_a_row(h)
         self.assertIsNotNone(periods)
 
-    def test_no(self):
-        self.fail()
+    # def test_no(self):
+    #     self.fail()
 
     def test_empty(self):
         today = datetime.date.today()
