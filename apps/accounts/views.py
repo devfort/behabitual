@@ -1,8 +1,10 @@
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.signals import user_logged_out, user_logged_in
 from django.contrib.auth.tokens import default_token_generator
 import django.contrib.auth.views
 from django.core.urlresolvers import reverse
+from django.dispatch import receiver
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.utils.http import base36_to_int
@@ -10,7 +12,19 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import TemplateView
 
+from lib.statsd import Statsd
 from util.render_to_email import render_to_email
+
+
+@receiver(user_logged_out)
+def record_statsd_logged_out(sender, **kwargs):
+    print("User logged out SHABBA!")
+    Statsd.increment('user.logged_out')
+
+@receiver(user_logged_in)
+def record_statsd_logged_in(sender, **kwargs):
+    print("User logged IN MOFO!")
+    Statsd.increment('user.logged_out')
 
 
 class LogoutView(TemplateView):
