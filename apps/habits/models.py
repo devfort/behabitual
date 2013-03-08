@@ -5,7 +5,10 @@ import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
+import django.dispatch
 from django.utils.translation import ugettext_lazy as _
+
+record_habit_data = django.dispatch.Signal()
 
 RESOLUTION_NAMES = (
     _('daily'),
@@ -144,6 +147,8 @@ class Habit(models.Model):
         if self.resolution != 'month':
             tp = self.get_time_period(time_period.date, 'month')
             _increment_bucket(self, tp, value)
+
+        record_habit_data.send(sender=self)
 
     def __unicode__(self):
         return 'Habit(start=%s resolution=%s)' % (self.start, self.resolution)
