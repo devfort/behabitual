@@ -16,3 +16,12 @@ class Generator(object):
             return random.choice(encouragements)
         except IndexError:
             pass
+
+def static_encouragement_provider(user):
+    """
+    Returns a randomly selected static encouragement.
+    """
+    return random.choice((
+        "Fuck YEAH!",
+        "AWESOME!",
+    ))
