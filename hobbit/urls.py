@@ -24,3 +24,5 @@ urlpatterns = patterns('',
     url(r'^accounts/forgot/$', 'password_reset', name='account-forgotten'),
     url(r'^accounts/forgot/done/$', 'password_reset_done'),
 )
+
+from apps.monitoring import *

@@ -1,10 +1,9 @@
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.forms import SetPasswordForm
-from django.contrib.auth.signals import user_logged_out, user_logged_in
 from django.contrib.auth.tokens import default_token_generator
 import django.contrib.auth.views
 from django.core.urlresolvers import reverse
-from django.dispatch import receiver
+import django.dispatch
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.utils.http import base36_to_int
@@ -12,19 +11,9 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import TemplateView
 
-from lib.metrics import statsd
 from util.render_to_email import render_to_email
 
-
-@receiver(user_logged_out)
-def record_statsd_logged_out(sender, **kwargs):
-    statsd.incr('user.logouts')
-
-
-@receiver(user_logged_in)
-def record_statsd_logged_in(sender, **kwargs):
-    statsd.incr('user.logins')
-
+user_changed_password = django.dispatch.Signal()
 
 class LogoutView(TemplateView):
     """
@@ -98,6 +87,7 @@ def password_reset_confirm(request, uidb36=None, token=None,
 def password_change(request, *args, **kwargs):
     response = django.contrib.auth.views.password_change(request, *args, **kwargs)
     if request.method == 'POST' and response.status_code == 302:
+        user_changed_password.send(sender=password_change)
         render_to_email(
             text_template='accounts/emails/password_changed.txt',
             html_template='accounts/emails/password_changed.html',
