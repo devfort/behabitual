@@ -47,6 +47,11 @@ class Habit(models.Model):
     start = models.DateField()
     target_value = models.PositiveIntegerField(default=1)
     description = models.TextField()
+    archived = models.BooleanField(default=False)
+
+    class Meta:
+        # HACK: Use ID as proxy for creation order
+        ordering = ['archived', '-id']
 
     def get_current_time_period(self):
         return get_time_period(datetime.date.today())

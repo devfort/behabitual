@@ -12,7 +12,11 @@
   
   <ul>
   {% for habit in habit_list %}
+    {% if habit.archived %}
+    <li class="archived">
+    {% else %}
     <li>
+    {% endif %}
       <h2><q>{{ habit.description }}</q>
         {% humanize_repetition habit %}
       </h2>
