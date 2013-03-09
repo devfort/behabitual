@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.habits.models import Habit, TimePeriod
+from lib import test_helpers as helpers
 
 # If, for example, we create a habit on a Tuesday with a resolution of
 # 'weekendday', and we try and get the current time period on the Friday, we
@@ -190,29 +191,12 @@ class HabitTests(TestCase):
         with self.assertRaises(ValueError):
             h.record(when, 5)
 
-#
-# The following tests use the fixture data above. They are attached to the
-# HabitTests class at runtime by attach_fixture_tests.
-#
-
-def attach_fixture_test(test_cls, test_func, fixtures):
-    """
-    For each fixture, attach the decorated test function using that fixture
-    data to the specified test class.
-    """
-    for i, fixture in enumerate(fixtures):
-        name = '%s_%03d' % (test_func.__name__, i)
-
-        def make_test(fix):
-            return lambda self: test_func(self, fix)
-
-        setattr(test_cls, name, make_test(fixture))
 
 def test_get_time_period(self, fixture):
     start, when, resolution, result, date = fixture
 
-    start_date = _parse_date(start)
-    when_date  = _parse_date(when)
+    start_date = helpers.parse_isodate(start)
+    when_date  = helpers.parse_isodate(when)
 
     h = Habit(start=start_date, user=self.user, resolution=resolution)
 
@@ -220,21 +204,22 @@ def test_get_time_period(self, fixture):
         with self.assertRaises(ValueError):
             h.get_time_period(when_date)
     else:
-        tp_date = _parse_date(date)
+        tp_date = helpers.parse_isodate(date)
         t = TimePeriod(resolution, result, tp_date)
         self.assertEqual(t, h.get_time_period(when_date))
 
-attach_fixture_test(HabitTests, test_get_time_period, TIME_PERIOD_FIXTURES)
+helpers.attach_fixture_tests(HabitTests, test_get_time_period, TIME_PERIOD_FIXTURES)
+
 
 def test_record(self, fixture):
-    start_date = _parse_date(fixture.start)
+    start_date = helpers.parse_isodate(fixture.start)
     h = Habit.objects.create(start=start_date,
                              user=self.user,
                              resolution=fixture.resolution)
 
     for datum in fixture.data:
         when, value = datum
-        when_date = _parse_date(when)
+        when_date = helpers.parse_isodate(when)
         tp = h.get_time_period(when_date)
         h.record(tp, value)
 
@@ -249,11 +234,12 @@ def test_record(self, fixture):
                                    index=check.index)
             self.assertEqual(bucket.value, check.value)
 
-attach_fixture_test(HabitTests, test_record, RECORD_FIXTURES)
+helpers.attach_fixture_tests(HabitTests, test_record, RECORD_FIXTURES)
+
 
 def test_get_streaks(self, fixture):
     start, resolution, target_value = fixture.habit
-    start_date = _parse_date(start)
+    start_date = helpers.parse_isodate(start)
     h = Habit.objects.create(start=start_date,
                              user=self.user,
                              resolution=resolution,
@@ -261,13 +247,10 @@ def test_get_streaks(self, fixture):
 
     for datum in fixture.data:
         when, value = datum
-        when_date = _parse_date(when)
+        when_date = helpers.parse_isodate(when)
         tp = h.get_time_period(when_date)
         h.record(tp, value)
 
     self.assertEqual(list(h.get_streaks()), fixture.streaks)
 
-attach_fixture_test(HabitTests, test_get_streaks, STREAKS_FIXTURES)
-
-def _parse_date(iso_string):
-    return datetime.datetime.strptime(iso_string, '%Y-%m-%d').date()
+helpers.attach_fixture_tests(HabitTests, test_get_streaks, STREAKS_FIXTURES)
