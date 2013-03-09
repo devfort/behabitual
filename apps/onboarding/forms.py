@@ -42,6 +42,15 @@ class ExistingUserReminderForm(forms.Form):
 class NewUserReminderForm(ExistingUserReminderForm):
     email = forms.EmailField(required=False)
 
+    def clean(self):
+        cleaned_data = super(ExistingUserReminderForm, self).clean()
+        trigger = cleaned_data.get('trigger')
+        days = cleaned_data.get('days')
+        email = cleaned_data.get('email')
+
+        if (trigger or days) and not email:
+            raise forms.ValidationError("Email is required for reminder")
+        return cleaned_data
 
 class NewUserSummaryForm(forms.Form):
     """
