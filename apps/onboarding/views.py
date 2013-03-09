@@ -6,7 +6,7 @@ from django.contrib.formtools.wizard.views import SessionWizardView
 from forms import HabitForm, \
     NewUserReminderForm, ExistingUserReminderForm, \
     NewUserSummaryForm, ExistingUserSummaryForm
-from apps.habits.models import Habit
+from apps.habits.models import Habit, record_habit_created
 
 User = get_user_model()
 
@@ -42,6 +42,7 @@ class OnboardingWizard(SessionWizardView):
             target_value=habit_form.cleaned_data.get('target_value'),
             start=datetime.now(),
         )
+        record_habit_created.send(habit)
         #TODO Create a reminder
 
     def user(self):

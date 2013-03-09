@@ -2,7 +2,8 @@ from django.contrib.auth.signals import user_logged_out, user_logged_in
 from django.dispatch import receiver
 
 from apps.accounts.views import user_changed_password
-from apps.habits.models import record_habit_data, record_habit_archived
+from apps.habits.models import record_habit_data, record_habit_archived, \
+    record_habit_created
 from lib.metrics import statsd
 
 
@@ -29,3 +30,7 @@ def record_habit_archived(sender, **kwargs):
     else:
         counter = 'habit.unarchived'
     statsd.incr(counter)
+
+@receiver(record_habit_created)
+def record_habit_created(sender, **kwargs):
+    statsd.incr('habit.created')

@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 record_habit_data = django.dispatch.Signal()
 record_habit_archived = django.dispatch.Signal()
+record_habit_created = django.dispatch.Signal()
 
 RESOLUTION_NAMES = (
     _('day'),
