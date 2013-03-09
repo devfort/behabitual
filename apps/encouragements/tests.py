@@ -1,3 +1,4 @@
+from collections import namedtuple
 import datetime
 
 from django.test import TestCase
@@ -48,56 +49,69 @@ class EncouragementsTest(TestCase):
         self.assertEqual(set(('a', 'b')), set(results))
 
 
+MPSF = namedtuple('MostPeriodSucceedingFixture', 'start resolution data expects_none')
+
+MOST_PERIOD_SUCCEEDING_FIXTURES = (
+    MPSF(start='2013-03-01',
+       resolution='day',
+       data=(),
+       expects_none=True,
+    ),
+    MPSF(start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 1),),
+       expects_none=False,
+    ),
+    MPSF(start='2013-03-01',
+       resolution='day',
+       data=(
+        ('2013-03-01', 1),
+        ('2013-03-02', 1),
+        ('2013-03-04', 1),
+        ('2013-03-05', 1),
+        ),
+       expects_none=True,
+    ),
+    MPSF(start='2013-03-01',
+       resolution='day',
+       data=(
+        ('2013-03-01', 1),
+        ('2013-03-04', 1),
+        ('2013-03-05', 1),
+        ),
+       expects_none=False,
+    ),
+)
+
+
 class MostPeriodsSucceedingInARow(TestCase):
     def setUp(self):
         self.user = User.objects.create(email='foo@bar.com')
 
-    def test_one_succeeding(self):
-        today = datetime.date(2013, 1, 1)
-        h = Habit.objects.create(
-            start=today,
-            user=self.user,
-            resolution='day',
-        )
-        h.record(h.get_time_period(today), 1)
-        periods = most_periods_succeeding_in_a_row(h)
-        self.assertIsNotNone(periods)
 
-    def test_current_success_in_a_row_equal_to_previous_success(self):
-        days = [
-            datetime.date(2013, 1, 1),
-            datetime.date(2013, 1, 2),
-            datetime.date(2013, 1, 4),
-            datetime.date(2013, 1, 5)
-        ]
-        h = Habit.objects.create(
-            start=days[0],
-            user=self.user,
-            resolution='day',
-        )
+for i, fixture in enumerate(MOST_PERIOD_SUCCEEDING_FIXTURES):
+    name = 'test_%02d' % i
+    
+    def make_test(fix):
+        return lambda self: _test_most_succeeding_period(self, fix)
 
-        for day in days:
-            h.record(h.get_time_period(day), 1)
+    setattr(MostPeriodsSucceedingInARow, name, make_test(fixture))
 
-        periods = most_periods_succeeding_in_a_row(h)
+def _test_most_succeeding_period(self, fixture):
+    start, resolution, data, expects_none = fixture
+    start_date = _parse_date(start)
+
+    h = Habit.objects.create(start=start_date, user=self.user, resolution=resolution)
+
+    for time_period, value in data:
+        when = _parse_date(time_period)
+        h.record(h.get_time_period(when), value)
+
+    periods = most_periods_succeeding_in_a_row(h)
+    if expects_none:
         self.assertIsNone(periods)
-
-
-    def test_thingy(self):
-        today = datetime.date(2013, 1, 1)
-        h = Habit.objects.create(
-            start=today,
-            user=self.user,
-            resolution='day',
-        )
-        h.record(h.get_time_period(today), 1)
-        periods = most_periods_succeeding_in_a_row(h)
+    else:
         self.assertIsNotNone(periods)
 
-    # def test_no(self):
-    #     self.fail()
-
-    def test_empty(self):
-        today = datetime.date.today()
-        h = Habit(start=today, user=self.user, resolution='day')
-        self.assertIsNone(most_periods_succeeding_in_a_row(h))
+def _parse_date(iso_string):
+    return datetime.datetime.strptime(iso_string, '%Y-%m-%d').date()
