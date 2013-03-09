@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.encouragements.models import (Generator,
-                                        most_periods_succeeding_in_a_row,
+                                        longest_streak_succeeding, longest_streak_nonzero,
                                         best_day_ever, best_week_ever, best_month_ever)
 from apps.habits.models import Bucket, Habit
 
@@ -52,81 +52,140 @@ class EncouragementsTest(TestCase):
         self.assertEqual(set(('a', 'b')), set(results))
 
 
-MPSF = namedtuple('MostPeriodSucceedingFixture', 'start resolution data expects_none')
+SF = namedtuple('StreakFixture', 'func start resolution data expects_none')
 
-MOST_PERIOD_SUCCEEDING_FIXTURES = (
-    MPSF(start='2013-03-01',
-         resolution='day',
-         data=(),
-         expects_none=True),
-    MPSF(start='2013-03-01',
-         resolution='day',
-         data=(('2013-03-01', 3),),
-         expects_none=False),
-    MPSF(start='2013-03-01',
-         resolution='day',
-         data=(('2013-03-01', 3), ('2013-03-02', 1), ('2013-03-03', 3), ('2013-03-04', 3)),
-         expects_none=False),
-    MPSF(start='2013-03-01',
-         resolution='day',
-         data=(('2013-03-01', 3), ('2013-03-03', 3), ('2013-03-04', 3)),
-         expects_none=False),
-    MPSF(start='2013-03-01',
-         resolution='day',
-         data=(('2013-03-01', 3), ('2013-03-02', 3), ('2013-03-04', 3), ('2013-03-05', 3)),
-         expects_none=True),
-    MPSF(start='2013-03-01',
-         resolution='day',
-         data=(('2013-03-01', 4),
-               ('2013-03-03', 3),
-               ('2013-03-04', 0),
-               ('2013-03-05', 3),
-               ('2013-03-06', 7)),
-         expects_none=False),
-    MPSF(start='2013-03-01',
-         resolution='day',
-         data=(('2013-03-01', 3),
-               ('2013-03-02', 3),
-               ('2013-03-03', 0),
-               ('2013-03-04', 5),
-               ('2013-03-06', 3)),
-         expects_none=True),
-    MPSF(start='2013-03-01',
-         resolution='day',
-         data=(('2013-03-01', 3),
-               ('2013-03-02', 3),
-               ('2013-03-03', 2),
-               ('2013-03-04', 3),
-               ('2013-03-05', 3)),
-         expects_none=True),
+STREAK_FIXTURES = (
+    SF(func=longest_streak_succeeding,
+       start='2013-03-01',
+       resolution='day',
+       data=(),
+       expects_none=True),
+    SF(func=longest_streak_succeeding,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 3),),
+       expects_none=False),
+    SF(func=longest_streak_succeeding,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 3), ('2013-03-02', 1), ('2013-03-03', 3), ('2013-03-04', 3)),
+       expects_none=False),
+    SF(func=longest_streak_succeeding,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 3), ('2013-03-03', 3), ('2013-03-04', 3)),
+       expects_none=False),
+    SF(func=longest_streak_succeeding,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 3), ('2013-03-02', 3), ('2013-03-04', 3), ('2013-03-05', 3)),
+       expects_none=True),
+    SF(func=longest_streak_succeeding,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 4),
+             ('2013-03-03', 3),
+             ('2013-03-04', 0),
+             ('2013-03-05', 3),
+             ('2013-03-06', 7)),
+       expects_none=False),
+    SF(func=longest_streak_succeeding,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 3),
+             ('2013-03-02', 3),
+             ('2013-03-03', 0),
+             ('2013-03-04', 5),
+             ('2013-03-06', 3)),
+       expects_none=True),
+    SF(func=longest_streak_succeeding,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 3),
+             ('2013-03-02', 3),
+             ('2013-03-03', 2),
+             ('2013-03-04', 3),
+             ('2013-03-05', 3)),
+       expects_none=True),
+    SF(func=longest_streak_nonzero,
+       start='2013-03-01',
+       resolution='day',
+       data=(),
+       expects_none=True),
+    SF(func=longest_streak_nonzero,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 2),),
+       expects_none=False),
+    SF(func=longest_streak_nonzero,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 5), ('2013-03-02', 0), ('2013-03-03', 2), ('2013-03-04', 3)),
+       expects_none=False),
+    SF(func=longest_streak_nonzero,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 3), ('2013-03-03', 1), ('2013-03-04', 8)),
+       expects_none=False),
+    SF(func=longest_streak_nonzero,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 2), ('2013-03-02', 3), ('2013-03-04', 1), ('2013-03-05', 3)),
+       expects_none=True),
+    SF(func=longest_streak_nonzero,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 1),
+             ('2013-03-03', 3),
+             ('2013-03-04', 0),
+             ('2013-03-05', 1),
+             ('2013-03-06', 7)),
+       expects_none=False),
+    SF(func=longest_streak_nonzero,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 3),
+             ('2013-03-02', 3),
+             ('2013-03-03', 0),
+             ('2013-03-04', 1),
+             ('2013-03-06', 3)),
+       expects_none=True),
+    SF(func=longest_streak_nonzero,
+       start='2013-03-01',
+       resolution='day',
+       data=(('2013-03-01', 2),
+             ('2013-03-02', 3),
+             ('2013-03-03', 0),
+             ('2013-03-04', 1),
+             ('2013-03-05', 3)),
+       expects_none=True),
 )
 
 
-class MostPeriodsSucceedingInARow(TestCase):
+class TestLongestStreak(TestCase):
     def setUp(self):
         self.user = User.objects.create(email='foo@bar.com')
 
 
-def test_most_succeeding_period(self, fixture):
-    start, resolution, data, expects_none = fixture
-    start_date = helpers.parse_isodate(start)
+def test_longest_streak(self, fixture):
+    start_date = helpers.parse_isodate(fixture.start)
 
     h = Habit.objects.create(start=start_date,
                              user=self.user,
-                             resolution=resolution,
+                             resolution=fixture.resolution,
                              target_value=3)
 
-    for time_period, value in data:
+    for time_period, value in fixture.data:
         when = helpers.parse_isodate(time_period)
         h.record(h.get_time_period(when), value)
 
-    periods = most_periods_succeeding_in_a_row(h)
-    if expects_none:
+    periods = fixture.func(h)
+    if fixture.expects_none:
         self.assertIsNone(periods)
     else:
         self.assertIsNotNone(periods)
 
-helpers.attach_fixture_tests(MostPeriodsSucceedingInARow, test_most_succeeding_period, MOST_PERIOD_SUCCEEDING_FIXTURES)
+helpers.attach_fixture_tests(TestLongestStreak, test_longest_streak, STREAK_FIXTURES)
 
 BF = namedtuple('BestEverFixture', 'func habit data expects_none')
 

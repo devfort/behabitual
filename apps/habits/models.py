@@ -156,9 +156,11 @@ class Habit(models.Model):
             resolution=self.resolution,
         ).order_by(order_by)
 
-    def get_streaks(self):
+    def get_streaks(self, success=lambda b: b.is_succeeding()):
         """
-        Return a generator yielding the length of each streak
+        Return a generator yielding the length of each streak satisfying the
+        condition given by the ``success`` callable (a function taking a
+        bucket and returning a boolean).
         """
         buckets = self.get_buckets(order_by='-index')
         if buckets.count() == 0:
@@ -174,7 +176,7 @@ class Habit(models.Model):
                     yield streak
                 streak = 0
 
-            if bucket.is_succeeding():
+            if success(bucket):
                 streak += 1
 
             else:

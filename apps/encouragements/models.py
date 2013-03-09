@@ -2,6 +2,7 @@ import random
 
 from django.db.models import Max
 
+
 class Generator(object):
     """
     A callable object that returns a random encouragement selected from the
@@ -36,22 +37,34 @@ def static_encouragement_provider(habit):
     ))
 
 
-# 1A. Most periods in a row success
-def most_periods_succeeding_in_a_row(habit):
-    streaks = habit.get_streaks()
+def _longest_streak(habit, **kwargs):
+    streaks = habit.get_streaks(**kwargs)
 
     # Get most recent streak, if any
     try:
         latest = next(streaks)
     except StopIteration:
-        return None
+        return False
 
     # If any previous streaks are longer, return None
     for s in streaks:
         if s >= latest:
-            return None
+            return False
 
-    return "WHOO!"
+    return True
+
+
+# 1A. Most periods in a row success
+def longest_streak_succeeding(habit):
+    if _longest_streak(habit):
+        return "Longest succeeding streak. You're a carrot!"
+
+
+# 1B. Most periods in a row non-zero
+def longest_streak_nonzero(habit):
+    if _longest_streak(habit, success=lambda b: b.value > 0):
+        return "Longest streak where you did anything. You're a not entirely lazy carrot!"
+
 
 def _best_bucket_ever(habit, resolution):
     buckets = habit.buckets.filter(resolution=resolution).order_by('-index')
@@ -64,6 +77,7 @@ def _best_bucket_ever(habit, resolution):
 
     return latest.value > max_val
 
+
 # 2A. The highest value for a time period ... ever ... volume 3
 def best_day_ever(habit):
     if habit.resolution in ['week', 'month']:
@@ -71,6 +85,7 @@ def best_day_ever(habit):
 
     if _best_bucket_ever(habit, habit.resolution):
         return "BEST. DAY. EVERRR!"
+
 
 # 2b. Highest number for a week ever
 def best_week_ever(habit):
@@ -86,7 +101,6 @@ def best_month_ever(habit):
     if _best_bucket_ever(habit, 'month'):
         return "BEST. MONTH. EVERRR!"
 
-# 1B. Most periods in a row non-zero
 # 3.  Only for a daily action if you have done it every (day) this month
 #     (can only be figured out after that day in a month)
 # 4.  For n we consecutively you have entered a zero data point (as opposed
@@ -97,6 +111,3 @@ def best_month_ever(habit):
 #     m time periods of failure, followed by k time periods of success
 #     (we believe that n and m will be something and something like the
 #     ratio of k to m will be at least something)
-
-def different_encouragement_provider(habit):
-    pass
