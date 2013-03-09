@@ -62,6 +62,26 @@ class TestProviders(TestCase):
     def setUp(self):
         self.user = User.objects.create(email='foo@bar.com')
 
+# Helper function used by each test_* function below. They call this, and
+# might in fact do nothing else, but they give their name to the test methods.
+def _test_provider(self, fixture):
+    start, resolution = fixture.habit
+    start_date = helpers.parse_isodate(start)
+
+    h = Habit.objects.create(start=start_date,
+                             user=self.user,
+                             resolution=resolution,
+                             target_value=3)
+
+    for time_period, value in fixture.data:
+        when = helpers.parse_isodate(time_period)
+        h.record(h.get_time_period(when), value)
+
+    periods = fixture.func(h)
+    if fixture.expects_none:
+        self.assertIsNone(periods)
+    else:
+        self.assertIsNotNone(periods)
 
 PF = namedtuple('ProviderFixture', 'func habit data expects_none')
 
@@ -203,24 +223,7 @@ STREAK_FIXTURES = (
 
 
 def test_longest_streak(self, fixture):
-    start, resolution = fixture.habit
-    start_date = helpers.parse_isodate(start)
-
-    h = Habit.objects.create(start=start_date,
-                             user=self.user,
-                             resolution=resolution,
-                             target_value=3)
-
-    for time_period, value in fixture.data:
-        when = helpers.parse_isodate(time_period)
-        h.record(h.get_time_period(when), value)
-
-    periods = fixture.func(h)
-    if fixture.expects_none:
-        self.assertIsNone(periods)
-    else:
-        self.assertIsNotNone(periods)
-
+    _test_provider(self, fixture)
 helpers.attach_fixture_tests(TestProviders, test_longest_streak, STREAK_FIXTURES)
 
 
@@ -314,21 +317,7 @@ BEST_EVER_FIXTURES = (
 
 
 def test_best_ever(self, fixture):
-    start, resolution = fixture.habit
-    start_date = helpers.parse_isodate(start)
-
-    h = Habit.objects.create(start=start_date, user=self.user, resolution=resolution)
-
-    for time_period, value in fixture.data:
-        when = helpers.parse_isodate(time_period)
-        h.record(h.get_time_period(when), value)
-
-    res = fixture.func(h)
-    if fixture.expects_none:
-        self.assertIsNone(res)
-    else:
-        self.assertIsNotNone(res)
-
+    _test_provider(self, fixture)
 helpers.attach_fixture_tests(TestProviders, test_best_ever, BEST_EVER_FIXTURES)
 
 BETTERER_FIXTURES = (
@@ -364,22 +353,9 @@ BETTERER_FIXTURES = (
 
 
 def test_better_than_before(self, fixture):
-    start, resolution = fixture.habit
-    start_date = helpers.parse_isodate(start)
-
-    h = Habit.objects.create(start=start_date,
-                             user=self.user,
-                             resolution=resolution,
-                             target_value=3)
-
-    for time_period, value in fixture.data:
-        when = helpers.parse_isodate(time_period)
-        h.record(h.get_time_period(when), value)
-
-    betterer = fixture.func(h)
-    if fixture.expects_none:
-        self.assertIsNone(betterer)
-    else:
-        self.assertIsNotNone(betterer)
-
+    _test_provider(self, fixture)
 helpers.attach_fixture_tests(TestProviders, test_better_than_before, BETTERER_FIXTURES)
+
+
+
+
