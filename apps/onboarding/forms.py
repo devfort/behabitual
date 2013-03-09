@@ -12,7 +12,6 @@ DAYS_OF_WEEK = (
 )
 
 HOURS = zip(range(24), range(24))
-MINUTES = zip(range(60), range(60))
 
 
 class HabitForm(forms.Form):
@@ -31,8 +30,7 @@ class ReminderForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
     )
     hour = forms.ChoiceField(choices=HOURS)
-    minute = forms.ChoiceField(choices=MINUTES)
 
 
 class SummaryForm(forms.Form):
-    pass
+    email = forms.EmailField()
