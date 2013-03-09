@@ -133,6 +133,9 @@ INSTALLED_APPS = (
 )
 
 AUTH_USER_MODEL = 'accounts.User'
+LOGIN_REDIRECT_URL = 'homepage'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
