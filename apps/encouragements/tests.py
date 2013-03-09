@@ -6,7 +6,8 @@ from django.test import TestCase
 from apps.accounts.models import User
 from apps.encouragements.models import (ProviderRegistry,
                                         longest_streak_succeeding, longest_streak_nonzero,
-                                        best_day_ever, best_week_ever, best_month_ever)
+                                        best_day_ever, best_week_ever, best_month_ever,
+                                        better_than_before)
 from apps.habits.models import Bucket, Habit
 
 from lib import test_helpers as helpers
@@ -358,3 +359,62 @@ def test_best_ever(self, fixture):
         self.assertIsNotNone(res)
 
 helpers.attach_fixture_tests(TestBestBucketEver, test_best_ever, BEST_EVER_FIXTURES)
+
+BF = namedtuple('BettererFixture', 'start resolution data expects_none')
+
+BETTERER_FIXTURES = (
+    BF(start='2013-03-01',
+       resolution='week',
+       data=(),
+       expects_none=True),
+    BF(start='2013-03-01',
+       resolution='week',
+       data=(('2013-03-08', 3),),
+       expects_none=True),
+    BF(start='2013-03-01',
+       resolution='week',
+       data=(('2013-03-01', 3),('2013-03-06', 5),),
+       expects_none=False),
+    BF(start='2013-03-01',
+       resolution='week',
+       data=(('2013-03-01', 5),('2013-03-06', 5),),
+       expects_none=True),
+    BF(start='2013-03-01',
+       resolution='week',
+       data=(('2013-03-01', 5),('2013-03-06', 3),),
+       expects_none=True),
+    BF(start='2013-03-01',
+       resolution='week',
+       data=(('2013-03-01', 3),('2013-03-15', 5),),
+       expects_none=True),
+    BF(start='2013-03-01',
+       resolution='week',
+       data=(('2013-03-01', 3),('2013-03-7', 0),('2013-03-15', 5),),
+       expects_none=False),
+)
+
+
+class TestBetterThanBefore(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(email='foo@bar.com')
+
+
+def test_better_than_before(self, fixture):
+    start_date = helpers.parse_isodate(fixture.start)
+
+    h = Habit.objects.create(start=start_date,
+                             user=self.user,
+                             resolution=fixture.resolution,
+                             target_value=3)
+
+    for time_period, value in fixture.data:
+        when = helpers.parse_isodate(time_period)
+        h.record(h.get_time_period(when), value)
+
+    betterer = better_than_before(h)
+    if fixture.expects_none:
+        self.assertIsNone(betterer)
+    else:
+        self.assertIsNotNone(betterer)
+
+helpers.attach_fixture_tests(TestBetterThanBefore, test_better_than_before, BETTERER_FIXTURES)

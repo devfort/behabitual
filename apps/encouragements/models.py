@@ -85,6 +85,24 @@ def best_month_ever(habit):
     if _best_bucket_ever(habit, 'month'):
         return "BEST. MONTH. EVERRR!"
 
+# 5.  The value of the previous consecutive time period is less than the value of this
+#     time period
+@providers.register
+def better_than_before(habit):
+    buckets = habit.get_buckets(order_by='-index')
+    if buckets.count() < 2:
+        return None
+
+    if (buckets[0].index - buckets[1].index) != 1:
+        return None
+
+    if (buckets[0].value <= buckets[1].value):
+        return None
+
+    return "FUCK YEAH OTTERS"
+
+
+
 # 3.  Only for a daily action if you have done it every (day) this month
 #     (can only be figured out after that day in a month)
 # 4.  For n we consecutively you have entered a zero data point (as opposed

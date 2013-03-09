@@ -54,7 +54,7 @@ class Habit(models.Model):
         ordering = ['archived', '-id']
 
     def get_current_time_period(self):
-        return get_time_period(datetime.date.today())
+        return self.get_time_period(datetime.date.today())
 
     def get_time_period(self, when, resolution=None):
         """
