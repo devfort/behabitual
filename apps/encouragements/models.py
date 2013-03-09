@@ -107,8 +107,6 @@ def better_than_before(habit):
 #     (can only be figured out after that day in a month)
 # 4.  For n we consecutively you have entered a zero data point (as opposed
 #     to not having entered data)
-# 5.  The value of the previous time period is less than the value of this
-#     time period
 # 6.  "Don't call it a comeback" - n time periods of success, followed by
 #     m time periods of failure, followed by k time periods of success
 #     (we believe that n and m will be something and something like the
