@@ -174,19 +174,28 @@ class HabitTests(TestCase):
 
     def test_cannot_record_negative_value(self):
         today = datetime.date.today()
-        h = Habit(start=today, user=self.user, resolution='day')
+        h = Habit(description="Brush my teeth",
+                  start=today,
+                  user=self.user,
+                  resolution='day')
         t = TimePeriod('day', 0, today)
         with self.assertRaises(ValueError):
             h.record(t, -10)
 
     def test_must_supply_valid_timepoint(self):
         today = datetime.date.today()
-        h = Habit(start=today, user=self.user, resolution='day')
+        h = Habit(description="Brush my teeth",
+                  start=today,
+                  user=self.user,
+                  resolution='day')
         with self.assertRaises(ValueError):
             h.record(today, 5)
 
     def test_record_invalid_resolution(self):
-        h = Habit.objects.create(start=datetime.date(2013, 3, 4), user=self.user, resolution='day')
+        h = Habit.objects.create(description="Brush my teeth",
+                                 start=datetime.date(2013, 3, 4),
+                                 user=self.user,
+                                 resolution='day')
         when = h.get_time_period(datetime.date(2013, 3, 4), resolution='week')
         with self.assertRaises(ValueError):
             h.record(when, 5)
@@ -198,7 +207,10 @@ def test_get_time_period(self, fixture):
     start_date = helpers.parse_isodate(start)
     when_date  = helpers.parse_isodate(when)
 
-    h = Habit(start=start_date, user=self.user, resolution=resolution)
+    h = Habit(description="Brush my teeth",
+              start=start_date,
+              user=self.user,
+              resolution=resolution)
 
     if result is throws:
         with self.assertRaises(ValueError):
@@ -213,7 +225,8 @@ helpers.attach_fixture_tests(HabitTests, test_get_time_period, TIME_PERIOD_FIXTU
 
 def test_record(self, fixture):
     start_date = helpers.parse_isodate(fixture.start)
-    h = Habit.objects.create(start=start_date,
+    h = Habit.objects.create(description="Brush my teeth",
+                             start=start_date,
                              user=self.user,
                              resolution=fixture.resolution)
 

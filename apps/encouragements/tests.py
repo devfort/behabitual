@@ -55,6 +55,7 @@ class MostPeriodsSucceedingInARow(TestCase):
     def test_one_succeeding(self):
         today = datetime.date(2013, 1, 1)
         h = Habit.objects.create(
+            description="Brush my teeth",
             start=today,
             user=self.user,
             resolution='day',
@@ -71,6 +72,7 @@ class MostPeriodsSucceedingInARow(TestCase):
             datetime.date(2013, 1, 5)
         ]
         h = Habit.objects.create(
+            description="Brush my teeth",
             start=days[0],
             user=self.user,
             resolution='day',
@@ -86,6 +88,7 @@ class MostPeriodsSucceedingInARow(TestCase):
     def test_thingy(self):
         today = datetime.date(2013, 1, 1)
         h = Habit.objects.create(
+            description="Brush my teeth",
             start=today,
             user=self.user,
             resolution='day',
@@ -99,5 +102,9 @@ class MostPeriodsSucceedingInARow(TestCase):
 
     def test_empty(self):
         today = datetime.date.today()
-        h = Habit(start=today, user=self.user, resolution='day')
+        h = Habit(
+            description="Brush my teeth",
+            start=today,
+            user=self.user,
+            resolution='day')
         self.assertIsNone(most_periods_succeeding_in_a_row(h))
