@@ -82,7 +82,7 @@ MOST_PERIOD_SUCCEEDING_FIXTURES = (
                ('2013-03-04', 0),
                ('2013-03-05', 1),
                ('2013-03-06', 1)),
-         expects_none=True),
+         expects_none=False),
     MPSF(start='2013-03-01',
          resolution='day',
          data=(('2013-03-01', 1),
@@ -90,7 +90,7 @@ MOST_PERIOD_SUCCEEDING_FIXTURES = (
                ('2013-03-03', 0),
                ('2013-03-04', 1),
                ('2013-03-06', 1)),
-         expects_none=False),
+         expects_none=True),
     MPSF(start='2013-03-01',
          resolution='day',
          data=(('2013-03-01', 1),
@@ -98,7 +98,7 @@ MOST_PERIOD_SUCCEEDING_FIXTURES = (
                ('2013-03-03', 0),
                ('2013-03-04', 1),
                ('2013-03-05', 1)),
-         expects_none=False),
+         expects_none=True),
 )
 
 
