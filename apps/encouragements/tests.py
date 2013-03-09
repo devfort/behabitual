@@ -134,7 +134,7 @@ class MostPeriodsSucceedingInARow(TestCase):
         self.user = User.objects.create(email='foo@bar.com')
 
 
-def _test_most_succeeding_period(self, fixture):
+def test_most_succeeding_period(self, fixture):
     start, resolution, data, expects_none = fixture
     start_date = helpers.parse_isodate(start)
 
@@ -150,4 +150,4 @@ def _test_most_succeeding_period(self, fixture):
     else:
         self.assertIsNotNone(periods)
 
-helpers.attach_fixture_tests(MostPeriodsSucceedingInARow, _test_most_succeeding_period, MOST_PERIOD_SUCCEEDING_FIXTURES)
+helpers.attach_fixture_tests(MostPeriodsSucceedingInARow, test_most_succeeding_period, MOST_PERIOD_SUCCEEDING_FIXTURES)
