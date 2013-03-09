@@ -7,7 +7,8 @@ from apps.accounts.models import User
 from apps.encouragements.models import (ProviderRegistry,
                                         longest_streak_succeeding, longest_streak_nonzero,
                                         best_day_ever, best_week_ever, best_month_ever,
-                                        better_than_before)
+                                        better_than_before,
+                                        every_day_this_month)
 from apps.habits.models import Bucket, Habit
 
 from lib import test_helpers as helpers
@@ -320,6 +321,7 @@ def test_best_ever(self, fixture):
     _test_provider(self, fixture)
 helpers.attach_fixture_tests(TestProviders, test_best_ever, BEST_EVER_FIXTURES)
 
+
 BETTERER_FIXTURES = (
     PF(func=better_than_before,
        habit=('2013-03-01', 'week'),
@@ -357,5 +359,35 @@ def test_better_than_before(self, fixture):
 helpers.attach_fixture_tests(TestProviders, test_better_than_before, BETTERER_FIXTURES)
 
 
+EVERY_DAY_ALL         = [['2013-03-%02d' %n , 1] for n in range(1, 32)]
+EVERY_DAY_MISSING_ONE = [['2013-03-%02d' %n , 1] for n in range(1, 32) if n != 10]
+EVERY_DAY_ONE_ZERO    = [['2013-03-%02d' %n , 0 if n == 10 else 0] for n in range(1, 32)]
+EVERY_DAY_DAY_AFTER   = EVERY_DAY_ALL[:] + [('2013-04-01', 1)]
+
+EVERY_DAY_FIXTURES = (
+    PF(func=every_day_this_month,
+       habit=('2013-03-01', 'day'),
+       data=(),
+       expects_none=True),
+    PF(func=every_day_this_month,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_DAY_ALL,
+       expects_none=False),
+    PF(func=every_day_this_month,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_DAY_MISSING_ONE,
+       expects_none=True),
+    PF(func=every_day_this_month,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_DAY_ONE_ZERO,
+       expects_none=True),
+    PF(func=every_day_this_month,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_DAY_DAY_AFTER,
+       expects_none=True),
+)
 
 
+def test_every_day(self, fixture):
+    _test_provider(self, fixture)
+helpers.attach_fixture_tests(TestProviders, test_every_day, EVERY_DAY_FIXTURES)

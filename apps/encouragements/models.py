@@ -1,3 +1,5 @@
+import calendar
+import datetime
 import random
 
 from django.db.models import Max
@@ -101,6 +103,41 @@ def better_than_before(habit):
 
     return "FUCK YEAH OTTERS"
 
+
+# 7.  Success if you've done your action every day in the past month.
+@providers.register
+def every_day_this_month(habit):
+    if habit.resolution != 'day':
+        return None
+
+    buckets = habit.buckets.filter(resolution=habit.resolution).order_by('-index')
+
+    if buckets.count() < 28:
+        return None
+
+    latest = buckets[0]
+    latest_date = habit.start + datetime.timedelta(days=latest.index)
+
+    # Only proceed to check all buckets this month if we've just entered the
+    # last bucket this month. Use != because months aren't monotonically
+    # increasing (December -> January).
+    next_date = latest_date + datetime.timedelta(days=1)
+    if latest_date.month == next_date.month:
+        return None
+
+    # Get a list of buckets from the current month
+    month_ndays = latest_date.day
+    buckets_filtered = buckets.exclude(index__lt=latest.index - (month_ndays - 1))
+
+    # If you haven't provided data for every day this month, fail
+    if buckets_filtered.count() < month_ndays:
+        return None
+
+    for bucket in buckets_filtered:
+        if bucket.value == 0:
+            return None
+
+    return "Wahey! You've frobbled your wibble every day in %s!" % calendar.month_name[latest_date.month]
 
 
 # 3.  Only for a daily action if you have done it every (day) this month
