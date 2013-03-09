@@ -139,7 +139,32 @@ RECORD_FIXTURES = (
                C(resolution='month', index=0, value=128))),
 )
 
+# Data structure for testing get_streaks. ``habit`` is itself a tuple of
+# (start, resolution, target_value).
+SF = namedtuple('StreakFixture', 'habit data streaks')
 
+STREAKS_FIXTURES = (
+    SF(habit=('2013-03-04', 'day', 1),
+       data=(('2013-03-04', 0),),
+       streaks=[]),
+    SF(habit=('2013-03-04', 'day', 1),
+       data=(('2013-03-04', 1),),
+       streaks=[1]),
+    SF(habit=('2013-03-04', 'day', 1),
+       data=(('2013-03-04', 1), ('2013-03-05', 2), ('2013-03-06', 0), ('2013-03-07', 1)),
+       streaks=[1, 2]),
+    SF(habit=('2013-03-04', 'day', 3),
+       data=(('2013-03-04', 2), ('2013-03-05', 3), ('2013-03-06', 1), ('2013-03-07', 6)),
+       streaks=[1, 1]),
+    # Streaks should respect expected gaps (e.g. weekends in weekday
+    # resolution habits)
+    SF(habit=('2013-03-04', 'weekday', 3),
+       data=(('2013-03-07', 3), ('2013-03-08', 3), ('2013-03-11', 4), ('2013-03-12', 6)),
+       streaks=[4]),
+    SF(habit=('2013-03-04', 'week', 3),
+       data=(('2013-03-04', 1), ('2013-03-05', 2), ('2013-03-11', 4)),
+       streaks=[2]),
+)
 
 class HabitTests(TestCase):
 
@@ -226,6 +251,23 @@ def test_record(self, fixture):
 
 attach_fixture_test(HabitTests, test_record, RECORD_FIXTURES)
 
+def test_get_streaks(self, fixture):
+    start, resolution, target_value = fixture.habit
+    start_date = _parse_date(start)
+    h = Habit.objects.create(start=start_date,
+                             user=self.user,
+                             resolution=resolution,
+                             target_value=target_value)
+
+    for datum in fixture.data:
+        when, value = datum
+        when_date = _parse_date(when)
+        tp = h.get_time_period(when_date)
+        h.record(tp, value)
+
+    self.assertEqual(list(h.get_streaks()), fixture.streaks)
+
+attach_fixture_test(HabitTests, test_get_streaks, STREAKS_FIXTURES)
 
 def _parse_date(iso_string):
     return datetime.datetime.strptime(iso_string, '%Y-%m-%d').date()
