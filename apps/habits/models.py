@@ -256,6 +256,8 @@ class Bucket(models.Model):
     """
     A value in a specified time resolution series for a habit
     """
+    class Meta(object):
+        unique_together = ['habit', 'resolution', 'index']
 
     habit = models.ForeignKey(Habit, related_name='buckets')
     index = models.IntegerField(
@@ -274,5 +276,5 @@ class Bucket(models.Model):
     def is_succeeding(self):
         return self.value >= self.habit.target_value
 
-    class Meta(object):
-        unique_together = ['habit', 'resolution', 'index']
+    def __unicode__(self):
+        return "resolution=%s index=%s value=%s" % (self.resolution, self.index, self.value)
