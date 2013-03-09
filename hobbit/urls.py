@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 
 import apps.accounts.views
+import apps.onboarding.views
 
 from django.contrib import admin
 admin.autodiscover()
@@ -18,6 +19,8 @@ urlpatterns = patterns('',
         {'post_reset_redirect': '/'},
         name='password_reset_confirm'),
     url(r'^_;', include('apps.autologin.urls')),
+
+    url(r'^add-habit/$', apps.onboarding.views.onboarding_wizard, name='add_habit'),
 
 ) + patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', {'template_name': 'accounts/login.html'}, name='login'),

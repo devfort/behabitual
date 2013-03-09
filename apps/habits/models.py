@@ -26,6 +26,8 @@ RESOLUTIONS = (
     'month',
 )
 
+RESOLUTION_CHOICES = zip(RESOLUTIONS, RESOLUTION_NAMES)
+
 
 def _validate_non_negative(val):
     if val < 0:
@@ -43,7 +45,7 @@ class Habit(models.Model):
     user = models.ForeignKey('accounts.User', related_name='habits')
     resolution = models.CharField(
         max_length=10,
-        choices=zip(RESOLUTIONS, RESOLUTION_NAMES),
+        choices=RESOLUTION_CHOICES,
         default='day',
     )
     start = models.DateField()
