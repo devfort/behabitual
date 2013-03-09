@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model, login
-from django.contrib.formtools.wizard.views import SessionWizardView
+from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
 
 from forms import HabitForm, \
     NewUserReminderForm, ExistingUserReminderForm, \
@@ -11,7 +11,7 @@ from apps.habits.models import Habit, record_habit_created
 User = get_user_model()
 
 
-class OnboardingWizard(SessionWizardView):
+class OnboardingWizard(NamedUrlSessionWizardView):
     """
     Wizard to add new habits. It will also create a user if the current user
     isn't authenticated.
@@ -24,8 +24,8 @@ class OnboardingWizard(SessionWizardView):
         return HttpResponseRedirect('/')
 
     def get_form_initial(self, step):
-        if step == '2':
-            reminder_data = self.get_cleaned_data_for_step('1')
+        if step == 'summary':
+            reminder_data = self.get_cleaned_data_for_step('reminder')
             return {'email': reminder_data.get('email')}
         else:
             return super(OnboardingWizard, self).get_form_initial(step)
@@ -77,14 +77,14 @@ def add_habit_wizard(request, *args, **kwargs):
     """
     if request.user.is_authenticated():
         wizard = AddHabitWizard.as_view((
-            HabitForm,
-            ExistingUserReminderForm,
-            ExistingUserSummaryForm,
-        ))
+            ('habit', HabitForm),
+            ('reminder', ExistingUserReminderForm),
+            ('summary', ExistingUserSummaryForm),
+        ), url_name='add_habit_step', done_step_name='done')
     else:
         wizard = OnboardingWizard.as_view((
-            HabitForm,
-            NewUserReminderForm,
-            NewUserSummaryForm,
-        ))
+            ('habit', HabitForm),
+            ('reminder', NewUserReminderForm),
+            ('summary', NewUserSummaryForm),
+        ), url_name='add_habit_step', done_step_name='done')
     return wizard(request, *args, **kwargs)

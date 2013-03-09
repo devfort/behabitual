@@ -27,6 +27,7 @@ urlpatterns = patterns('',
         name='password_reset_confirm'),
     url(r'^_;', include('apps.autologin.urls')),
 
+    url(r'^add-habit/(?P<step>.+)/$', apps.onboarding.views.add_habit_wizard, name='add_habit_step'),
     url(r'^add-habit/$', apps.onboarding.views.add_habit_wizard, name='add_habit'),
 
     secured_url(r'^habit/(?P<pk>\d+)/archive$', apps.habits.views.HabitArchiveView.as_view(), name='habit_archive' ),
