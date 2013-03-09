@@ -8,6 +8,8 @@ from apps.encouragements.models import Generator, \
     most_periods_succeeding_in_a_row
 from apps.habits.models import Bucket, Habit
 
+from lib import test_helpers as helpers
+
 
 class MockUser(object):
     def __init__(self, id=1):
@@ -89,22 +91,14 @@ class MostPeriodsSucceedingInARow(TestCase):
         self.user = User.objects.create(email='foo@bar.com')
 
 
-for i, fixture in enumerate(MOST_PERIOD_SUCCEEDING_FIXTURES):
-    name = 'test_%02d' % i
-    
-    def make_test(fix):
-        return lambda self: _test_most_succeeding_period(self, fix)
-
-    setattr(MostPeriodsSucceedingInARow, name, make_test(fixture))
-
 def _test_most_succeeding_period(self, fixture):
     start, resolution, data, expects_none = fixture
-    start_date = _parse_date(start)
+    start_date = helpers.parse_isodate(start)
 
     h = Habit.objects.create(start=start_date, user=self.user, resolution=resolution)
 
     for time_period, value in data:
-        when = _parse_date(time_period)
+        when = helpers.parse_isodate(time_period)
         h.record(h.get_time_period(when), value)
 
     periods = most_periods_succeeding_in_a_row(h)
@@ -113,5 +107,4 @@ def _test_most_succeeding_period(self, fixture):
     else:
         self.assertIsNotNone(periods)
 
-def _parse_date(iso_string):
-    return datetime.datetime.strptime(iso_string, '%Y-%m-%d').date()
+helpers.attach_fixture_tests(MostPeriodsSucceedingInARow, _test_most_succeeding_period, MOST_PERIOD_SUCCEEDING_FIXTURES)

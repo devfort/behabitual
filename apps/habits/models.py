@@ -48,6 +48,7 @@ class Habit(models.Model):
     )
     start = models.DateField()
     target_value = models.PositiveIntegerField(default=1)
+    description = models.TextField()
 
     def get_current_time_period(self):
         return get_time_period(datetime.date.today())
@@ -188,7 +189,9 @@ class Habit(models.Model):
             yield streak
 
     def __unicode__(self):
-        return 'Habit(start=%s resolution=%s)' % (self.start, self.resolution)
+        return 'Habit(description=%s start=%s resolution=%s)' % (
+            self.description, self.start, self.resolution
+        )
 
 def _increment_bucket(habit, time_period, value):
     try:

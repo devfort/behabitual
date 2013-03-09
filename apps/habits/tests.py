@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.habits.models import Habit, TimePeriod
+from lib import test_helpers as helpers
 
 # If, for example, we create a habit on a Tuesday with a resolution of
 # 'weekendday', and we try and get the current time period on the Friday, we
@@ -139,68 +140,99 @@ RECORD_FIXTURES = (
                C(resolution='month', index=0, value=128))),
 )
 
+# Data structure for testing get_streaks. ``habit`` is itself a tuple of
+# (start, resolution, target_value).
+SF = namedtuple('StreakFixture', 'habit data streaks')
 
+STREAKS_FIXTURES = (
+    SF(habit=('2013-03-04', 'day', 1),
+       data=(('2013-03-04', 0),),
+       streaks=[]),
+    SF(habit=('2013-03-04', 'day', 1),
+       data=(('2013-03-04', 1),),
+       streaks=[1]),
+    SF(habit=('2013-03-04', 'day', 1),
+       data=(('2013-03-04', 1), ('2013-03-05', 2), ('2013-03-06', 0), ('2013-03-07', 1)),
+       streaks=[1, 2]),
+    SF(habit=('2013-03-04', 'day', 3),
+       data=(('2013-03-04', 2), ('2013-03-05', 3), ('2013-03-06', 1), ('2013-03-07', 6)),
+       streaks=[1, 1]),
+    # Streaks should respect expected gaps (e.g. weekends in weekday
+    # resolution habits)
+    SF(habit=('2013-03-04', 'weekday', 3),
+       data=(('2013-03-07', 3), ('2013-03-08', 3), ('2013-03-11', 4), ('2013-03-12', 6)),
+       streaks=[4]),
+    SF(habit=('2013-03-04', 'week', 3),
+       data=(('2013-03-04', 1), ('2013-03-05', 2), ('2013-03-11', 4)),
+       streaks=[2]),
+)
 
-class HabitRecordingTests(TestCase):
+class HabitTests(TestCase):
 
     def setUp(self):
         self.user = User.objects.create(email='foo@bar.com')
 
     def test_cannot_record_negative_value(self):
         today = datetime.date.today()
-        h = Habit(start=today, user=self.user, resolution='day')
+        h = Habit(description="Brush my teeth",
+                  start=today,
+                  user=self.user,
+                  resolution='day')
         t = TimePeriod('day', 0, today)
         with self.assertRaises(ValueError):
             h.record(t, -10)
 
     def test_must_supply_valid_timepoint(self):
         today = datetime.date.today()
-        h = Habit(start=today, user=self.user, resolution='day')
+        h = Habit(description="Brush my teeth",
+                  start=today,
+                  user=self.user,
+                  resolution='day')
         with self.assertRaises(ValueError):
             h.record(today, 5)
 
     def test_record_invalid_resolution(self):
-        h = Habit.objects.create(start=datetime.date(2013, 3, 4), user=self.user, resolution='day')
+        h = Habit.objects.create(description="Brush my teeth",
+                                 start=datetime.date(2013, 3, 4),
+                                 user=self.user,
+                                 resolution='day')
         when = h.get_time_period(datetime.date(2013, 3, 4), resolution='week')
         with self.assertRaises(ValueError):
             h.record(when, 5)
 
 
-def _test_time_period(self, fixture):
+def test_get_time_period(self, fixture):
     start, when, resolution, result, date = fixture
 
-    start_date = _parse_date(start)
-    when_date  = _parse_date(when)
+    start_date = helpers.parse_isodate(start)
+    when_date  = helpers.parse_isodate(when)
 
-    h = Habit(start=start_date, user=self.user, resolution=resolution)
+    h = Habit(description="Brush my teeth",
+              start=start_date,
+              user=self.user,
+              resolution=resolution)
 
     if result is throws:
         with self.assertRaises(ValueError):
             h.get_time_period(when_date)
     else:
-        tp_date = _parse_date(date)
+        tp_date = helpers.parse_isodate(date)
         t = TimePeriod(resolution, result, tp_date)
         self.assertEqual(t, h.get_time_period(when_date))
 
-
-for i, fixture in enumerate(TIME_PERIOD_FIXTURES):
-    name = 'test_get_time_period_%02d' % i
-
-    def make_test(fix):
-        return lambda self: _test_time_period(self, fix)
-
-    setattr(HabitRecordingTests, name, make_test(fixture))
+helpers.attach_fixture_tests(HabitTests, test_get_time_period, TIME_PERIOD_FIXTURES)
 
 
-def _test_record(self, fixture):
-    start_date = _parse_date(fixture.start)
-    h = Habit.objects.create(start=start_date,
+def test_record(self, fixture):
+    start_date = helpers.parse_isodate(fixture.start)
+    h = Habit.objects.create(description="Brush my teeth",
+                             start=start_date,
                              user=self.user,
                              resolution=fixture.resolution)
 
     for datum in fixture.data:
         when, value = datum
-        when_date = _parse_date(when)
+        when_date = helpers.parse_isodate(when)
         tp = h.get_time_period(when_date)
         h.record(tp, value)
 
@@ -215,15 +247,23 @@ def _test_record(self, fixture):
                                    index=check.index)
             self.assertEqual(bucket.value, check.value)
 
-
-for i, fixture in enumerate(RECORD_FIXTURES):
-    name = 'test_record_%02d' % i
-
-    def make_test(fix):
-        return lambda self: _test_record(self, fix)
-
-    setattr(HabitRecordingTests, name, make_test(fixture))
+helpers.attach_fixture_tests(HabitTests, test_record, RECORD_FIXTURES)
 
 
-def _parse_date(iso_string):
-    return datetime.datetime.strptime(iso_string, '%Y-%m-%d').date()
+def test_get_streaks(self, fixture):
+    start, resolution, target_value = fixture.habit
+    start_date = helpers.parse_isodate(start)
+    h = Habit.objects.create(start=start_date,
+                             user=self.user,
+                             resolution=resolution,
+                             target_value=target_value)
+
+    for datum in fixture.data:
+        when, value = datum
+        when_date = helpers.parse_isodate(when)
+        tp = h.get_time_period(when_date)
+        h.record(tp, value)
+
+    self.assertEqual(list(h.get_streaks()), fixture.streaks)
+
+helpers.attach_fixture_tests(HabitTests, test_get_streaks, STREAKS_FIXTURES)
