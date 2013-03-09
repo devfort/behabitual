@@ -11,11 +11,10 @@ from django.utils.translation import ugettext_lazy as _
 record_habit_data = django.dispatch.Signal()
 
 RESOLUTION_NAMES = (
-    _('daily'),
-    _('on weekdays'),
-    _('on weekends'),
-    _('weekly'),
-    _('monthly'),
+    _('day'),
+    _('day on weekdays'),
+    _('day on weekends'),
+    _('week'),
 )
 
 RESOLUTIONS = (
@@ -23,7 +22,6 @@ RESOLUTIONS = (
     'weekday',
     'weekendday',
     'week',
-    'month',
 )
 
 
@@ -189,6 +187,10 @@ class Habit(models.Model):
 
         if streak:
             yield streak
+
+    def get_resolution_name(self):
+        resolution_index = RESOLUTIONS.index(self.resolution)
+        return RESOLUTION_NAMES[resolution_index]
 
     def __unicode__(self):
         return 'Habit(description=%s start=%s resolution=%s)' % (

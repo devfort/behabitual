@@ -128,7 +128,8 @@ INSTALLED_APPS = (
     'south',
     'apps.accounts',
     'apps.encouragements',
-    'apps.habits'
+    'apps.habits',
+    'apps.homepage',
 )
 
 AUTH_USER_MODEL = 'accounts.User'

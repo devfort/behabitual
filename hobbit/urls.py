@@ -2,12 +2,14 @@ from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 
 import apps.accounts.views
+import apps.homepage.views
 
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', TemplateView.as_view(template_name='homepage/home.html'), name='homepage'),
+    # url(r'^$', TemplateView.as_view(template_name='homepage/home.html'), name='homepage'),
+    url(r'^$', apps.homepage.views.HomepageView.as_view(), name='homepage'),
     url(r'^logout/$', apps.accounts.views.LogoutView.as_view(), name='logout'),
     url(r'^password-change/$', apps.accounts.views.password_change, name='password_change'),
     url(r'^password-change/done/$', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
