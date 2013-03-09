@@ -38,3 +38,48 @@
 .add-trigger .highlight .habit span.name-the-thing:before {
     background:             $positive_colour;
 }
+
+.add-trigger form {
+    background:             #97c1dc;
+    border-radius:          5px;
+    padding:                30px 40px 20px;
+}
+.add-trigger form .reminder {
+    background:             #bcd7e9;
+    border-radius:          5px;
+    padding:                15px 40px;
+    line-height:            2;
+}
+.add-trigger form .columnar {
+    @extend .contain;
+}
+.add-trigger form .columnar span {
+    float:                  left;
+    width:                  100px;
+}
+.add-trigger form .columnar ul {
+    float:                  left;
+    width:                  200px;
+}
+.add-trigger .trigger-time {
+    border:                 solid white;
+    border-width:           1px 0;
+    padding:                20px 0;
+}
+.add-trigger .trigger-time legend {
+    @extend .offleft;
+}
+.add-trigger form h2 {
+    font-size:              24px;
+    font-size:              2.4rem;
+    line-height:            1.5;
+    color:                  #333;
+    margin:                 0 0 24px;
+}
+.add-trigger button.submit {
+    margin-left:            200px;
+}
+.add-trigger .form-continue {
+    margin-top:             24px;
+    text-align:             center;
+}

@@ -6,6 +6,5 @@ html {
  *  Until there is, we use <b> because it is NOT EXACTLY USEFUL.
  */
 b {
-    position:               absolute;
-    left:                   -9999px;
+    @extend .offleft;
 }
