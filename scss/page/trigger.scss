@@ -1,0 +1,40 @@
+/* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
+
+.add-trigger .highlight strong {
+    padding:                3px;
+    border-radius:          3px;
+}
+
+.add-trigger .highlight span.name-the-thing {
+    position:               relative;
+    padding-left:           50px;
+}
+
+.add-trigger .highlight .trigger {
+    display:                block;
+}
+.add-trigger .highlight .trigger strong {
+    background:             $highlight_colour_b;
+}
+.add-trigger .highlight .trigger span.name-the-thing {
+    color:                  $highlight_colour_b;
+}
+.add-trigger .highlight .habit strong {
+    background:             $positive_colour;
+}
+.add-trigger .highlight .habit span.name-the-thing {
+    color:                  $positive_colour;
+}
+.add-trigger .highlight span.name-the-thing:before {
+    content:                '';
+    display:                block;
+    position:               absolute;
+    left:                   5px;
+    top:                    48%;
+    background:             $highlight_colour_b;
+    height:                 2px;
+    width:                  40px;
+}
+.add-trigger .highlight .habit span.name-the-thing:before {
+    background:             $positive_colour;
+}

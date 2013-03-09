@@ -29,6 +29,9 @@ h1 {
     color:                  $header_colour;
     margin:                 30px 0;
 }
+body.centred-wtf h1 {
+    text-align:             center;
+}
 h2 {
     font-weight:            bold;
     font-size:              28px;
@@ -43,6 +46,10 @@ h3 {
 
 p {
     margin:                 30px 0;
+}
+.highlight {
+    background-color:       $darker_body_colour;
+    padding:                20px;
 }
 
 a {
