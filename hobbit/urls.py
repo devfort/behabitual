@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     url(r'^login/$', 'login', {'template_name': 'accounts/login.html'}, name='login'),
     url(r'^accounts/forgot/$', 'password_reset', name='account-forgotten'),
     url(r'^accounts/forgot/done/$', 'password_reset_done'),
+    
+    url(r'^styletile$', TemplateView.as_view(template_name='styles/tile.html'), name='styletile'),
 )
 
 from apps.monitoring import *

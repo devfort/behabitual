@@ -1,0 +1,46 @@
+/* Define variables */
+$clicks-color:#bdbad9;
+
+a.SOMETHING {
+  background:$clicks-color;
+}
+
+/* import a file into the output file 
+@import "partials/settings_upgrade";
+*/
+
+
+/* mixins (a.k.a. functions). Though I thought scss dealt with this case (prefix expansion) by default. Guess i was wrong. */
+@mixin box-shadow($style){
+    -moz-box-shadow:$style;
+    -webkit-box-shadow: $style;
+    box-shadow: $style;
+}
+
+div.zomg {
+  @include box-shadow(0px 2px 5px #999);
+  background:#f7f7f7;
+}
+
+/* extends */
+.primary {
+  color: red;
+  font-size: 150%;
+}
+
+.secondary {
+  /* will include rules from primary */
+  @extend .primary;
+  font-size: 125%;
+}
+
+/* Nesting */
+.outer {
+  .inner { /* === .outer .inner */
+    colour: red;
+  }
+
+  &.other { /* === .outher.other */
+    colour: green;
+  }
+}

@@ -1,0 +1,69 @@
+/* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
+
+body.styletile {
+    max-width:              1000px;
+}
+
+#leftstuffwotsit {
+    width:                  550px;
+    margin-right:           50px;
+    float:                  left;
+}
+
+#colour-swatches {
+    width:                  400px;
+    float:                  right;
+}
+#colour-swatches li {
+    @extend .contain;
+    padding-left:           90px;
+    padding-top:            17px;
+    margin-bottom:          10px;
+}
+#colour-swatches span {
+    border-radius:          35px;
+    width:                  70px;
+    height:                 70px;
+    display:                block;
+    float:                  left;
+    margin-left:            -90px;
+    margin-top:             -17px;
+}
+
+#colour-swatches .swatch-action {
+    background:             $links_active_colour;
+}
+#colour-swatches .swatch-secondary-action {
+    background:             $secondary_action_colour;
+}
+#colour-swatches .swatch-error {
+    background:             $error_colour;
+}
+#colour-swatches .swatch-highlight {
+    background:             $highlight_colour;
+}
+#colour-swatches .swatch-positive {
+    background:             $positive_colour;
+}
+#colour-swatches .swatch-goviaaaaaas {
+    background:             $goviaaaaaas_colour;
+}
+#colour-swatches .swatch-link {
+    background:             $links_colour;
+}
+#colour-swatches .swatch-active-link {
+    background:             $links_active_colour;
+}
+#colour-swatches .swatch-body {
+    border:                 1px solid #ccc;
+}
+
+#colour-swatches .swatch-darker-body {
+    background:             $darker_body_colour;
+}
+#colour-swatches .swatch-darkest-body {
+    background:             $darkest_body_colour;
+}
+#colour-swatches .swatch-thingy {
+    background:             $thingy_colour;
+}
