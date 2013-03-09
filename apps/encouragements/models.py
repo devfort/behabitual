@@ -1,8 +1,11 @@
 import calendar
+from collections import defaultdict
 import datetime
 import random
 
 from django.db.models import Max
+
+from apps.habits.models import Bucket
 
 
 class ProviderRegistry(object):
@@ -140,8 +143,62 @@ def every_day_this_month(habit):
     return "Wahey! You've frobbled your wibble every day in %s!" % calendar.month_name[latest_date.month]
 
 
-# 3.  Only for a daily action if you have done it every (day) this month
-#     (can only be figured out after that day in a month)
+def _weekdays_in_month(year, month):
+    start, num_days = calendar.monthrange(year, month)
+    weekdays = defaultdict(list)
+    for i, weekday in enumerate((x + start) % 7 for x in xrange(num_days)):
+        weekdays[weekday].append(i + 1)
+    return weekdays
+
+
+# 3. Only for a daily action if you have done it every {Monday, Tuesday, ...} this month
+#    (can only be figured out after the last of those weekdays in a month)
+@providers.register
+def every_xday_this_month(habit):
+    if habit.resolution != 'day':
+        return None
+
+    buckets = habit.buckets.filter(resolution=habit.resolution).order_by('-index')
+
+    latest = buckets[0]
+    latest_date = habit.start + datetime.timedelta(days=latest.index)
+    month_weekdays = _weekdays_in_month(latest_date.year, latest_date.month)
+    last_weekdays = [v[-1] for k, v in month_weekdays.items()]
+
+    try:
+        # Set weekday to the integer weekday (Monday=0...Sunday=6) represented
+        # by latest_date...
+        weekday = last_weekdays.index(latest_date.day)
+    except ValueError:
+        # ...but fail if it's not one of the last weekdays of the month (e.g.
+        # if it's a Wednesday but not the last Wednesday of the month)
+        return None
+
+    # Get buckets for all the days in the month which are the same weekday as
+    # latest_date.
+    month_ndays = latest_date.day
+    min_index = latest.index - (month_ndays - 1)
+    buckets_filtered = list(Bucket.objects.raw("""
+        SELECT * FROM habits_bucket
+        WHERE habit_id = %s
+        AND resolution = %s
+        AND index > %s
+        AND (index + %s) %% 7 = %s
+        AND value > 0
+    """, [habit.pk,
+          habit.resolution,
+          min_index,
+          habit.start.weekday(),
+          weekday]))
+
+    if len(buckets_filtered) < len(month_weekdays[weekday]):
+        # Haven't got a bucket for each, so automatically fail
+        return None
+
+    return "Congratulations, you've done your task every %s this %s!" % (
+        calendar.day_name[weekday],
+        calendar.month_name[latest_date.month])
+
 # 4.  For n we consecutively you have entered a zero data point (as opposed
 #     to not having entered data)
 # 6.  "Don't call it a comeback" - n time periods of success, followed by
