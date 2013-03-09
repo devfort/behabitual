@@ -4,8 +4,9 @@ import datetime
 from django.test import TestCase
 
 from apps.accounts.models import User
-from apps.encouragements.models import Generator, \
-    most_periods_succeeding_in_a_row
+from apps.encouragements.models import (Generator,
+                                        most_periods_succeeding_in_a_row,
+                                        best_day_ever, best_week_ever, best_month_ever)
 from apps.habits.models import Bucket, Habit
 
 from lib import test_helpers as helpers
@@ -151,3 +152,119 @@ def test_most_succeeding_period(self, fixture):
         self.assertIsNotNone(periods)
 
 helpers.attach_fixture_tests(MostPeriodsSucceedingInARow, test_most_succeeding_period, MOST_PERIOD_SUCCEEDING_FIXTURES)
+
+BF = namedtuple('BestEverFixture', 'func habit data result')
+
+BEST_EVER_FIXTURES = (
+    BF(func=best_day_ever,
+       habit=('2013-03-04', 'day'),
+       data=(('2013-03-04', 0),),
+       result=False),
+    # Not your "best day ever" if it's your first ever day
+    BF(func=best_day_ever,
+       habit=('2013-03-04', 'day'),
+       data=(('2013-03-04', 1),),
+       result=False),
+    BF(func=best_day_ever,
+       habit=('2013-03-04', 'day'),
+       data=(('2013-03-04', 1), ('2013-03-05', 0)),
+       result=False),
+    BF(func=best_day_ever,
+       habit=('2013-03-04', 'day'),
+       data=(('2013-03-04', 1), ('2013-03-05', 1)),
+       result=False),
+    BF(func=best_day_ever,
+       habit=('2013-03-04', 'day'),
+       data=(('2013-03-04', 1), ('2013-03-05', 2)),
+       result=True),
+    BF(func=best_day_ever,
+       habit=('2013-03-04', 'day'),
+       data=(('2013-03-04', 1), ('2013-03-05', 0), ('2013-03-06', 2)),
+       result=True),
+    BF(func=best_week_ever,
+       habit=('2013-03-04', 'week'),
+       data=(('2013-03-04', 0),),
+       result=False),
+    # Not your "best week ever" if it's your first ever week...
+    BF(func=best_week_ever,
+       habit=('2013-03-04', 'week'),
+       data=(('2013-03-04', 1),),
+       result=False),
+    # ...even if you enter data twice
+    BF(func=best_week_ever,
+       habit=('2013-03-04', 'week'),
+       data=(('2013-03-04', 1), ('2013-03-05', 3)),
+       result=False),
+    BF(func=best_week_ever,
+       habit=('2013-03-04', 'week'),
+       data=(('2013-03-04', 1), ('2013-03-11', 0)),
+       result=False),
+    BF(func=best_week_ever,
+       habit=('2013-03-04', 'week'),
+       data=(('2013-03-04', 1), ('2013-03-11', 1)),
+       result=False),
+    BF(func=best_week_ever,
+       habit=('2013-03-04', 'week'),
+       data=(('2013-03-04', 1), ('2013-03-11', 2)),
+       result=True),
+    BF(func=best_week_ever,
+       habit=('2013-03-04', 'week'),
+       data=(('2013-03-04', 1), ('2013-03-11', 0), ('2013-03-12', 2)),
+       result=True),
+    BF(func=best_month_ever,
+       habit=('2013-03-04', 'month'),
+       data=(('2013-03-04', 0),),
+       result=False),
+    # Not your "best month ever" if it's your first ever month...
+    BF(func=best_month_ever,
+       habit=('2013-03-04', 'month'),
+       data=(('2013-03-04', 1),),
+       result=False),
+    # ...even if you enter data twice
+    BF(func=best_month_ever,
+       habit=('2013-03-04', 'month'),
+       data=(('2013-03-04', 1), ('2013-03-05', 3)),
+       result=False),
+    BF(func=best_month_ever,
+       habit=('2013-03-04', 'month'),
+       data=(('2013-03-04', 1), ('2013-04-01', 0)),
+       result=False),
+    BF(func=best_month_ever,
+       habit=('2013-03-04', 'month'),
+       data=(('2013-03-04', 1), ('2013-04-01', 1)),
+       result=False),
+    BF(func=best_month_ever,
+       habit=('2013-03-04', 'month'),
+       data=(('2013-03-04', 1), ('2013-04-01', 2)),
+       result=True),
+    BF(func=best_month_ever,
+       habit=('2013-03-04', 'month'),
+       data=(('2013-03-04', 1), ('2013-04-01', 0), ('2013-04-02', 2)),
+       result=True),
+)
+
+
+class TestBestBucketEver(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(email='foo@bar.com')
+
+
+
+def test_best_ever(self, fixture):
+    start, resolution = fixture.habit
+    start_date = helpers.parse_isodate(start)
+
+    h = Habit.objects.create(start=start_date, user=self.user, resolution=resolution)
+
+    for time_period, value in fixture.data:
+        when = helpers.parse_isodate(time_period)
+        h.record(h.get_time_period(when), value)
+
+    res = fixture.func(h)
+    if fixture.result:
+        self.assertIsNotNone(res)
+    else:
+        self.assertIsNone(res)
+
+
+helpers.attach_fixture_tests(TestBestBucketEver, test_best_ever, BEST_EVER_FIXTURES)
