@@ -25,12 +25,11 @@ class HabitForm(forms.Form):
     )
 
 
-class ReminderForm(forms.Form):
+class ExistingUserReminderForm(forms.Form):
     """
     Captures Habit reminder information. The second step of the
     OnboardingWizard.
     """
-    email = forms.EmailField(required=False)
     trigger = forms.CharField(max_length=50, required=False)
     days = forms.MultipleChoiceField(
         choices=DAYS_OF_WEEK,
@@ -40,8 +39,19 @@ class ReminderForm(forms.Form):
     hour = forms.ChoiceField(choices=HOURS, required=False)
 
 
-class SummaryForm(forms.Form):
+class NewUserReminderForm(ExistingUserReminderForm):
+    email = forms.EmailField(required=False)
+
+
+class NewUserSummaryForm(forms.Form):
     """
-    Captures user information. The final set of the OnboardingWizard.
+    Captures user information. The final step of the OnboardingWizard.
     """
     email = forms.EmailField()
+
+
+class ExistingUserSummaryForm(forms.Form):
+    """
+    The final step of the AddHabitWizard.
+    """
+    pass

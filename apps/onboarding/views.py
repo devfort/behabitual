@@ -3,7 +3,9 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model, login
 from django.contrib.formtools.wizard.views import SessionWizardView
 
-from forms import HabitForm, ReminderForm, SummaryForm
+from forms import HabitForm, \
+    NewUserReminderForm, ExistingUserReminderForm, \
+    NewUserSummaryForm, ExistingUserSummaryForm
 from apps.habits.models import Habit
 
 User = get_user_model()
@@ -60,8 +62,28 @@ class OnboardingWizard(SessionWizardView):
 
 
 class AddHabitWizard(OnboardingWizard):
+    """
+    Add a habit, when you're already authenticated.
+    """
     def user(self):
         return self.request.user
 
 
-onboarding_wizard = OnboardingWizard.as_view([HabitForm, ReminderForm, SummaryForm])
+def add_habit_wizard(request, *args, **kwargs):
+    """
+    Delegates to either the ``OnboardingWizard`` for a logged out user or
+    ``AddHabitWizard`` for a logged in user.
+    """
+    if request.user.is_authenticated():
+        wizard = AddHabitWizard.as_view((
+            HabitForm,
+            ExistingUserReminderForm,
+            ExistingUserSummaryForm,
+        ))
+    else:
+        wizard = OnboardingWizard.as_view((
+            HabitForm,
+            NewUserReminderForm,
+            NewUserSummaryForm,
+        ))
+    return wizard(request, *args, **kwargs)
