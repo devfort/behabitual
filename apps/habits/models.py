@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import division, unicode_literals
 
 from collections import namedtuple
 import datetime
@@ -198,7 +198,7 @@ class Habit(models.Model):
         return RESOLUTION_NAMES[resolution_index]
 
     def __unicode__(self):
-        return 'Habit(description=%s start=%s resolution=%s)' % (
+        return 'description=%s start=%s resolution=%s' % (
             self.description, self.start, self.resolution
         )
 
