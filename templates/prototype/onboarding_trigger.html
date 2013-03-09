@@ -17,7 +17,7 @@
 	<p><label for="trigger_email">My email</label> <input type="email" name="trigger_email" id="trigger_email"></p>
     <p>
         <label for="trigger_trigger">When I</label> <input type="text" name="trigger_trigger" id="trigger_trigger" placeholder="close the dishwasher">,
-        <label for="trigger_habbit">then I</label> <input type="text" name="trigger_habbit" id="trigger_habbit" value="brush my teeth" readonly>.
+        <label for="trigger_habbit">then I</label> <input type="text" name="trigger_habbit" id="trigger_habbit" value="brush my teeth">.
     </p>
     </fieldset>
     <fieldset>
@@ -35,20 +35,12 @@
         at 
         <b><label for="trigger_hours">Hours</label></b>
         <select name="trigger_hours" id="trigger_hours">
-        	<option>00</option>
-            <option>01</option>
-            <option>02</option>
-            <option>03</option>
+        	<option>00:00</option>
+            <option>01:00</option>
+            <option>02:00</option>
+            <option>03:00</option>
             <!-- ect -->
         </select>
-        :
-         <b><label for="trigger_minutes">Minutes</label></b>
-        <select name="trigger_minutes" id="trigger_minutes">
-        	<option>00</option>
-            <option>15</option>
-            <option>30</option>
-            <option>45</option>
-        </select>  
     </fieldset>
     <button type="submit" class="action">Remind me</button>
 </form>

@@ -1,3 +1,3 @@
-from models import Generator, static_encouragement_provider
+from models import ProviderRegistry
+from models import providers, get_encouragement
 
-generator = Generator((static_encouragement_provider,))

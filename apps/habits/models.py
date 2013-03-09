@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import division, unicode_literals
 
 from collections import namedtuple
 import datetime
@@ -11,11 +11,10 @@ from django.utils.translation import ugettext_lazy as _
 record_habit_data = django.dispatch.Signal()
 
 RESOLUTION_NAMES = (
-    _('daily'),
-    _('on weekdays'),
-    _('on weekends'),
-    _('weekly'),
-    _('monthly'),
+    _('day'),
+    _('day on weekdays'),
+    _('day on weekends'),
+    _('week'),
 )
 
 RESOLUTIONS = (
@@ -23,7 +22,6 @@ RESOLUTIONS = (
     'weekday',
     'weekendday',
     'week',
-    'month',
 )
 
 RESOLUTION_CHOICES = zip(RESOLUTIONS, RESOLUTION_NAMES)
@@ -50,9 +48,15 @@ class Habit(models.Model):
     )
     start = models.DateField()
     target_value = models.PositiveIntegerField(default=1)
+    description = models.TextField()
+    archived = models.BooleanField(default=False)
+
+    class Meta:
+        # HACK: Use ID as proxy for creation order
+        ordering = ['archived', '-id']
 
     def get_current_time_period(self):
-        return get_time_period(datetime.date.today())
+        return self.get_time_period(datetime.date.today())
 
     def get_time_period(self, when, resolution=None):
         """
@@ -157,9 +161,11 @@ class Habit(models.Model):
             resolution=self.resolution,
         ).order_by(order_by)
 
-    def get_streaks(self):
+    def get_streaks(self, success=lambda b: b.is_succeeding()):
         """
-        Return a generator yielding the length of each streak
+        Return a generator yielding the length of each streak satisfying the
+        condition given by the ``success`` callable (a function taking a
+        bucket and returning a boolean).
         """
         buckets = self.get_buckets(order_by='-index')
         if buckets.count() == 0:
@@ -175,7 +181,7 @@ class Habit(models.Model):
                     yield streak
                 streak = 0
 
-            if bucket.is_succeeding():
+            if success(bucket):
                 streak += 1
 
             else:
@@ -189,8 +195,14 @@ class Habit(models.Model):
         if streak:
             yield streak
 
+    def get_resolution_name(self):
+        resolution_index = RESOLUTIONS.index(self.resolution)
+        return RESOLUTION_NAMES[resolution_index]
+
     def __unicode__(self):
-        return 'Habit(start=%s resolution=%s)' % (self.start, self.resolution)
+        return 'description=%s start=%s resolution=%s' % (
+            self.description, self.start, self.resolution
+        )
 
 def _increment_bucket(habit, time_period, value):
     try:
