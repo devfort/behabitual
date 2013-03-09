@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 
 import apps.accounts.views
 import apps.onboarding.views
@@ -8,6 +9,9 @@ import apps.habits.views
 
 from django.contrib import admin
 admin.autodiscover()
+
+def secured_url(path, view, *args, **kwargs):
+    return url(path, login_required(view), *args, **kwargs)
 
 urlpatterns = patterns('',
     # url(r'^$', TemplateView.as_view(template_name='homepage/home.html'), name='homepage'),
@@ -24,8 +28,9 @@ urlpatterns = patterns('',
     url(r'^_;', include('apps.autologin.urls')),
 
     url(r'^add-habit/$', apps.onboarding.views.onboarding_wizard, name='add_habit'),
-    url(r'^habit/(?P<pk>\d+)/archive$', apps.habits.views.HabitArchiveView.as_view(), name='habit_archive' ),
-    url(r'^habit/(?P<pk>\d+)/$', apps.habits.views.HabitDetailView.as_view(), name='habit' ),
+
+    secured_url(r'^habit/(?P<pk>\d+)/archive$', apps.habits.views.HabitArchiveView.as_view(), name='habit_archive' ),
+    secured_url(r'^habit/(?P<pk>\d+)/$', apps.habits.views.HabitDetailView.as_view(), name='habit' ),
 
 ) + patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', {'template_name': 'accounts/login.html'}, name='login'),
