@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Style tile{% endblock %}
+{% block body-class %}styletile{% endblock %}
+
+{% block body %}
+  <div id='leftstuffwotsit'>
+    <h1>H1 is Ubuntu Bold, 36px #3d1e4e</h1>
+    <h2>H2 is Ubuntu Bold, 28 px, #3d1e4e</h2>
+    <h3>H3 is Ubuntu Bold, 24 px, #333</h3>
+    <p>
+      Body copy is Ubuntu Regular 24 px, 36 px line-height, #333 color. Lorem
+      ipsum dolor sit <a href='http://fuckyeahtypography.tumblr.com'>fuck yeah
+      typography</a> cras mattis consectetur purus sit amet fermentum.
+      Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus
+      magna, vel scelerisque nisl consectetur et. Donec ullamcorper nulla non
+      metus auctor fringilla. Nullam quis risus eget urna mollis ornare vel eu
+      leo. Donec sed odio dui.
+    </p>
+    
+    <button class='action'>Good button</button>
+    <button class='action meh'>Meh button</button>
+    <button class='action jeffd'>Good hover</button>
+    <button class='action meh jeffd'>Meh hover</button>
+  </div>
+  
+  <ul id='colour-swatches'>
+    <li><span class='keep-stephanie-happy swatch-action'></span> Primary CTA #e7368e</li>
+    <li><span class='keep-stephanie-happy swatch-secondary-action'></span> Secondary CTAs #e7368e</li>
+    <li><span class='keep-stephanie-happy swatch-error'></span> Errors #eb2a2e</li>
+    <li><span class='keep-stephanie-happy swatch-highlight'></span> Highlight #ed5d3a</li>
+    <li><span class='keep-stephanie-happy swatch-positive'></span> Positive #92c989</li>
+    <li><span class='keep-stephanie-happy swatch-alert'></span> Alert #e9c62d</li>
+    <li><span class='keep-stephanie-happy swatch-link'></span> Links #438ab8</li>
+    <li><span class='keep-stephanie-happy swatch-active-link'></span> Active Link #438ab8</li>
+    <li><span class='keep-stephanie-happy swatch-body'></span> Body #f0eee2</li>
+    <li><span class='keep-stephanie-happy swatch-darker-body'></span> Darker body #e4e1d5</li>
+    <li><span class='keep-stephanie-happy swatch-darkest-body'></span> Darkest body #d7d4c6</li>
+    <li><span class='keep-stephanie-happy swatch-thingy'></span> Alternate Highlight
+      Contrast Body Colour Bottom Stripe-y Thing-y #3c1e4e </li>
+  </ul>
+  
+{% endblock %}
