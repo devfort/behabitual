@@ -10,7 +10,7 @@ class Generator(object):
         if providers is None:
             self._providers = []
         else:
-            self._providers = providers
+            self._providers = list(providers)
 
     def __call__(self, habit):
         random.shuffle(self._providers)
