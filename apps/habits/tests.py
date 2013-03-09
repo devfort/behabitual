@@ -141,7 +141,7 @@ RECORD_FIXTURES = (
 
 
 
-class HabitRecordingTests(TestCase):
+class HabitTests(TestCase):
 
     def setUp(self):
         self.user = User.objects.create(email='foo@bar.com')
@@ -165,8 +165,25 @@ class HabitRecordingTests(TestCase):
         with self.assertRaises(ValueError):
             h.record(when, 5)
 
+#
+# The following tests use the fixture data above. They are attached to the
+# HabitTests class at runtime by attach_fixture_tests.
+#
 
-def _test_time_period(self, fixture):
+def attach_fixture_test(test_cls, test_func, fixtures):
+    """
+    For each fixture, attach the decorated test function using that fixture
+    data to the specified test class.
+    """
+    for i, fixture in enumerate(fixtures):
+        name = '%s_%03d' % (test_func.__name__, i)
+
+        def make_test(fix):
+            return lambda self: test_func(self, fix)
+
+        setattr(test_cls, name, make_test(fixture))
+
+def test_get_time_period(self, fixture):
     start, when, resolution, result, date = fixture
 
     start_date = _parse_date(start)
@@ -182,17 +199,9 @@ def _test_time_period(self, fixture):
         t = TimePeriod(resolution, result, tp_date)
         self.assertEqual(t, h.get_time_period(when_date))
 
+attach_fixture_test(HabitTests, test_get_time_period, TIME_PERIOD_FIXTURES)
 
-for i, fixture in enumerate(TIME_PERIOD_FIXTURES):
-    name = 'test_get_time_period_%02d' % i
-
-    def make_test(fix):
-        return lambda self: _test_time_period(self, fix)
-
-    setattr(HabitRecordingTests, name, make_test(fixture))
-
-
-def _test_record(self, fixture):
+def test_record(self, fixture):
     start_date = _parse_date(fixture.start)
     h = Habit.objects.create(start=start_date,
                              user=self.user,
@@ -215,14 +224,7 @@ def _test_record(self, fixture):
                                    index=check.index)
             self.assertEqual(bucket.value, check.value)
 
-
-for i, fixture in enumerate(RECORD_FIXTURES):
-    name = 'test_record_%02d' % i
-
-    def make_test(fix):
-        return lambda self: _test_record(self, fix)
-
-    setattr(HabitRecordingTests, name, make_test(fixture))
+attach_fixture_test(HabitTests, test_record, RECORD_FIXTURES)
 
 
 def _parse_date(iso_string):
