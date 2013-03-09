@@ -35,7 +35,7 @@ class OnboardingWizard(SessionWizardView):
         habit_form = self.form_list[0]
         habit = Habit.objects.create(
             user=self.user(),
-            #description=habit_form.cleaned_data.get('description'),
+            description=habit_form.cleaned_data.get('description'),
             resolution=habit_form.cleaned_data.get('resolution'),
             target_value=habit_form.cleaned_data.get('target_value'),
             start=datetime.now(),
@@ -56,6 +56,7 @@ class OnboardingWizard(SessionWizardView):
         )
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(self.request, user)
+        return user
 
 
 class AddHabitWizard(OnboardingWizard):
