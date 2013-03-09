@@ -4,7 +4,7 @@ import datetime
 from django.test import TestCase
 
 from apps.accounts.models import User
-from apps.encouragements.models import (Generator,
+from apps.encouragements.models import (ProviderRegistry,
                                         longest_streak_succeeding, longest_streak_nonzero,
                                         best_day_ever, best_week_ever, best_month_ever)
 from apps.habits.models import Bucket, Habit
@@ -12,43 +12,48 @@ from apps.habits.models import Bucket, Habit
 from lib import test_helpers as helpers
 
 
-class MockUser(object):
-    def __init__(self, id=1):
-        self.pk = id
+class MockHabit(object):
+    def __init__(self, pk=1):
+        self.pk = pk
 
 
-class EncouragementsTest(TestCase):
+class TestProviderRegistry(TestCase):
     def setUp(self):
-        self.user = MockUser(4)
-        self.providers = (
-            lambda user: None,
-            lambda user: 'a',
-            lambda user: 'b',
-        )
+        self.habit = MockHabit(4)
 
     def test_returns_none_with_no_providers(self):
-        generator = Generator([])
-        self.assertIsNone(generator(self.user))
+        registry = ProviderRegistry()
+        self.assertIsNone(registry.get_encouragement(self.habit))
 
     def test_returns_the_encouragement_from_a_single_provider(self):
         encouragement = object()
-        provider = lambda user: encouragement
-        generator = Generator([provider])
-        self.assertEqual(encouragement, generator(self.user))
+        provider = lambda habit: encouragement
+        registry = ProviderRegistry()
+        registry.register(provider)
+        self.assertEqual(encouragement, registry.get_encouragement(self.habit))
 
     def test_returns_none_if_the_provider_returns_none(self):
-        provider = lambda user: None
-        generator = Generator([provider])
-        self.assertIsNone(generator(self.user))
+        provider = lambda habit: None
+        registry = ProviderRegistry()
+        registry.register(provider)
+        self.assertIsNone(registry.get_encouragement(self.habit))
 
-    def test_returns_user_derived_encouragements_from_a_provider(self):
-        provider = lambda user: user.pk
-        generator = Generator([provider])
-        self.assertEqual(4, generator(self.user))
+    def test_returns_habit_derived_encouragements_from_a_provider(self):
+        provider = lambda habit: habit.pk
+        registry = ProviderRegistry()
+        registry.register(provider)
+        self.assertEqual(4, registry.get_encouragement(self.habit))
 
     def test_returns_an_encouragement_from_a_set_of_providers(self):
-        generator = Generator(self.providers)
-        results = [generator(self.user) for i in range(100)]
+        registry = ProviderRegistry()
+        providers = (
+            lambda habit: None,
+            lambda habit: 'a',
+            lambda habit: 'b',
+        )
+        for p in providers:
+            registry.register(p)
+        results = [registry.get_encouragement(self.habit) for i in range(100)]
         self.assertEqual(set(('a', 'b')), set(results))
 
 
