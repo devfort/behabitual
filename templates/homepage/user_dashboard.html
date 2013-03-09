@@ -22,7 +22,7 @@
       </h2>
 
       {# TODO: Add habit descriptions to enter data/edit habit links? #}
-      <a href="#TODO">Enter data</a> <a href="#TODO">Edit habit</a>
+      <a href="{% url "habit_record" pk=habit.id %}">Enter data</a> <a href="#TODO">Edit habit</a>
 
       <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
         {% csrf_token %}

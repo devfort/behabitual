@@ -304,3 +304,33 @@ class HabitArchiveViewTest(WebTestCase):
         self.habit = Habit.objects.get(pk=self.habit.pk)
 
         self.assertEquals(False, self.habit.archived)
+
+class HabitRecordViewTest(WebTestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email='someone@example.com', password='123456'
+        )
+        self.client.login(email='someone@example.com', password='123456')
+        self.habit = Habit.objects.create(
+            description="Brush my teeth",
+            start=datetime.date.today(),
+            user=self.user,
+            resolution='day'
+        )
+
+    def test_record_get(self):
+        # Simple test to make sure the record view shows without error
+        response = self.client.get(reverse('habit_record', args=[self.habit.id]))
+        self.assertTemplateUsed("habits/habit_record.html")
+
+    def test_record_post(self):
+        time_period = self.habit.get_current_time_period()
+        params = {
+            'date': time_period.date,
+            'value': 2,
+        }
+        response = self.client.post(reverse('habit_record', args=[self.habit.id]), params)
+        self.assertRedirects(response, reverse('habit_encouragement', args=[self.habit.id]))
+
+        bucket = self.habit.get_buckets().get(index=time_period.index)
+        self.assertEquals(2, bucket.value)
