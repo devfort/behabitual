@@ -23,13 +23,14 @@ class HabitForm(forms.Form):
 
 
 class ReminderForm(forms.Form):
-    email = forms.EmailField()
-    trigger = forms.CharField(max_length=50)
+    email = forms.EmailField(required=False)
+    trigger = forms.CharField(max_length=50, required=False)
     days = forms.MultipleChoiceField(
         choices=DAYS_OF_WEEK,
         widget=forms.CheckboxSelectMultiple,
+        required=False,
     )
-    hour = forms.ChoiceField(choices=HOURS)
+    hour = forms.ChoiceField(choices=HOURS, required=False)
 
 
 class SummaryForm(forms.Form):
