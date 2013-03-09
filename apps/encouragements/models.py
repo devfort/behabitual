@@ -17,6 +17,7 @@ class Generator(object):
         except IndexError:
             pass
 
+
 def static_encouragement_provider(habit):
     """
     Returns a randomly selected static encouragement.
@@ -26,32 +27,22 @@ def static_encouragement_provider(habit):
         "AWESOME!",
     ))
 
+
 # 1A. Most periods in a row success
 def most_periods_succeeding_in_a_row(habit):
-    buckets = habit.get_buckets(order_by='-index')
-    if buckets.count() == 0:
-        return None
-    if not buckets[0].is_succeeding():
-        return None
-    longest_past_streak = None
-    current_streak = 0
-    previous_index = buckets[0].index + 1
+    streaks = habit.get_streaks()
 
-    for bucket in buckets:
-        if bucket.is_succeeding() and bucket.index == previous_index - 1:
-            if longest_past_streak is None:
-                current_streak += 1
-            else:
-                longest_past_streak += 1
-                if longest_past_streak >= current_streak:
-                    return None
-        else:
-            if bucket.is_succeeding():
-                longest_past_streak = 1
-            else:
-                longest_past_streak = 0
-        previous_index = bucket.index
-    
+    # Get most recent streak, if any
+    try:
+        latest = next(streaks)
+    except StopIteration:
+        return None
+
+    # If any previous streaks are longer, return None
+    for s in streaks:
+        if s >= latest:
+            return None
+
     return "WHOO!"
 
 

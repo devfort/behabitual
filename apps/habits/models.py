@@ -155,6 +155,38 @@ class Habit(models.Model):
             resolution=self.resolution,
         ).order_by(order_by)
 
+    def get_streaks(self):
+        """
+        Return a generator yielding the length of each streak
+        """
+        buckets = self.get_buckets(order_by='-index')
+        if buckets.count() == 0:
+            return
+
+        streak = 0
+        previous_index = buckets[0].index + 1
+
+        for bucket in buckets:
+            if bucket.index != previous_index - 1:
+                # Buckets not consecutive. Yield previous streak (if any) and reset.
+                if streak:
+                    yield streak
+                streak = 0
+
+            if bucket.is_succeeding():
+                streak += 1
+
+            else:
+                # Bucket failing. Yield previous streak (if any) and reset.
+                if streak:
+                    yield streak
+                streak = 0
+
+            previous_index = bucket.index
+
+        if streak:
+            yield streak
+
     def __unicode__(self):
         return 'Habit(start=%s resolution=%s)' % (self.start, self.resolution)
 
