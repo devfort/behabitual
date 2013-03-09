@@ -5,10 +5,11 @@ from django.test import TestCase
 
 from apps.accounts.models import User
 from apps.encouragements.models import (ProviderRegistry,
-                                        longest_streak_succeeding, longest_streak_nonzero,
+                                        longest_streak_nonzero, longest_streak_succeeding,
                                         best_day_ever, best_week_ever, best_month_ever,
                                         better_than_before,
-                                        every_day_this_month, every_xday_this_month)
+                                        every_day_this_month_nonzero, every_day_this_month_succeeding,
+                                        every_xday_this_month_nonzero, every_xday_this_month_succeeding)
 from apps.habits.models import Bucket, Habit
 
 from lib import test_helpers as helpers
@@ -359,65 +360,123 @@ def test_better_than_before(self, fixture):
 helpers.attach_fixture_tests(TestProviders, test_better_than_before, BETTERER_FIXTURES)
 
 
-EVERY_DAY_ALL            = [['2013-03-%02d' % (n + 1), 1] for n in range(31)]
-EVERY_DAY_MISSING_ONE    = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n != 10]
-EVERY_DAY_ONE_ZERO       = [['2013-03-%02d' % (n + 1), 0 if n == 10 else 0] for n in range(31)]
-EVERY_DAY_DAY_AFTER      = EVERY_DAY_ALL[:] + [('2013-04-01', 1)]
-EVERY_MONDAY             = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n % 7 == 3]
-EVERY_TUESDAY            = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n % 7 == 4]
-EVERY_SUNDAY             = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n % 7 == 2]
-EVERY_SUNDAY_MISSING_ONE = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n % 7 == 2 and n != 9]
-EVERY_MONDAY_DAY_AFTER   = EVERY_MONDAY[:] + [('2013-03-26', 1)]
-EVERY_SUNDAY_DAY_AFTER   = EVERY_SUNDAY[:] + [('2013-04-01', 1)]
+EVERY_DAY_ALL              = [['2013-03-%02d' % (n + 1), 1] for n in range(31)]
+EVERY_DAY_MISSING_ONE      = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n != 10]
+EVERY_DAY_ONE_ZERO         = [['2013-03-%02d' % (n + 1), 0 if n == 10 else 1] for n in range(31)]
+EVERY_DAY_DAY_AFTER        = EVERY_DAY_ALL[:] + [('2013-04-01', 1)]
+EVERY_DAY_S_ALL            = [['2013-03-%02d' % (n + 1), 3] for n in range(31)]
+EVERY_DAY_S_MISSING_ONE    = [['2013-03-%02d' % (n + 1), 4] for n in range(31) if n != 10]
+EVERY_DAY_S_ONE_ZERO       = [['2013-03-%02d' % (n + 1), 2 if n == 10 else 3] for n in range(31)]
+EVERY_DAY_S_DAY_AFTER      = EVERY_DAY_ALL[:] + [('2013-04-01', 4)]
+EVERY_MONDAY               = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n % 7 == 3]
+EVERY_TUESDAY              = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n % 7 == 4]
+EVERY_SUNDAY               = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n % 7 == 2]
+EVERY_SUNDAY_MISSING_ONE   = [['2013-03-%02d' % (n + 1), 1] for n in range(31) if n % 7 == 2 and n != 9]
+EVERY_MONDAY_DAY_AFTER     = EVERY_MONDAY[:] + [('2013-03-26', 1)]
+EVERY_SUNDAY_DAY_AFTER     = EVERY_SUNDAY[:] + [('2013-04-01', 1)]
+EVERY_MONDAY_S             = [['2013-03-%02d' % (n + 1), 3] for n in range(31) if n % 7 == 3]
+EVERY_TUESDAY_S            = [['2013-03-%02d' % (n + 1), 4] for n in range(31) if n % 7 == 4]
+EVERY_SUNDAY_S             = [['2013-03-%02d' % (n + 1), 3] for n in range(31) if n % 7 == 2]
+EVERY_SUNDAY_S_MISSING_ONE = [['2013-03-%02d' % (n + 1), 3] for n in range(31) if n % 7 == 2 and n != 9]
+EVERY_MONDAY_S_DAY_AFTER   = EVERY_MONDAY[:] + [('2013-03-26', 4)]
+EVERY_SUNDAY_S_DAY_AFTER   = EVERY_SUNDAY[:] + [('2013-04-01', 4)]
 
 EVERY_DAY_FIXTURES = (
-    PF(func=every_day_this_month,
+    PF(func=every_day_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=(),
        expects_none=True),
-    PF(func=every_day_this_month,
+    PF(func=every_day_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_DAY_ALL,
        expects_none=False),
-    PF(func=every_day_this_month,
+    PF(func=every_day_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_DAY_MISSING_ONE,
        expects_none=True),
-    PF(func=every_day_this_month,
+    PF(func=every_day_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_DAY_ONE_ZERO,
        expects_none=True),
-    PF(func=every_day_this_month,
+    PF(func=every_day_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_DAY_DAY_AFTER,
        expects_none=True),
-    PF(func=every_xday_this_month,
+    PF(func=every_day_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=(),
+       expects_none=True),
+    PF(func=every_day_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_DAY_S_ALL,
+       expects_none=False),
+    PF(func=every_day_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_DAY_S_MISSING_ONE,
+       expects_none=True),
+    PF(func=every_day_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_DAY_S_ONE_ZERO,
+       expects_none=True),
+    PF(func=every_day_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_DAY_S_DAY_AFTER,
+       expects_none=True),
+    PF(func=every_xday_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=(('2013-03-25', 1),),
        expects_none=True),
-    PF(func=every_xday_this_month,
+    PF(func=every_xday_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_MONDAY,
        expects_none=False),
-    PF(func=every_xday_this_month,
+    PF(func=every_xday_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_TUESDAY,
        expects_none=False),
-    PF(func=every_xday_this_month,
+    PF(func=every_xday_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_SUNDAY,
        expects_none=False),
-    PF(func=every_xday_this_month,
+    PF(func=every_xday_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_SUNDAY_MISSING_ONE,
        expects_none=True),
-    PF(func=every_xday_this_month,
+    PF(func=every_xday_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_MONDAY_DAY_AFTER,
        expects_none=True),
-    PF(func=every_xday_this_month,
+    PF(func=every_xday_this_month_nonzero,
        habit=('2013-03-01', 'day'),
        data=EVERY_SUNDAY_DAY_AFTER,
+       expects_none=True),
+    PF(func=every_xday_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=(('2013-03-25', 1),),
+       expects_none=True),
+    PF(func=every_xday_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_MONDAY_S,
+       expects_none=False),
+    PF(func=every_xday_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_TUESDAY_S,
+       expects_none=False),
+    PF(func=every_xday_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_SUNDAY_S,
+       expects_none=False),
+    PF(func=every_xday_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_SUNDAY_S_MISSING_ONE,
+       expects_none=True),
+    PF(func=every_xday_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_MONDAY_S_DAY_AFTER,
+       expects_none=True),
+    PF(func=every_xday_this_month_succeeding,
+       habit=('2013-03-01', 'day'),
+       data=EVERY_SUNDAY_S_DAY_AFTER,
        expects_none=True),
 )
 

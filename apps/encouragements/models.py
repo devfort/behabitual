@@ -107,97 +107,49 @@ def better_than_before(habit):
     return "FUCK YEAH OTTERS"
 
 
-# 7.  Success if you've done your action every day in the past month.
+# 7a. Success if you've done your action every day in the past month.
 @providers.register
-def every_day_this_month(habit):
-    if habit.resolution != 'day':
-        return None
-
-    buckets = habit.buckets.filter(resolution=habit.resolution).order_by('-index')
-
-    if buckets.count() < 28:
-        return None
-
-    latest = buckets[0]
-    latest_date = habit.start + datetime.timedelta(days=latest.index)
-
-    # Only proceed to check all buckets this month if we've just entered the
-    # last bucket this month. Use != because months aren't monotonically
-    # increasing (December -> January).
-    next_date = latest_date + datetime.timedelta(days=1)
-    if latest_date.month == next_date.month:
-        return None
-
-    # Get a list of buckets from the current month
-    month_ndays = latest_date.day
-    buckets_filtered = buckets.exclude(index__lt=latest.index - (month_ndays - 1))
-
-    # If you haven't provided data for every day this month, fail
-    if buckets_filtered.count() < month_ndays:
-        return None
-
-    for bucket in buckets_filtered:
-        if bucket.value == 0:
-            return None
-
-    return "Wahey! You've frobbled your wibble every day in %s!" % calendar.month_name[latest_date.month]
+def every_day_this_month_nonzero(habit):
+    if _every_day_this_month(habit):
+        latest = habit.get_buckets(order_by='-index')[0]
+        latest_date = habit.start + datetime.timedelta(days=latest.index)
+        return "Wahey! You've done your action at least once every day in %s!" % calendar.month_name[latest_date.month]
 
 
-def _weekdays_in_month(year, month):
-    start, num_days = calendar.monthrange(year, month)
-    weekdays = defaultdict(list)
-    for i, weekday in enumerate((x + start) % 7 for x in xrange(num_days)):
-        weekdays[weekday].append(i + 1)
-    return weekdays
-
-
-# 3. Only for a daily action if you have done it every {Monday, Tuesday, ...} this month
-#    (can only be figured out after the last of those weekdays in a month)
+# 7b. Success if you've hit your target every day in the past month.
 @providers.register
-def every_xday_this_month(habit):
-    if habit.resolution != 'day':
-        return None
+def every_day_this_month_succeeding(habit):
+    if _every_day_this_month(habit, habit.target_value):
+        latest = habit.get_buckets(order_by='-index')[0]
+        latest_date = habit.start + datetime.timedelta(days=latest.index)
+        return "Wahey! You've hit your target every day in %s!" % calendar.month_name[latest_date.month]
 
-    buckets = habit.buckets.filter(resolution=habit.resolution).order_by('-index')
 
-    latest = buckets[0]
-    latest_date = habit.start + datetime.timedelta(days=latest.index)
-    month_weekdays = _weekdays_in_month(latest_date.year, latest_date.month)
-    last_weekdays = [v[-1] for k, v in month_weekdays.items()]
 
-    try:
-        # Set weekday to the integer weekday (Monday=0...Sunday=6) represented
-        # by latest_date...
-        weekday = last_weekdays.index(latest_date.day)
-    except ValueError:
-        # ...but fail if it's not one of the last weekdays of the month (e.g.
-        # if it's a Wednesday but not the last Wednesday of the month)
-        return None
+# 3a. Only for a daily action if you have done it every {Monday, Tuesday, ...}
+#     this month (can only be figured out after the last of those weekdays in
+#     a month)
+@providers.register
+def every_xday_this_month_nonzero(habit):
+    if _every_xday_this_month(habit):
+        latest = habit.get_buckets(order_by='-index')[0]
+        latest_date = habit.start + datetime.timedelta(days=latest.index)
+        return "Congratulations, you've done your task every %s this %s!" % (
+            calendar.day_name[latest_date.weekday()],
+            calendar.month_name[latest_date.month])
 
-    # Get buckets for all the days in the month which are the same weekday as
-    # latest_date.
-    month_ndays = latest_date.day
-    min_index = latest.index - (month_ndays - 1)
-    buckets_filtered = list(Bucket.objects.raw("""
-        SELECT * FROM habits_bucket
-        WHERE habit_id = %s
-        AND resolution = %s
-        AND index > %s
-        AND (index + %s) %% 7 = %s
-        AND value > 0
-    """, [habit.pk,
-          habit.resolution,
-          min_index,
-          habit.start.weekday(),
-          weekday]))
 
-    if len(buckets_filtered) < len(month_weekdays[weekday]):
-        # Haven't got a bucket for each, so automatically fail
-        return None
-
-    return "Congratulations, you've done your task every %s this %s!" % (
-        calendar.day_name[weekday],
-        calendar.month_name[latest_date.month])
+# 3b. Only for a daily action if you have hit your target every {Monday,
+#     Tuesday, ...} this month (can only be figured out after the last of
+#     those weekdays in a month)
+@providers.register
+def every_xday_this_month_succeeding(habit):
+    if _every_xday_this_month(habit, habit.target_value):
+        latest = habit.get_buckets(order_by='-index')[0]
+        latest_date = habit.start + datetime.timedelta(days=latest.index)
+        return "Congratulations, you've hit your target every %s this %s!" % (
+            calendar.day_name[latest_date.weekday()],
+            calendar.month_name[latest_date.month])
 
 # 4.  For n we consecutively you have entered a zero data point (as opposed
 #     to not having entered data)
@@ -234,3 +186,87 @@ def _best_bucket_ever(habit, resolution):
     max_val = buckets.exclude(pk=latest.pk).aggregate(Max('value'))['value__max']
 
     return latest.value > max_val
+
+
+def _weekdays_in_month(year, month):
+    start, num_days = calendar.monthrange(year, month)
+    weekdays = defaultdict(list)
+    for i, weekday in enumerate((x + start) % 7 for x in xrange(num_days)):
+        weekdays[weekday].append(i + 1)
+    return weekdays
+
+
+def _every_day_this_month(habit, target_value=1):
+    if habit.resolution != 'day':
+        return False
+
+    buckets = habit.buckets.filter(resolution=habit.resolution).order_by('-index')
+
+    if buckets.count() < 28:
+        return False
+
+    latest = buckets[0]
+    latest_date = habit.start + datetime.timedelta(days=latest.index)
+
+    # Only proceed to check all buckets this month if we've just entered the
+    # last bucket this month. Use != because months aren't monotonically
+    # increasing (December -> January).
+    next_date = latest_date + datetime.timedelta(days=1)
+    if latest_date.month == next_date.month:
+        return False
+
+    # Get a list of buckets from the current month
+    month_ndays = latest_date.day
+    buckets_filtered = buckets.exclude(index__lt=latest.index - (month_ndays - 1))
+    buckets_filtered = buckets_filtered.exclude(value__lt=target_value)
+
+    # If you haven't provided data for every day this month, fail
+    if buckets_filtered.count() < month_ndays:
+        return False
+
+    return True
+
+
+def _every_xday_this_month(habit, target_value=1):
+    if habit.resolution != 'day':
+        return False
+
+    buckets = habit.buckets.filter(resolution=habit.resolution).order_by('-index')
+
+    latest = buckets[0]
+    latest_date = habit.start + datetime.timedelta(days=latest.index)
+    month_weekdays = _weekdays_in_month(latest_date.year, latest_date.month)
+    last_weekdays = [v[-1] for k, v in month_weekdays.items()]
+
+    try:
+        # Set weekday to the integer weekday (Monday=0...Sunday=6) represented
+        # by latest_date...
+        weekday = last_weekdays.index(latest_date.day)
+    except ValueError:
+        # ...but fail if it's not one of the last weekdays of the month (e.g.
+        # if it's a Wednesday but not the last Wednesday of the month)
+        return False
+
+    # Get buckets for all the days in the month which are the same weekday as
+    # latest_date.
+    month_ndays = latest_date.day
+    min_index = latest.index - (month_ndays - 1)
+    buckets_filtered = list(Bucket.objects.raw("""
+        SELECT * FROM habits_bucket
+        WHERE habit_id = %s
+        AND resolution = %s
+        AND index > %s
+        AND (index + %s) %% 7 = %s
+        AND value >= %s
+    """, [habit.pk,
+          habit.resolution,
+          min_index,
+          habit.start.weekday(),
+          weekday,
+          target_value]))
+
+    if len(buckets_filtered) < len(month_weekdays[weekday]):
+        # Haven't got a bucket for each, so automatically fail
+        return False
+
+    return True
