@@ -3,7 +3,9 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.decorators.cache import never_cache
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from apps.habits.models import Habit
+
+from apps.habits.models import Habit, record_habit_archived
+from lib.metrics import statsd
 
 class HabitDetailView(DetailView):
     model = Habit
@@ -27,5 +29,6 @@ class HabitArchiveView(SingleObjectMixin, View):
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
         obj.archived = request.POST.get("archive") == "1"
+        record_habit_archived.send(obj)
         obj.save()
         return HttpResponseRedirect(self.get_success_url())
