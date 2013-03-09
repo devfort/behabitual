@@ -2,20 +2,26 @@ import random
 
 class Generator(object):
     """
-    A callable object that returns a random encouragment selected
-    from the not-None encouragements returned by its providers.
+    A callable object that returns a random encouragement selected from the
+    not-None encouragements returned by its providers.
     """
 
-    def __init__(self, providers = []):
-        self._providers = providers
+    def __init__(self, providers=None):
+        if providers is None:
+            self._providers = []
+        else:
+            self._providers = providers
 
     def __call__(self, habit):
-        try:
-            encouragements = [p(habit) for p in self._providers]
-            encouragements = [e for e in encouragements if e]
-            return random.choice(encouragements)
-        except IndexError:
-            pass
+        random.shuffle(self._providers)
+
+        for p in self._providers:
+            encouragement = p(habit)
+            if encouragement:
+                return encouragement
+
+        # Fell through: no encouragements
+        return None
 
 
 def static_encouragement_provider(habit):
