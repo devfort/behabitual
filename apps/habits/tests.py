@@ -18,6 +18,7 @@ throws = object()
 # Weeks start on a Monday
 # Months start on the first (surprisingly!)
 TIME_PERIOD_FIXTURES = (
+    # (Habit start date, 'Current' date, period, expected index, expected time period start date)
     ('2013-03-03', '2013-03-05', 'day',        2,      '2013-03-05'),
     ('2013-03-03', '2013-03-05', 'weekday',    1,      '2013-03-05'),
     ('2013-03-03', '2013-03-05', 'weekendday', 0,      '2013-03-03'),
@@ -169,6 +170,16 @@ STREAKS_FIXTURES = (
        streaks=[2]),
 )
 
+# create habit of a (particular date, resolution) + set[interval value pairs for
+# data that has been entered], date, expected list of intervals
+RTPT = namedtuple('RecentTimePeriodTest', 'start resolution data date expected')
+
+RECENT_TIME_PERIODS_FIXTURES = (
+    RTPT('2013-03-01', 'day', tuple(), '2013-03-05', [4,3,2,1,0]),
+    RTPT('2013-03-01', 'day', (('2013-03-03',1),), '2013-03-05', [4,3]),
+    RTPT('2013-03-01', 'day', (('2013-03-05',1),), '2013-03-05', []),
+)
+
 class HabitTests(TestCase):
 
     def setUp(self):
@@ -224,6 +235,25 @@ def test_get_time_period(self, fixture):
 
 helpers.attach_fixture_tests(HabitTests, test_get_time_period, TIME_PERIOD_FIXTURES)
 
+def test_recent_unentered_time_periods(self, fixture):
+    # start, resolution, data, date, expected = fixture
+    start_date = helpers.parse_isodate(fixture.start)
+    h = Habit.objects.create(start=start_date,
+                             user=self.user,
+                             resolution=fixture.resolution,
+                             target_value=1)
+
+    for datum in fixture.data:
+        when, value = datum
+        when_date = helpers.parse_isodate(when)
+        tp = h.get_time_period(when_date)
+        h.record(tp, value)
+
+
+    periods = h.get_unentered_time_periods(helpers.parse_isodate(fixture.date))
+    self.assertEquals(map(lambda p: p.index, periods), fixture.expected)
+
+helpers.attach_fixture_tests(HabitTests, test_recent_unentered_time_periods, RECENT_TIME_PERIODS_FIXTURES)
 
 def test_record(self, fixture):
     start_date = helpers.parse_isodate(fixture.start)

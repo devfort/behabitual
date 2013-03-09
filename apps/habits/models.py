@@ -133,6 +133,39 @@ class Habit(models.Model):
         else:
             raise RuntimeError("Unhandled resolution: %s" % resolution)
 
+    def get_recent_unentered_time_periods(self):
+        return self.get_unentered_time_periods(datetime.date.today())
+
+    def get_unentered_time_periods(self, when):
+        time_period = self.get_time_period(when)
+        try:
+            most_recent = self.get_buckets()[0]
+            min_index = most_recent.index + 1
+            if time_period.index == most_recent.index:
+                return ()
+        except IndexError:
+            min_index = 0
+
+
+        # Lol inefficient. BOOOOZE!
+        last_index = time_period.index
+        last_date = time_period.date
+        ret = [time_period]
+
+        while last_index > min_index:
+            date = last_date - datetime.timedelta(days=1)
+
+            candidate = self.get_time_period(date)
+
+            if candidate.index < last_index:
+                ret.append(candidate)
+                last_index = candidate.index
+            last_date = date
+
+        return ret
+
+
+
     def record(self, time_period, value):
         """
         Record a data point for the habit in a time period and all lower
