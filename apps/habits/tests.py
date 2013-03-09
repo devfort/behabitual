@@ -3,6 +3,8 @@ import datetime
 import functools
 
 from django.test import TestCase
+from django_webtest import TestCase as WebTestCase
+from django.core.urlresolvers import reverse
 
 from apps.accounts.models import User
 from apps.habits.models import Habit, TimePeriod
@@ -267,3 +269,38 @@ def test_get_streaks(self, fixture):
     self.assertEqual(list(h.get_streaks()), fixture.streaks)
 
 helpers.attach_fixture_tests(HabitTests, test_get_streaks, STREAKS_FIXTURES)
+
+class HabitArchiveViewTest(WebTestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email='someone@example.com', password='123456'
+        )
+        self.client.login(email='someone@example.com', password='123456')
+        self.habit = Habit.objects.create(
+            description="Brush my teeth",
+            start=datetime.date.today(),
+            user=self.user,
+            resolution='day'
+        )
+
+    def test_archive_habit(self):
+        response = self.client.post(reverse('habit_archive', args=[self.habit.id]), {
+            'archive': '1'
+        }, HTTP_REFERER=reverse('homepage'))
+        self.assertRedirects(response, reverse('homepage'))
+
+        self.habit = Habit.objects.get(pk=self.habit.pk)
+
+        self.assertEquals(True, self.habit.archived)
+
+    def test_unarchive_habit(self):
+        self.habit.archived = True
+        self.habit.save()
+        response = self.client.post(reverse('habit_archive', args=[self.habit.id]), {
+            'archive': '0'
+        })
+        self.assertRedirects(response, reverse('habit', args=[self.habit.id]))
+
+        self.habit = Habit.objects.get(pk=self.habit.pk)
+
+        self.assertEquals(False, self.habit.archived)

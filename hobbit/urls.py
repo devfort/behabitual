@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 import apps.accounts.views
 import apps.onboarding.views
 import apps.homepage.views
+import apps.habits.views
 
 from django.contrib import admin
 admin.autodiscover()
@@ -23,12 +24,14 @@ urlpatterns = patterns('',
     url(r'^_;', include('apps.autologin.urls')),
 
     url(r'^add-habit/$', apps.onboarding.views.onboarding_wizard, name='add_habit'),
+    url(r'^habit/(?P<pk>\d+)/archive$', apps.habits.views.HabitArchiveView.as_view(), name='habit_archive' ),
+    url(r'^habit/(?P<pk>\d+)/$', apps.habits.views.HabitDetailView.as_view(), name='habit' ),
 
 ) + patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', {'template_name': 'accounts/login.html'}, name='login'),
     url(r'^accounts/forgot/$', 'password_reset', name='account-forgotten'),
     url(r'^accounts/forgot/done/$', 'password_reset_done'),
-    
+
     url(r'^styletile$', TemplateView.as_view(template_name='styles/tile.html'), name='styletile'),
     url(r'^add-trigger$', TemplateView.as_view(template_name='styles/add_trigger.html'), name='add-trigger-placeholder'),
 )

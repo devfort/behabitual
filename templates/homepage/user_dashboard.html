@@ -9,7 +9,7 @@
 
 <section>
   <h1>Habits</h1>
-  
+
   <ul>
   {% for habit in habit_list %}
     {% if habit.archived %}
@@ -20,9 +20,20 @@
       <h2><q>{{ habit.description }}</q>
         {% humanize_repetition habit %}
       </h2>
-      
+
       {# TODO: Add habit descriptions to enter data/edit habit links? #}
       <a href="#TODO">Enter data</a> <a href="#TODO">Edit habit</a>
+
+      <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
+        {% csrf_token %}
+        {% if not habit.archived %}
+          <input type="hidden" name="archive" value="1">
+          <input type="submit" value="Archive">
+        {% else %}
+          <input type="hidden" name="archive" value="0">
+          <input type="submit" value="Unarchive">
+        {% endif %}
+      </form>
     </li>
   {% endfor %}
   </ul>
