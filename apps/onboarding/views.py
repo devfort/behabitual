@@ -18,6 +18,9 @@ class OnboardingWizard(NamedUrlSessionWizardView):
     """
     template_name = 'onboarding/wizard.html'
 
+    def get_template_names(self):
+        return ['onboarding/wizard_%s.html' % self.steps.current]
+
     def done(self, form_list, **kwargs):
         self.form_list = form_list
         self.save()
