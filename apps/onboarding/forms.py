@@ -15,6 +15,9 @@ HOURS = zip(range(24), range(24))
 
 
 class HabitForm(forms.Form):
+    """
+    Captures basic Habit information. The first step of the OnboardingWizard.
+    """
     description = forms.CharField(max_length=100)
     target_value = forms.IntegerField()
     resolution = forms.ChoiceField(
@@ -23,6 +26,10 @@ class HabitForm(forms.Form):
 
 
 class ReminderForm(forms.Form):
+    """
+    Captures Habit reminder information. The second step of the
+    OnboardingWizard.
+    """
     email = forms.EmailField(required=False)
     trigger = forms.CharField(max_length=50, required=False)
     days = forms.MultipleChoiceField(
@@ -34,4 +41,7 @@ class ReminderForm(forms.Form):
 
 
 class SummaryForm(forms.Form):
+    """
+    Captures user information. The final set of the OnboardingWizard.
+    """
     email = forms.EmailField()

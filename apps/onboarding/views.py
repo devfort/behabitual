@@ -10,6 +10,10 @@ User = get_user_model()
 
 
 class OnboardingWizard(SessionWizardView):
+    """
+    Wizard to add new habits. It will also create a user if the current user
+    isn't authenticated.
+    """
     template_name = 'onboarding/wizard.html'
 
     def done(self, form_list, **kwargs):
