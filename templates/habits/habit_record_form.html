@@ -3,9 +3,11 @@
 {% block body %}
   <h1>Did you {{ habit.description }}?</h1>
 
-  <form method="POST" action="">
+  <form name="data-entry" method="POST" action="">
     {% csrf_token %}
-    {{ form }}
+    {% for form in forms %}
+      {{ form }}
+    {% endfor %}
     <input type="submit" value="Done">
   </form>
 {% endblock %}
