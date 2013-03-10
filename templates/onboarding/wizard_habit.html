@@ -2,12 +2,28 @@
 
 {% block title %}Add a habit{% endblock %}
 {% block body %}
-  <h1>Add a drinking problem</h1>
+  <div class="copy">
+    <h1>What habit are you trying to form?</h1>
 
-  <form method="POST" action="">
-    {% csrf_token %}
-    {{ wizard.management_form }}
-    {{ form.as_p }}
-    <button type="submit">Go</button>
-  </form>
+    <form method="POST" action="">
+      {% csrf_token %}
+      {{ wizard.management_form }}
+      <p>
+        <label for="habit-description">I want to
+          <input name="habit-description"
+                 id="habit-description"
+                 size="15"
+                 placeholder="brush my teeth"></label>,
+        <label for="habit-target_value">
+          <input name="habit-target_value"
+                 id="habit-target_value"
+                 size="15"
+                 placeholder="2"> times
+        </label>
+        <label for="id_habit-resolution">per {{ form.resolution }}</label>
+      </p>
+    
+      <button type="submit" class="progress">Next</button>
+    </form>
+  </div>
 {% endblock %}
