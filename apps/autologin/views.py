@@ -28,8 +28,8 @@ from django.utils import six
 from django.views.decorators.cache import never_cache
 
 
-class AutoLoginTokenGenerator(PasswordResetTokenGenerator):
-    key_salt = "apps.autologin.AutoLoginTokenGenerator"
+class FlexibleTokenGenerator(PasswordResetTokenGenerator):
+    key_salt = None
 
     def _make_token_with_timestamp(self, user, timestamp):
         # timestamp is number of days since 2001-1-1.  Converted to
@@ -48,6 +48,11 @@ class AutoLoginTokenGenerator(PasswordResetTokenGenerator):
                 six.text_type(login_timestamp) + six.text_type(timestamp))
         hash = salted_hmac(self.key_salt, value).hexdigest()[::2]
         return "%s-%s" % (ts_b36, hash)
+
+
+class AutoLoginTokenGenerator(FlexibleTokenGenerator):
+    key_salt = "apps.autologin.AutoLoginTokenGenerator"
+
 
 default_token_generator = AutoLoginTokenGenerator()
 
