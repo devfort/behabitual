@@ -30,10 +30,12 @@
     {% endif %}
   </form>
   <div class="form-continue">
+    {% if not user.is_authenticated %}
     <p>
       Save your account by entering your email address&mdash;you’ll
       get emails to help you track your progress.
     </p>
+    {% endif %}
     {% if form.email.errors %}
     <p class="alert"><strong>
       We need a valid email address to track your progress
@@ -42,11 +44,13 @@
     <form method="POST" action="" id="summary-form">
       {% csrf_token %}
       {{ wizard.management_form }}
+      {% if not user.is_authenticated %}
       <p><label for="id_summary-email">
         My email is
         <input type="text" name="summary-email" id="id_summary-email">
         <b>({{ form.email.errors.as_text }})</b>
       </label></p>
+      {% endif %}
       <button type="submit" class="progress">Finish!</button>
     </form>
   </div>
