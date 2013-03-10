@@ -1,6 +1,8 @@
 @import "variables.scss";
+@import "mixins.scss";
 @import "extend/contain.scss";
 @import "extend/offleft.scss";
+@import "extend/responsiveimg.scss";
 
 @import "normalise.scss";
 @import "base.scss";
@@ -13,3 +15,5 @@
 @import "page/dashboard.scss";
 @import "page/add-habit-start.scss";
 @import "page/trigger.scss";
+
+@import "page/homepage.scss";

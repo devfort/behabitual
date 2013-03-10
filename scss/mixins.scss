@@ -1,0 +1,5 @@
+/* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
+@mixin box-sizing($style){
+    -moz-box-sizing:$style;
+    box-sizing:$style;
+}
