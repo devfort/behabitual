@@ -21,10 +21,10 @@ class HabitDetailView(DetailView):
 class HabitEditView(UpdateView):
     model = Habit
     form_class = HabitForm
-    success_url = '/'
-    #success_url = reverse('homepage')
     template_name_suffix = '_edit_form'
 
+    def get_success_url(self):
+        return reverse('homepage')
 
 class HabitArchiveView(SingleObjectMixin, View):
     model = Habit
