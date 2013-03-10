@@ -89,3 +89,27 @@ class OnboardingViewTest(WebTest):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
         self.assertTrue('new habit' in email.subject.lower())
+
+    def test_data_is_preserved_between_steps(self):
+        response = self.app.get(reverse('add_habit'))
+        response = response.follow()
+
+        form = response.forms['add-habit-form']
+        form.set('habit-description', 'stop being an idiot')
+        form.set('habit-target_value', '700')
+
+        response = form.submit()
+        response = response.follow()
+
+        form = response.forms['reminder-form']
+        form.set('reminder-trigger', 'being an idiot')
+        form.set('reminder-days', True, index=0)
+        form.set('reminder-email', 'whomever@example.com')
+
+        response = form.submit()
+        response = response.follow()
+
+        form = response.forms['summary-form']
+        email = form.fields['summary-email'][0].value
+
+        self.assertEqual('whomever@example.com', email)
