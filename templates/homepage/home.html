@@ -1,8 +1,30 @@
 {% extends "base.html" %}
 
 {% block title %}Home{% endblock %}
+{% block body-class %}home{% endblock %}
+
 {% block body %}
 {# TODO: Logged out homepage #}
-  <h1>HOME BOOM</h1>
+  <h1>Forget goals. <em>Form habits.</em></h1>
+  <p>Visualise your progress and create smart reminders.</p>
+  
+  <section>
+    <h2>What habit are you trying to form?</h2>
+    <form action="{% url 'add_habit' %}" method="get">
+      {% csrf_token %}
+      <p>
+        <label for="habit-description">
+          I want to <input type="text" name="habit-description">
+        </label>,
+        <label for="habit-target_value">
+          <input type="text" name="habit-target_value"> times
+        </label>
+        <label for="habit-resolution">
+          per {{ form }}
+        </label>
+      </p>
+      <button type="submit">Get started!</button>
+    </form>
+  </section>
   <p><a href="{% url 'add_habit' %}">Add a habit</a></p>
 {% endblock %}
