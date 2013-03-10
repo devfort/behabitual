@@ -181,6 +181,7 @@ class HabitRecordViewTest(WebTest):
             form.set('0-value', 1000)
 
         # Index=1 says submit the second (0-based). 0: hidden, 1: checkbox
+        form.set('1-value', 0, index=1)
         form.set('2-value', 1, index=1)
         resp = form.submit()
         self.assertEqual(302, resp.status_code)
