@@ -45,9 +45,18 @@ TIME_PERIOD_FIXTURES = (
     ('2013-03-04', '2013-04-01', 'month',      1,      '2013-04-01'),
     ('2013-03-07', '2013-03-10', 'weekday',    1,      '2013-03-08'),
     ('2013-03-07', '2013-03-09', 'weekday',    1,      '2013-03-08'),
+    ('2013-03-07', '2013-03-13', 'weekday',    4,      '2013-03-13'),
+    ('2013-03-07', '2013-03-20', 'weekday',    9,      '2013-03-20'),
+    ('2013-03-07', '2013-03-27', 'weekday',   14,      '2013-03-27'),
+    ('2013-03-07', '2013-03-23', 'weekday',   11,      '2013-03-22'),
     ('2013-03-07', '2013-03-09', 'weekendday', 0,      '2013-03-09'),
     ('2013-03-09', '2013-03-10', 'weekday',    throws, None),
     ('2013-03-09', '2013-03-10', 'weekendday', 1,      '2013-03-10'),
+    ('2013-03-10', '2013-03-10', 'weekendday', 0,      '2013-03-10'),
+    ('2013-03-10', '2013-03-16', 'weekendday', 1,      '2013-03-16'),
+    ('2013-03-10', '2013-03-17', 'weekendday', 2,      '2013-03-17'),
+    ('2013-03-10', '2013-03-23', 'weekendday', 3,      '2013-03-23'),
+    ('2013-03-10', '2013-03-26', 'weekendday', 4,      '2013-03-24'),
 )
 
 RF = namedtuple('RecordFixture', 'start resolution data checks')
@@ -175,7 +184,7 @@ STREAKS_FIXTURES = (
 RTPT = namedtuple('RecentTimePeriodTest', 'start resolution data date expected')
 
 RECENT_TIME_PERIODS_FIXTURES = (
-    RTPT('2013-03-01', 'day', tuple(), '2013-03-05', [4,3,2,1,0]),
+    RTPT('2013-03-01', 'day', (), '2013-03-05', [4,3,2,1,0]),
     RTPT('2013-03-01', 'day', (('2013-03-03',1),), '2013-03-05', [4,3]),
     RTPT('2013-03-01', 'day', (('2013-03-05',1),), '2013-03-05', []),
 )
@@ -223,27 +232,37 @@ class HabitTests(TestCase):
         h.record(h.get_time_period(h.start), 17)
         self.assertEquals(True, h.is_up_to_date())
 
+class TimePeriodTests(TestCase):
+    pass
 
-def test_get_time_period(self, fixture):
+def test_time_period_from_date(self, fixture):
     start, when, resolution, result, date = fixture
 
     start_date = helpers.parse_isodate(start)
     when_date  = helpers.parse_isodate(when)
 
-    h = Habit(description="Brush my teeth",
-              start=start_date,
-              user=self.user,
-              resolution=resolution)
-
     if result is throws:
         with self.assertRaises(ValueError):
-            h.get_time_period(when_date)
+            TimePeriod.from_date(start_date, resolution, when_date)
     else:
         tp_date = helpers.parse_isodate(date)
-        t = TimePeriod(resolution, result, tp_date)
-        self.assertEqual(t, h.get_time_period(when_date))
+        exp = TimePeriod(resolution, result, tp_date)
+        self.assertEqual(TimePeriod.from_date(start_date, resolution, when_date), exp)
 
-helpers.attach_fixture_tests(HabitTests, test_get_time_period, TIME_PERIOD_FIXTURES)
+helpers.attach_fixture_tests(TimePeriodTests, test_time_period_from_date, TIME_PERIOD_FIXTURES)
+
+def test_time_period_from_index(self, fixture):
+    start, when, resolution, result, date = fixture
+
+    start_date = helpers.parse_isodate(start)
+    when_date  = helpers.parse_isodate(when)
+
+    if result is not throws:
+        tp_date = helpers.parse_isodate(date)
+        exp = TimePeriod(resolution, result, tp_date)
+        self.assertEqual(TimePeriod.from_index(start_date, resolution, result), exp)
+
+helpers.attach_fixture_tests(TimePeriodTests, test_time_period_from_index, TIME_PERIOD_FIXTURES)
 
 def test_recent_unentered_time_periods(self, fixture):
     # start, resolution, data, date, expected = fixture
