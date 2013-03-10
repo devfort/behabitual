@@ -17,7 +17,7 @@ class UserManager(user_models.BaseUserManager):
         now = timezone.now()
         email = UserManager.normalize_email(email)
         user = self.model(email=email,
-                          is_staff=False, is_active=True, is_superuser=False,
+                          is_staff=False, is_active=False, is_superuser=False,
                           last_login=now, date_joined=now, **extra_fields)
 
         user.set_password(password)
