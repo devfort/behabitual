@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}SOMETHING SOMETHING HABIT{% endblock %}
 {% block body %}
-  <h1>Did you {{ habit.description }}?</h1>
+  <h1>Did you do your habit: “{{ habit.description }}”?</h1>
 
   <form id="data-entry" method="POST" action="">
     {% csrf_token %}
