@@ -49,6 +49,8 @@ Canvas.prototype.getCenter = function() {
 };
 
 Canvas.prototype.play = function(params) {
+  if (this._timer) return;
+
   var logo = this._raph.image(Canvas.LOGO_PATH,
                 this._center.x - Canvas.LOGO_WIDTH/2,
                 this._center.y - Canvas.LOGO_HEIGHT/2,
@@ -56,8 +58,6 @@ Canvas.prototype.play = function(params) {
 
   logo.attr('opacity', 0);
   logo.animate({opacity: 1}, params.easing.duration * 1000);
-
-  if (this._timer) return;
 
   this._params = params;
   var time = 0, self = this;
