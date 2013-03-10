@@ -7,7 +7,9 @@ from apps.accounts.models import User
 
 class PasswordChangeTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(email='someone@example.com', password='12345')
+        self.user = User.objects.create_user(email='someone@example.com',
+                                             password='12345',
+                                             is_active=True)
         self.client.login(email=self.user.email, password='12345')
 
     def test_successful_password_change(self):
