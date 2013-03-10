@@ -15,18 +15,13 @@
   
  <section class="quickstart">
     <h2 class="minor-heading">What habit are you trying to form?</h2>
-    <form action="{% url 'add_habit' %}" method="get">
+    <form action="{% url 'add_habit' %}" method="POST">
       {% csrf_token %}
+      <input type="hidden" name="onboarding_wizard-current_step" value="habit">
       <p>
-        <label for="habit-description">
-          I want to <input type="text" name="habit-description" id="habit-description">
-        </label>,
-        <label for="habit-target_value">
-          <input type="text" name="habit-target_value" id="habit-target_value"> times
-        </label>
-        <label for="habit-resolution">
-          per {{ form }}
-        </label>
+        <label for="id_habit-description">I want to {{ form.description }}</label>,
+        <span><label for="id_habit-target_value">{{ form.target_value }} times</label>
+        <label for="id_habit-resolution">per {{ form.resolution }}</label></span>
       </p>
       <button type="submit" class="progress">Get started!</button>
     </form>

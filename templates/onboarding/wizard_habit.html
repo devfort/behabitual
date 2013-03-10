@@ -11,8 +11,8 @@
       {% csrf_token %}
       {{ wizard.management_form }}
       <p>
-        <label for="habit-description">I want to {{ form.description }}</label>,
-        <label for="habit-target_value">{{ form.target_value }} times</label>
+        <label for="id_habit-description">I want to {{ form.description }}</label>,
+        <label for="id_habit-target_value">{{ form.target_value }} times</label>
         <label for="id_habit-resolution">per {{ form.resolution }}</label>
       </p>
       <div class="form-continue">

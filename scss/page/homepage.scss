@@ -58,7 +58,6 @@
 .quickstart{
 	border:					2px solid $darker_body_colour;
 	border-width:			2px 0;
-	margin-bottom:			20px;
 	padding:				20px 0 25px 0;
 }
 
@@ -66,8 +65,9 @@
 	border-radius:			$border_radius;
 	padding:				15px;
 	background-color:		$darker_body_colour;
-	font-weight:			bold;
 	text-align:				center;
+	width:                  70%;
+    margin:                 0 auto 20px;
 }
 
 .quickstart p{
@@ -133,4 +133,14 @@
 	
 }
 
-
+.home #id_habit-description {
+    width:                  8em;
+}
+.home #id_habit-target_value {
+    padding-left:           0.2em;
+    width:                  1.3em;
+}
+.home .quickstart span {
+    display:                block;
+    margin:                 10px 0 20px;
+}
