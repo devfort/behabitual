@@ -18,9 +18,5 @@ class UserDashboard(ListView):
     def get_queryset(self):
         return self.request.user.habits.all()
 
-    def get_context_data(self, **kwargs):
-        context = super(UserDashboard, self).get_context_data(**kwargs)
-        context.update({
-            'in_dashboard': True,
-        })
-        return context
+    def is_dashboard(self):
+        return True

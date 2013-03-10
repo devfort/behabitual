@@ -25,7 +25,7 @@
     </div>
   </header>
   <div id="main">
-    {% if user.is_authenticated and not in_dashboard %}
+    {% if user.is_authenticated and not view.is_dashboard %}
       <div id='breadcrumb'>
         <a href='{% url "homepage" %}'>Dashboard</a>
       </div>
