@@ -90,6 +90,35 @@ def best_month_ever(habit):
     if _best_bucket_ever(habit, 'month'):
         return "BEST. MONTH. EVERRR!"
 
+
+# 4.  For n we consecutively you have entered a zero data point (as opposed
+#     to not having entered data)
+@providers.register
+def streak_of_doom(habit):
+    # day - streak of doom where n = 5
+    # week - streak of doom where n = 2
+    # months n/a
+    if habit.resolution in ['day', 'weekday', 'weekendday']:
+        doom_threshold = 5
+    elif habit.resolution == 'week':
+        doom_threshold = 2
+    else:
+        return None
+
+    buckets = habit.get_buckets(order_by='-index')
+    if buckets.count() < doom_threshold:
+        return None
+
+    latest = buckets[0]
+    buckets = buckets.exclude(index__lt=(latest.index - (doom_threshold - 1)))
+    buckets = buckets.filter(value=0)
+
+    if buckets.count() < doom_threshold:
+        return None
+    else:
+        return "Hooray DOOOM, happy hippy DOOOOOOM"
+
+
 # 5.  The value of the previous consecutive time period is less than the value of this
 #     time period
 @providers.register
@@ -151,8 +180,6 @@ def every_xday_this_month_succeeding(habit):
             calendar.day_name[latest_date.weekday()],
             calendar.month_name[latest_date.month])
 
-# 4.  For n we consecutively you have entered a zero data point (as opposed
-#     to not having entered data)
 # 6.  "Don't call it a comeback" - n time periods of success, followed by
 #     m time periods of failure, followed by k time periods of success
 #     (we believe that n and m will be something and something like the

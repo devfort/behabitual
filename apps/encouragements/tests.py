@@ -9,7 +9,9 @@ from apps.encouragements.models import (ProviderRegistry,
                                         best_day_ever, best_week_ever, best_month_ever,
                                         better_than_before,
                                         every_day_this_month_nonzero, every_day_this_month_succeeding,
-                                        every_xday_this_month_nonzero, every_xday_this_month_succeeding)
+                                        every_xday_this_month_nonzero, every_xday_this_month_succeeding,
+                                        streak_of_doom)
+
 from apps.habits.models import Bucket, Habit
 
 from lib import test_helpers as helpers
@@ -483,4 +485,46 @@ EVERY_DAY_FIXTURES = (
 
 def test_every_day(self, fixture):
     _test_provider(self, fixture)
+
 helpers.attach_fixture_tests(TestProviders, test_every_day, EVERY_DAY_FIXTURES)
+
+DOOM_FIXTURES = (
+    PF(func=streak_of_doom,
+       habit=('2013-03-01', 'day'),
+       data=(),
+       expects_none=True),
+    PF(func=streak_of_doom,
+       habit=('2013-03-01', 'day'),
+       data=(
+        ('2013-03-08', 0),
+        ('2013-03-09', 0),
+        ('2013-03-10', 0),
+        ('2013-03-11', 0),
+        ('2013-03-12', 0),),
+       expects_none=False),
+    PF(func=streak_of_doom,
+       habit=('2013-03-01', 'day'),
+       data=(
+        ('2013-03-08', 0),
+        ('2013-03-09', 0),
+        ('2013-03-10', 1),
+        ('2013-03-11', 0),
+        ('2013-03-12', 0),),
+       expects_none=True),
+    PF(func=streak_of_doom,
+       habit=('2013-03-01', 'day'),
+       data=(
+        ('2013-03-08', 0),
+        ('2013-03-09', 0),
+        ('2013-03-12', 0),
+        ('2013-03-13', 0),
+        ('2013-03-14', 0),
+        ),
+       expects_none=True),
+)
+
+def test_streak_of_doom(self, fixture):
+    _test_provider(self, fixture)
+
+helpers.attach_fixture_tests(TestProviders, test_streak_of_doom, DOOM_FIXTURES)
+
