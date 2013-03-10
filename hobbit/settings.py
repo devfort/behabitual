@@ -14,7 +14,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-if env.get('EMAIL_DEBUG', '1') == '1':
+if env.get('EMAIL_DEBUG', 'false') == 'true':
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
     EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
@@ -22,7 +22,7 @@ else:
     EMAIL_PORT          = env.get('EMAIL_PORT', '25')
     EMAIL_HOST_USER     = env.get('EMAIL_USER', 'vagrant')
     EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD', 'vagrant')
-    EMAIL_USE_TLS       = env.get('EMAIL_USE_TLS', '1') == '1'
+    EMAIL_USE_TLS       = env.get('EMAIL_USE_TLS', 'true') == 'true'
     DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'hobbit@dev.fort')
 
 
