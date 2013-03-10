@@ -1,10 +1,10 @@
 from django.contrib.auth.signals import user_logged_out, user_logged_in
 from django.dispatch import receiver
 
-from apps.accounts.views import user_changed_password
-from apps.habits.models import (habit_archived,
-                                habit_created,
-                                habit_data_recorded)
+from apps.accounts.signals import user_changed_password
+from apps.habits.signals import (habit_archived,
+                                 habit_created,
+                                 habit_data_recorded)
 from lib.metrics import statsd
 
 

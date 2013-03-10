@@ -3,7 +3,6 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
 import django.contrib.auth.views
 from django.core.urlresolvers import reverse
-import django.dispatch
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.utils.http import base36_to_int
@@ -13,7 +12,7 @@ from django.views.generic import TemplateView
 
 from util.render_to_email import render_to_email
 
-user_changed_password = django.dispatch.Signal()
+from .signals import user_changed_password
 
 class LogoutView(TemplateView):
     """

@@ -5,13 +5,10 @@ import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
-import django.dispatch
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.humanize.templatetags.humanize import ordinal
 
-habit_data_recorded = django.dispatch.Signal()
-habit_archived = django.dispatch.Signal()
-habit_created = django.dispatch.Signal()
+from .signals import habit_archived, habit_created, habit_data_recorded
 
 RESOLUTION_NAMES = (
     _('day'),
