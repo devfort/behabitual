@@ -216,6 +216,11 @@ class Habit(models.Model):
     target_value = models.PositiveIntegerField(default=1)
     description = models.TextField()
     archived = models.BooleanField(default=False)
+
+    reminder = models.TextField(
+        null=True,
+        blank=True,
+    )
     reminder_days = models.IntegerField(
         validators=[_validate_non_negative],
         default=0,
