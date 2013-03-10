@@ -7,13 +7,20 @@
 {% block body-sheath %}
   <header>
     <div>
-      <h1><img src="/static/images/logo@2x.png" alt="Habitually" height="51" width="144"></h1>
+      <h1>
+        <a href="{% url 'homepage' %}">
+          <img src="/static/images/logo@2x.png"
+               alt="Habitually"
+               height="51" width="144">
+        </a>
+      </h1>
       {% if user.is_authenticated %}
-      <form action="{% url 'logout' %}" method="POST">
+      <form action="{% url 'logout' %}" method="POST" class="login-out">
+        {% csrf_token %}
         <button type="submit">Sign out</button>
       </form>
       {% else %}
-      <a href="{% url 'login' %}">Sign in</a>
+      <a href="{% url 'login' %}" class="login-out">Sign in</a>
       {% endif %}
     </div>
   </header>
