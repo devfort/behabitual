@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
 from apps.habits.models import Habit
-from apps.habits.reminders import send_email
+from apps.habits.reminders import send_reminder_email
 
 class Command(BaseCommand):
 
@@ -19,5 +19,5 @@ class Command(BaseCommand):
             if habit.reminder_last_sent is None or habit.reminder_last_sent < now:
                 habit.reminder_last_sent = now
                 habit.save()
-                send_email(habit)
+                send_reminder_email(habit)
 

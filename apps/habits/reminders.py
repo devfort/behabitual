@@ -1,6 +1,6 @@
 from util.render_to_email import render_to_email
 
-def send_email(habit):
+def send_reminder_email(habit):
     render_to_email(
         text_template='habits/emails/reminder.txt',
         html_template='habits/emails/reminder.html',
