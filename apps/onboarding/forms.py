@@ -48,6 +48,7 @@ class EmailUniqueness(object):
         user_count = User.objects.filter(email=email).count()
         if user_count > 0:
             raise forms.ValidationError("Email is already taken")
+        return email
 
 
 class NewUserReminderForm(ExistingUserReminderForm, EmailUniqueness):
@@ -58,7 +59,6 @@ class NewUserReminderForm(ExistingUserReminderForm, EmailUniqueness):
         trigger = cleaned_data.get('trigger')
         days = cleaned_data.get('days')
         email = cleaned_data.get('email')
-
         if (trigger or days) and not email:
             raise forms.ValidationError("Email is required for reminder")
         return cleaned_data
@@ -69,6 +69,7 @@ class NewUserSummaryForm(forms.Form, EmailUniqueness):
     Captures user information. The final step of the OnboardingWizard.
     """
     email = forms.EmailField()
+
 
 class ExistingUserSummaryForm(forms.Form):
     """
