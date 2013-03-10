@@ -239,33 +239,17 @@ class Habit(models.Model):
 
     def get_unentered_time_periods(self, when):
         time_period = self.get_time_period(when)
-        try:
-            most_recent = self.get_buckets()[0]
-            min_index = most_recent.index + 1
-            if time_period.index == most_recent.index:
-                return ()
-        except IndexError:
+        buckets = self.get_buckets(order_by='-index')
+        if buckets.count() == 0:
             min_index = 0
+        else:
+            min_index = buckets[0].index + 1
 
-
-        # Lol inefficient. BOOOOZE!
-        last_index = time_period.index
-        last_date = time_period.date
-        ret = [time_period]
-
-        while last_index > min_index:
-            date = last_date - datetime.timedelta(days=1)
-
-            candidate = self.get_time_period(date)
-
-            if candidate.index < last_index:
-                ret.append(candidate)
-                last_index = candidate.index
-            last_date = date
+        ret = []
+        for idx in reversed(range(min_index, time_period.index + 1)):
+            ret.append(TimePeriod.from_index(self.start, self.resolution, idx))
 
         return ret
-
-
 
     def record(self, time_period, value):
         """
