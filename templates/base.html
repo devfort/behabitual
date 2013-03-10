@@ -42,4 +42,9 @@
 
 {% block javascript-libraries %}
   <script src='/static/js/jquery-1.9.1.min.js'></script>
+  <script>
+    window_height = $(window).height();
+    header_height = $('header').height();
+    $('#main').css('min-height', window_height - (header_height*5));
+  </script>
 {% endblock %}
