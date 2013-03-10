@@ -10,6 +10,7 @@
       {{ field.label_tag }}
       {{ field }}
     {% endfor %}
+    <a href="{% url 'account_forgotten' %}">Forgotten password?</a>
     <button type="submit">Log in</button>
   </form>
 {% endblock %}
