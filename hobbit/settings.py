@@ -1,4 +1,5 @@
 # Django settings for hobbit project.
+from os import environ as env
 import os.path
 import sys
 
@@ -12,7 +13,18 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+if env.get('EMAIL_DEBUG', '1') == '1':
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST          = env.get('EMAIL_HOST', 'localhost')
+    EMAIL_PORT          = env.get('EMAIL_PORT', '25')
+    EMAIL_HOST_USER     = env.get('EMAIL_USER', 'vagrant')
+    EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD', 'vagrant')
+    EMAIL_USE_TLS       = env.get('EMAIL_USE_TLS', '1') == '1'
+    DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'hobbit@dev.fort')
+
 
 DATABASES = {
     'default': {
