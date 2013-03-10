@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.contrib.auth import get_user_model, login
+from django.contrib.auth.models import update_last_login
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
 from django.contrib.sites.models import get_current_site
 from django.db import connection
