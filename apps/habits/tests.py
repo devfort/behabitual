@@ -359,7 +359,7 @@ helpers.attach_fixture_tests(HabitTests, test_get_streaks, STREAKS_FIXTURES)
 class HabitArchiveViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email='someone@example.com', password='123456'
+            email='someone@example.com', password='123456', is_active=True
         )
         self.client.login(email='someone@example.com', password='123456')
         self.habit = Habit.objects.create(

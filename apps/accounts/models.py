@@ -16,9 +16,17 @@ class UserManager(user_models.BaseUserManager):
         """
         now = timezone.now()
         email = UserManager.normalize_email(email)
-        user = self.model(email=email,
-                          is_staff=False, is_active=False, is_superuser=False,
-                          last_login=now, date_joined=now, **extra_fields)
+        fields = {
+            'is_staff': False,
+            'is_active': False,
+            'is_superuser': False,
+            'email': email,
+            'last_login': now,
+            'date_joined': now,
+        }
+        # Allow kwargs to over-write default value for is_active etc. Useful in tests
+        fields.update(extra_fields)
+        user = self.model(**fields)
 
         user.set_password(password)
         user.save(using=self._db)
