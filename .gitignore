@@ -5,3 +5,4 @@ assets/hobbit.css
 *.swp
 htmlcov
 .coverage
+.DS_Store
