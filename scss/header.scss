@@ -34,3 +34,14 @@ header button:focus {
     cursor:                 pointer;
     text-decoration:        underline;
 }
+
+#breadcrumb {
+    @extend                 .contain;
+    margin-bottom:          36px;
+}
+#breadcrumb a {
+    background:             $darker_body_colour;
+    color:                  $links_colour;
+    padding:                12px 24px;
+    border-radius:          3px;
+}

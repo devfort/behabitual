@@ -25,6 +25,12 @@
     </div>
   </header>
   <div id="main">
+    {% if user.is_authenticated and not in_dashboard %}
+      <div id='breadcrumb'>
+        <a href='{% url "homepage" %}'>Dashboard</a>
+      </div>
+    {% endif %}
+    
     {% block body %}{% endblock %}
   </div>
 {% endblock %}
