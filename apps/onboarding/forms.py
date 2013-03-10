@@ -67,14 +67,16 @@ class EmailUniqueness(object):
 class NewUserReminderForm(ExistingUserReminderForm, EmailUniqueness):
     email = forms.EmailField(required=False)
 
-    def clean(self):
-        cleaned_data = super(ExistingUserReminderForm, self).clean()
-        trigger = cleaned_data.get('trigger')
-        days = cleaned_data.get('days')
-        email = cleaned_data.get('email')
+    def clean_email(self):
+        trigger = self.cleaned_data.get('trigger')
+        days = self.cleaned_data.get('days')
+        email = self.cleaned_data.get('email')
         if (trigger or days) and not email:
             raise forms.ValidationError("Email is required for reminder")
-        return cleaned_data
+        user_count = User.objects.filter(email=email).count()
+        if user_count > 0:
+            raise forms.ValidationError("Email is already taken")
+        return self.cleaned_data.get('email')
 
 
 class NewUserSummaryForm(forms.Form, EmailUniqueness):

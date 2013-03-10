@@ -132,7 +132,8 @@ button.meh.jeffd {
 .secondary-action {
     color:                  $secondary_action_colour;
 }
-.error {
+.error,
+.errorlist {
     color:                  $error_colour;
 }
 select {
