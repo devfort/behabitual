@@ -13,35 +13,37 @@
   <h1>Habits</h1>
 
   <ul>
-  {% for habit in habit_list %}
-    {% if habit.archived %}
-    <li class="archived">
-    {% else %}
-    <li>
-    {% endif %}
-      <h2><q>{{ habit.description }}</q>
+    {% for habit in habit_list %}
+    <li {% if habit.archived %}class='archived'{% endif %}>
+      <h2>
+        <q>{{ habit.description }}</q>
         {% humanize_repetition habit %}
       </h2>
-
+      
       <div class="actions">
         {% if not habit.archived %}
-        {% if not habit.is_up_to_date %}
-        <a href="{% url "habit_record" pk=habit.id %}"><img src="/static/images/log-action@2x.png" alt="Enter data for {{ habit.description }}" width="44" height="44"></a>
+          {% if not habit.is_up_to_date %}
+            <a href='{% url "habit_record" pk=habit.id %}'>
+              <img src='/static/images/log-action@2x.png'
+                   alt='Enter data for {{ habit.description }}'
+                   width='44' height='44'></a>
+          {% else %}
+            <img src='/static/images/logged-action@2x.png'
+                 alt='Data entered for {{ habit.description }}'
+                 width='44' height='44'>
+          {% endif %}
+          {# TODO: Add habit descriptions to edit habit links? #}
+          <a href="#TODO"><img src="/static/images/edit@2x.png" alt="Edit {{ habit.description }}" width="44" height="44"></a>
         {% else %}
-        GREY ME OUT YO
+          <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="archive" value="0">
+            <button type="submit" class="progress">Revive</button>
+          </form>
         {% endif %}
-        {# TODO: Add habit descriptions to edit habit links? #}
-        <a href="#TODO"><img src="/static/images/edit@2x.png" alt="Edit {{ habit.description }}" width="44" height="44"></a>
-        {% else %}
-        <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
-          {% csrf_token %}
-          <input type="hidden" name="archive" value="0">
-          <button type="submit" class="progress">Revive</button>
-        </form>
-      {% endif %}
       </div>
     </li>
-  {% endfor %}
+    {% endfor %}
   </ul>
   <div class="add-habit">
     <a href="{% url 'add_habit' %}">Add new habit</a>
