@@ -17,6 +17,7 @@ header h1 {
 }
 header .login-out {
     bottom:                 -5px;
+    color:                  $links_active_colour;
     float:                  right;
     position:               absolute;
     right:                  0;
@@ -30,7 +31,6 @@ header button {
 }
 header button:hover,
 header button:focus {
-    color:                  $links_active_colour;
     cursor:                 pointer;
     text-decoration:        underline;
 }
