@@ -10,9 +10,9 @@ from apps.habits.models import Habit
 class HomepageTest(TestCase):
     def setUp(self):
         self.user_password = '12345'
-        self.user = User.objects.create_user(
-            email='someone@example.com', password=self.user_password
-        )
+        self.user = User.objects.create_user(email='someone@example.com',
+                                             password=self.user_password,
+                                             is_active=True)
 
     # TODO: Logged out homepage
     def test_logged_out_homepage(self):
@@ -38,4 +38,4 @@ class HomepageTest(TestCase):
             resolution='day'
         )
         response = self.client.get(reverse('homepage'))
-        self.assertContains(response, habit.description, 1)
+        self.assertContains(response, habit.description)
