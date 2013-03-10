@@ -1,0 +1,35 @@
+.add-habit-summary blockquote {
+    background:             $darkest_body_colour;
+    border-radius:          5px;
+    margin:                 15px 0 0;
+    padding:                15px 100px 20px;
+    text-align:             center;
+}
+.add-habit-summary blockquote em {
+    font-size:              32px;
+    font-weight:            bold;
+}
+.add-habit-summary .edit {
+    margin:                 -5px 0 15px;
+}
+.add-habit-summary .edit button {
+    background:             none;
+    border:                 none;
+    color:                  $links_colour;
+    cursor:                 pointer;
+    font:                   inherit;
+    font-size:              13px;
+    padding:                0;
+}
+.add-habit-summary .edit button:hover,
+.add-habit-summary .edit button:focus,
+.add-habit-summary .edit button:active {
+    text-decoration:        underline;
+    color:                  $links_active_colour;
+}
+
+.add-habit-summary .form-continue {
+    border-top:             1px solid $darker_body_colour;
+    padding-top:            30px;
+    text-align:             center;
+}

@@ -6,16 +6,21 @@ register = template.Library()
 
 @register.simple_tag
 def humanize_repetition(habit):
-    resolution_name = force_text(habit.get_resolution_name())
-    if 1 == habit.target_value:
-      return "once a %s" % resolution_name
-    elif 2 == habit.target_value:
-      return "twice a %s" % resolution_name
-    elif 3 == habit.target_value:
-      return "%s times a <!-- lady, and I love you --> %s" % (
-        apnumber(habit.target_value), resolution_name
+    if hasattr(habit, 'get_resolution_name'):
+        resolution_name = force_text(habit.get_resolution_name())
+        target_value = habit.target_value
+    else:
+        resolution_name = habit['resolution']
+        target_value = habit['target_value']
+    if 1 == target_value:
+      return "<em>once</em> a <em>%s</em>" % resolution_name
+    elif 2 == target_value:
+      return "<em>twice</em> a <em>%s</em>" % resolution_name
+    elif 3 == target_value:
+      return "<em>%s</em> times a <!-- lady, and I love you --> <em>%s</em>" % (
+        apnumber(target_value), resolution_name
     )
     else:
       return "%s times a %s" % (
-        apnumber(habit.target_value), resolution_name
+        apnumber(target_value), resolution_name
     )

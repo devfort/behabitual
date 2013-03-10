@@ -44,6 +44,12 @@ class OnboardingWizard(NamedUrlSessionWizardView):
         else:
             return super(OnboardingWizard, self).get_form_initial(step)
 
+    def get_context_data(self, *args, **kwargs):
+        data = super(OnboardingWizard, self).get_context_data(*args, **kwargs)
+        data['habit'] = self.get_cleaned_data_for_step('habit')
+        data['reminder'] = self.get_cleaned_data_for_step('reminder')
+        return data
+
     def save(self):
         """
         Saves the habit.

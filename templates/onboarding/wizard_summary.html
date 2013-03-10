@@ -1,13 +1,39 @@
 {% extends "base.html" %}
+{% load humanize_repetition %}
 
+{% block body-class %}add-habit-summary{% endblock %}
 {% block title %}Add a habit{% endblock %}
 {% block body %}
-  <h1>Add a habit</h1>
+  <h1>So, here&rsquo;s the habit you want to establish:</h1>
 
-  <form id="summary-form" method="POST" action="">
+  <blockquote>
+    <p>I want to <em>{{ habit.description }}</em>, {% humanize_repetition habit %}</p>
+  </blockquote>
+  <form action="{% url 'add_habit_step' step='habit' %}" method="POST" class="edit">
     {% csrf_token %}
     {{ wizard.management_form }}
     {{ form.as_p }}
-    <button type="submit">Go</button>
+    <button type="submit">Edit this habit</button>
+  </form>
+  {% if reminder.trigger %}
+    <p>And your email reminder for your trigger is:</p>
+    <blockquote>
+      <p>When I <em>{{ reminder.trigger }}</em>, then I <em>{{ habit.description }}</em></p>
+    </blockquote>
+  {% endif %}
+  <form action="{% url 'add_habit_step' step='reminder' %}" method="POST" class="edit">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {% if reminder.trigger %}
+    <button type="submit">Edit this reminder</button>
+    {% else %}
+    <button type="submit">Add a reminder</button>
+    {% endif %}
+  </form>
+  <form method="POST" action="" id="summary-form" class="form-continue">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {{ form.as_p }}
+    <button type="submit" class="progress">Finish!</button>
   </form>
 {% endblock %}
