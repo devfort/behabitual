@@ -188,7 +188,7 @@ class TimePeriod(TimePeriod_):
     def _friendly_daily_date(self, relative_to):
         delta_days = (relative_to - self.date).days
         if delta_days == 0:
-           return _("Today")
+            return _("Today")
         elif delta_days == 1:
             return _("Yesterday")
         elif delta_days < 7:
