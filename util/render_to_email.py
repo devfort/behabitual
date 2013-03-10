@@ -41,7 +41,8 @@ def render_to_email(
     subject preferred over subject_template if both are given.
     """
 
-    if context is None: context = {}
+    if context is None:
+        context = {}
 
     def active_user(user_or_email):
         try:
@@ -49,7 +50,11 @@ def render_to_email(
         except AttributeError:
             return False
 
-    if opt_out: to = filter(active_user, to)
+    if opt_out:
+        to = filter(active_user, to)
+    if not to:
+        return None
+
     context['recipients'] = to
 
     def as_email_address(user_or_email):
