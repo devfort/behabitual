@@ -38,7 +38,11 @@
 	}
 	.welcome img{
 		float:left;
-		border-right:50px solid transparent;
+	}
+	
+	.welcome h1,
+	.welcome p{
+		padding-left:260px;
 	}
 }
 
