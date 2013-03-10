@@ -240,9 +240,12 @@ class Habit(models.Model):
         time_period = self.get_current_time_period()
         return self.get_buckets().filter(index=time_period.index).count() != 0
 
-    def is_up_to_date(self):
-        time_period = self.get_current_time_period()
-        return self.get_buckets().filter(index=time_period.index).count() != 0
+    def is_binary(self):
+        """
+        Returns true if this habit is a yes/no task (versus a how many times you
+        did the action)
+        """
+        return self.target_value == 1
 
     def get_recent_unentered_time_periods(self):
         return self.get_unentered_time_periods(datetime.date.today())

@@ -7,9 +7,18 @@
     {% csrf_token %}
     {% for form in forms %}
       {% for field in form %}
-        {{ field.errors }}
-        {{ field.label_tag }}
-        {{ field }}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% else %}
+          {{ field.errors }}
+          {{ field.label_tag }}
+          {% if habit.is_binary %}
+            <input type="hidden" name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="0">
+            <input type="checkbox" name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="1">
+          {% else %}
+            {{ field }}
+          {% endif %}
+        {% endif %}
       {% endfor %}
     {% endfor %}
     <input type="submit" value="Done">
