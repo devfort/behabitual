@@ -3,13 +3,16 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.tokens import default_token_generator
 import django.contrib.auth.views
 from django.core.urlresolvers import reverse
+from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.utils.http import base36_to_int
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 
+from apps.habits.models import Habit
+from apps.habits.forms import HabitEmailOptionsForm
 from util.render_to_email import render_to_email
 
 from .signals import user_changed_password
@@ -95,3 +98,28 @@ def password_change(request, *args, **kwargs):
             opt_out=False,
         )
     return response
+
+
+class SettingsView(FormView):
+    template_name = 'accounts/settings.html'
+
+    def get_success_url(self):
+        return reverse('account_settings')
+
+    def get_form_class(self):
+        self.queryset = self.request.user.habits.all()
+        return modelformset_factory(
+            Habit,
+            form=HabitEmailOptionsForm,
+            max_num=self.queryset.count(),
+            extra=0,
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super(SettingsView, self).get_form_kwargs()
+        kwargs['queryset'] = self.queryset
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super(SettingsView, self).form_valid(form)

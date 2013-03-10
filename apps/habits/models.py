@@ -236,6 +236,7 @@ class Habit(models.Model):
         null=True,
         blank=True
     )
+    send_data_collection_emails = models.BooleanField(default=True)
 
     class Meta:
         # HACK: Use ID as proxy for creation order

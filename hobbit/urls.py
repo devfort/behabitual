@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', apps.accounts.views.LogoutView.as_view(), name='logout'),
     url(r'^password-change/$', apps.accounts.views.password_change, name='password_change'),
     url(r'^password-change/done/$', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
-    secured_url(r'^accounts/settings', TemplateView.as_view(template_name='accounts/settings.html'), name='account_settings'),
+    secured_url(r'^accounts/settings', apps.accounts.views.SettingsView.as_view(), name='account_settings'),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),

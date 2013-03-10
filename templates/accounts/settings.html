@@ -14,4 +14,23 @@
       <a href='{% url 'password_change' %}'>Change your password</a>.
     </p>
   {% endif %}
+
+  <h2>Ask me by email to input data</h2>
+  <form method='POST' action='' id='settings-form'>
+    {% csrf_token %}
+    {{ form.management_form }}
+    <ul>
+      {% for subform in form %}
+        <li>
+          <label for='{{ subform.send_data_collection_emails.auto_id }}'>
+            <b>Remind me to input data for</b>
+            <q>{{ subform.instance.description }}</q>
+          </label>
+          {{ subform.send_data_collection_emails }}
+          {{ subform.id }}
+        </li>
+      {% endfor %}
+    </ul>
+    <button type='submit'>Update it</button>
+  </form>
 {% endblock %}

@@ -8,3 +8,9 @@ class HabitForm(forms.ModelForm):
         widgets = {
             'description': forms.TextInput(),
         }
+
+
+class HabitEmailOptionsForm(forms.ModelForm):
+    class Meta:
+        model = Habit
+        fields = ('send_data_collection_emails',)
