@@ -77,7 +77,7 @@ q:after {
 }
 
 .progress {
-    background:             $action_colour;
+    background:             $button_colour;
     border-radius:          5px;
     border:                 0;
     min-width:              200px;
@@ -89,7 +89,7 @@ q:after {
 .progress:focus,
 .progress:hover,
 .progress:active {
-    background:             $links_active_colour;
+    background:             $button_active_colour;
     text-decoration:        none;
 }
 button.jeffd {
@@ -112,4 +112,7 @@ button.meh.jeffd {
 }
 .error {
     color:                  $error_colour;
+}
+select {
+    border:                 1px solid $button_colour;
 }

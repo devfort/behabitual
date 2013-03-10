@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block body-class %}centred-wtf add-habit{% endblock %}
+
 {% block title %}Add a habit{% endblock %}
 {% block body %}
   <div class="copy">
@@ -12,18 +14,17 @@
         <label for="habit-description">I want to
           <input name="habit-description"
                  id="habit-description"
-                 size="15"
                  placeholder="brush my teeth"></label>,
         <label for="habit-target_value">
           <input name="habit-target_value"
                  id="habit-target_value"
-                 size="15"
                  placeholder="2"> times
         </label>
         <label for="id_habit-resolution">per {{ form.resolution }}</label>
       </p>
-    
-      <button type="submit" class="progress">Next</button>
+      <div class="form-continue">
+        <button type="submit" class="progress">Next</button>
+      </div>
     </form>
   </div>
 {% endblock %}

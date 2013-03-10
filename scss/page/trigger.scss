@@ -39,25 +39,25 @@
     background:             $positive_colour;
 }
 
-.add-trigger #main form {
+.add-trigger #main .reminder {
     background:             #97c1dc;
     border-radius:          5px;
     padding:                30px 40px 20px;
 }
-.add-trigger #main form .reminder {
+.add-trigger #main .reminder .trigger-text p {
     background:             #bcd7e9;
     border-radius:          5px;
     padding:                15px 40px;
     line-height:            2;
 }
-.add-trigger form .columnar {
+.add-trigger .reminder .columnar {
     @extend .contain;
 }
-.add-trigger form .columnar span {
+.add-trigger .reminder .columnar span {
     float:                  left;
     width:                  100px;
 }
-.add-trigger form .columnar ul {
+.add-trigger .reminder .columnar ul {
     float:                  left;
     width:                  200px;
 }
@@ -69,7 +69,7 @@
 .add-trigger .trigger-time legend {
     @extend .offleft;
 }
-.add-trigger form h2 {
+.add-trigger .reminder h2 {
     font-size:              24px;
     font-size:              2.4rem;
     line-height:            1.5;
@@ -82,4 +82,16 @@
 .add-trigger .form-continue {
     margin-top:             24px;
     text-align:             center;
+}
+#skip-reminder button {
+    background:             none;
+    border:                 none;
+    color:                  $links_colour;
+    cursor:                 pointer;
+    font:                   inherit;
+}
+#skip-reminder button:focus,
+#skip-reminder button:hover {
+    color:                  $links_active_colour;
+    text-decoration:        underline;
 }
