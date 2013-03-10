@@ -1,4 +1,4 @@
-from django.views.generic import View, DetailView, FormView
+from django.views.generic import View, DetailView, FormView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.decorators.cache import never_cache
 from django.core.urlresolvers import reverse
@@ -15,6 +15,15 @@ class HabitDetailView(DetailView):
 
     def get_queryset(self):
         return self.request.user.habits.all()
+
+
+class HabitEditView(UpdateView):
+    model = Habit
+
+    template_name_suffix = '_edit_form'
+
+#    def get_queryset(self):
+#        return self.request.user.habits.all()
 
 
 class HabitArchiveView(SingleObjectMixin, View):
