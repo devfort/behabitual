@@ -9,9 +9,10 @@
   <blockquote>
     <p>I want to <em>{{ habit.description }}</em>, {% humanize_repetition habit %}</p>
   </blockquote>
-  <form action="{% url 'add_habit_step' step='habit' %}" method="POST" class="edit">
+  <form id="edit-habit-form" action="{% url 'add_habit_step' step='habit' %}" method="POST" class="edit">
     {% csrf_token %}
     {{ wizard.management_form }}
+    <input type="hidden" name="wizard_goto_step" value="habit">
     <button type="submit">Edit this habit</button>
   </form>
   {% if reminder.trigger %}
@@ -20,9 +21,10 @@
       <p>When I <em>{{ reminder.trigger }}</em>, then I <em>{{ habit.description }}</em></p>
     </blockquote>
   {% endif %}
-  <form action="{% url 'add_habit_step' step='reminder' %}" method="POST" class="edit">
+  <form id="edit-reminder-form" action="{% url 'add_habit_step' step='reminder' %}" method="POST" class="edit">
     {% csrf_token %}
     {{ wizard.management_form }}
+    <input type="hidden" name="wizard_goto_step" value="reminder">
     {% if reminder.trigger %}
     <button type="submit">Edit this reminder</button>
     {% else %}

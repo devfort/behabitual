@@ -56,8 +56,7 @@
       <h2>My trigger reminder:</h2>
       <p>
        <label for='id_reminder-trigger'>When I</label>
-       <input type='text' name='reminder-trigger' id="id_reminder-trigger"
-              placeholder='close the dishwasher' type='text'>,
+       {{ form.trigger }},
        then I <q>{{ habit.description }}</q>.
       </p>
       </fieldset>
@@ -67,75 +66,10 @@
         <h2>When should we send this?</h2>
         <div class='columnar'>
           <span>Every</span>
-          <ul>
-            <li>
-              <input type='checkbox' name="reminder-days"
-                     id='id_reminder-days_0' value='MONDAY'>
-              <label for='id_reminder-days_0'><b>Every</b> Monday</label>
-            </li>
-            <li>
-              <input type='checkbox' name="reminder-days"
-                     id='id_reminder-days_1' value='TUESDAY'>
-              <label for='id_reminder-days_1'><b>Every</b> Tuesday</label>
-            </li>
-            <li>
-              <input type='checkbox' name="reminder-days"
-                     id='id_reminder-days_2' value='WEDNESDAY'>
-              <label for='id_reminder-days_2'><b>Every</b> Wednesday</label>
-            </li>
-            <li>
-              <input type='checkbox' name="reminder-days"
-                     id='id_reminder-days_3' value='THURSDAY'>
-              <label for='id_reminder-days_3'><b>Every</b> Thursday</label>
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <input type='checkbox' name="reminder-days"
-                     id='id_reminder-days_4' value='FRIDAY'>
-              <label for='id_reminder-days_4'><b>Every</b> Friday</label>
-            </li>
-            <li>
-              <input type='checkbox' name="reminder-days"
-                     id='id_reminder-days_5' value='SATURDAY'>
-              <label for='id_reminder-days_5'><b>Every</b> Saturday</label>
-            </li>
-            <li>
-              <input type='checkbox' name="reminder-days"
-                     id='id_reminder-days_6' value='SUNDAY'>
-              <label for='id_reminder-days_6'><b>Every</b> Sunday</label>
-            </li>
-            <li>
-          </ul>
+          {{ form.days }}
         </div>
         <p>
-          <label for="id_reminder-hour">at</label>
-          <select id="id_reminder-hour" name="reminder-hour">
-            <option value="0">00:00</option>
-            <option value="1">01:00</option>
-            <option value="2">02:00</option>
-            <option value="3">03:00</option>
-            <option value="4">04:00</option>
-            <option value="5">05:00</option>
-            <option value="6">06:00</option>
-            <option value="7">07:00</option>
-            <option value="8">08:00</option>
-            <option value="9">09:00</option>
-            <option value="10">10:00</option>
-            <option value="11">11:00</option>
-            <option value="12">12:00</option>
-            <option value="13">13:00</option>
-            <option value="14">14:00</option>
-            <option value="15">15:00</option>
-            <option value="16">16:00</option>
-            <option value="17">17:00</option>
-            <option value="18">18:00</option>
-            <option value="19">19:00</option>
-            <option value="20">20:00</option>
-            <option value="21">21:00</option>
-            <option value="22">22:00</option>
-            <option value="23">23:00</option>
-          </select>
+          <label for="id_reminder-hour">at</label> {{ form.hour }}
           <!-- GMT or GTFO -->
         </p>
       </fieldset>

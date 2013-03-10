@@ -1,28 +1,37 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.utils.safestring import mark_safe
 from apps.habits.models import RESOLUTION_CHOICES
 
 User = get_user_model()
 
 DAYS_OF_WEEK = (
-    ('MONDAY', 'Monday'),
-    ('TUESDAY', 'Tuesday'),
-    ('WEDNESDAY', 'Wednesday'),
-    ('THURSDAY', 'Thursday'),
-    ('FRIDAY', 'Friday'),
-    ('SATURDAY', 'Saturday'),
-    ('SUNDAY', 'Sunday'),
+    ('MONDAY', mark_safe('<b>Every</b> Monday')),
+    ('TUESDAY', mark_safe('<b>Every</b> Tuesday')),
+    ('WEDNESDAY', mark_safe('<b>Every</b> Wednesday')),
+    ('THURSDAY', mark_safe('<b>Every</b> Thursday')),
+    ('FRIDAY', mark_safe('<b>Every</b> Friday')),
+    ('SATURDAY', mark_safe('<b>Every</b> Saturday')),
+    ('SUNDAY', mark_safe('<b>Every</b> Sunday')),
 )
 
-HOURS = zip(range(24), range(24))
+HOURS = map(
+    lambda hour: (hour, '%02d:00' % hour),
+    range(24)
+)
 
 
 class HabitForm(forms.Form):
     """
     Captures basic Habit information. The first step of the OnboardingWizard.
     """
-    description = forms.CharField(max_length=100)
-    target_value = forms.IntegerField()
+    description = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'placeholder': 'brush my teeth'},
+    ))
+    target_value = forms.IntegerField(
+        widget=forms.TextInput(attrs={'placeholder': '2'}),
+    )
     resolution = forms.ChoiceField(
         choices=RESOLUTION_CHOICES,
     )
@@ -33,7 +42,11 @@ class ExistingUserReminderForm(forms.Form):
     Captures Habit reminder information. The second step of the
     OnboardingWizard.
     """
-    trigger = forms.CharField(max_length=50, required=False)
+    trigger = forms.CharField(
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'close the dishwasher'}),
+    )
     days = forms.MultipleChoiceField(
         choices=DAYS_OF_WEEK,
         widget=forms.CheckboxSelectMultiple,

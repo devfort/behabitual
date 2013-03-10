@@ -113,3 +113,9 @@ class OnboardingViewTest(WebTest):
         email = form.fields['summary-email'][0].value
 
         self.assertEqual('whomever@example.com', email)
+
+        response = response.forms['edit-habit-form'].submit()
+        response = response.follow()
+
+        form = response.forms['add-habit-form']
+        self.assertEqual('stop being an idiot', form.fields['habit-description'][0].value)
