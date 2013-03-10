@@ -26,7 +26,6 @@ RESOLUTIONS = (
 
 RESOLUTION_CHOICES = zip(RESOLUTIONS, RESOLUTION_NAMES)
 
-
 def _validate_non_negative(val):
     if val < 0:
         raise ValidationError(u'%s is not greater than or equal to zero' % val)
@@ -215,6 +214,15 @@ class Habit(models.Model):
     target_value = models.PositiveIntegerField(default=1)
     description = models.TextField()
     archived = models.BooleanField(default=False)
+    reminder_days = models.IntegerField(
+        validators=[_validate_non_negative],
+        default=0,
+    )
+    reminder_hour = models.IntegerField(
+        validators=[_validate_non_negative],
+        default=None,
+        null=True
+    )
 
     class Meta:
         # HACK: Use ID as proxy for creation order
@@ -328,6 +336,40 @@ class Habit(models.Model):
     def get_resolution_name(self):
         resolution_index = RESOLUTIONS.index(self.resolution)
         return RESOLUTION_NAMES[resolution_index]
+
+    def set_reminder_schedule(self, weekdays, hour):
+        """
+        Set the reminder schedule for this habit. Accepts ``weekdays``, a
+        list, length 7, with booleanish entries, denoting whether a reminder
+        should be sent on each day of the week, and an ``hour`` at which the
+        reminder should be sent.
+
+        For example, to send a reminder at 4pm on Mondays, Wednesdays, and
+        Fridays:
+
+            days = [True, False, True, False, True, False, False]
+            habit.set_reminder_schedule(days, 16)
+        """
+        if len(weekdays) != 7:
+            raise ValueError("weekdays must be a list of length 7")
+        if not 0 <= hour < 24:
+            raise ValueError("hour must be in the range [0, 24)")
+
+        day_bits = [1 << i if d else 0 for i, d in enumerate(weekdays)]
+
+        self.reminder_days = reduce(lambda x, y: x | y, day_bits)
+        self.reminder_hour = hour
+
+    def get_reminder_schedule(self):
+        """
+        Get the reminder schedule for this habit. For example:
+
+            import calendar
+            weekdays, hour = habit.get_reminder_schedule()
+            send_on_tuesday = weekdays[calendar.TUESDAY]
+        """
+        reminder_days = [self.reminder_days & (1 << i) != 0 for i in range(7)]
+        return reminder_days, self.reminder_hour
 
     def __unicode__(self):
         return 'description=%s start=%s resolution=%s' % (
