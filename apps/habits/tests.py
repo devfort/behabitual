@@ -213,6 +213,16 @@ class HabitTests(TestCase):
         with self.assertRaises(ValueError):
             h.record(when, 5)
 
+    def test_is_up_to_date(self):
+        h = Habit.objects.create(description="Brush my teeth",
+                  start=datetime.date.today(),
+                  user=self.user,
+                  resolution='day')
+        self.assertEquals(False, h.is_up_to_date())
+
+        h.record(h.get_time_period(h.start), 17)
+        self.assertEquals(True, h.is_up_to_date())
+
 
 def test_get_time_period(self, fixture):
     start, when, resolution, result, date = fixture

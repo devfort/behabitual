@@ -25,8 +25,12 @@
 
       <div class="actions">
         {% if not habit.archived %}
-        {# TODO: Add habit descriptions to enter data/edit habit links? #}
+        {% if not habit.is_up_to_date %}
         <a href="{% url "habit_record" pk=habit.id %}"><img src="/static/images/log-action@2x.png" alt="Enter data for {{ habit.description }}" width="44" height="44"></a>
+        {% else %}
+        GREY ME OUT YO
+        {% endif %}
+        {# TODO: Add habit descriptions to edit habit links? #}
         <a href="#TODO"><img src="/static/images/edit@2x.png" alt="Edit {{ habit.description }}" width="44" height="44"></a>
         {% else %}
         <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
