@@ -55,7 +55,7 @@ a {
     color:                  $links_colour;
     text-decoration:        none;
 }
-a:visited {
+.copy a:visited {
     color:                  $secondary_action_colour;
     text-decoration:        underline;
 }

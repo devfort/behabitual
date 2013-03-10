@@ -24,7 +24,7 @@
       {% endif %}
     </div>
   </header>
-  <div id="main">
+  <div id="main"><div id="main-inner">
     {% if user.is_authenticated and not view.is_dashboard %}
       <div id='breadcrumb'>
         <a href='{% url "homepage" %}'>Dashboard</a>
@@ -32,5 +32,10 @@
     {% endif %}
     
     {% block body %}{% endblock %}
-  </div>
+  </div></div>
+  <footer><div>
+    <p>&copy; 2013</p>
+    <p>A <a href="http://devfort.com/">/dev/fort</a> project</p>
+    <a href="#TODO" class="contact">Contact us</a>
+  </div></footer>
 {% endblock %}

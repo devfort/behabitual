@@ -1,6 +1,12 @@
 /* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
 
 html {
+    background:             $header_colour;
+}
+#main {
+    background:             $darker_body_colour;
+}
+#main-inner {
     background:             #f0eee2;
 }
 

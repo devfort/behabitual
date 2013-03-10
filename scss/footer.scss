@@ -1,0 +1,24 @@
+footer {
+    color:                  #fff;
+    font-size:              16px;
+    padding:                10px 0 7px;
+}
+footer a {
+    border-bottom:          1px dotted #fff;
+    color:                  #fff;
+}
+footer a:hover,
+footer a:focus,
+footer a:active {
+    border-bottom-style:    solid;
+    color:                  #fff;
+    text-decoration:        none;
+}
+
+footer p {
+    float:                  left;
+    margin-right:           15px;
+}
+footer .contact {
+    float:                  right;
+}
