@@ -1,4 +1,4 @@
-from django.views.generic import View, DetailView, FormView
+from django.views.generic import View, DetailView, FormView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.decorators.cache import never_cache
 from django.core.urlresolvers import reverse
@@ -8,6 +8,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 
 from apps.habits.models import Habit, habit_archived
+from apps.habits.forms import HabitForm
 from lib.metrics import statsd
 
 class HabitDetailView(DetailView):
@@ -16,6 +17,14 @@ class HabitDetailView(DetailView):
     def get_queryset(self):
         return self.request.user.habits.all()
 
+
+class HabitEditView(UpdateView):
+    model = Habit
+    form_class = HabitForm
+    template_name_suffix = '_edit_form'
+
+    def get_success_url(self):
+        return reverse('homepage')
 
 class HabitArchiveView(SingleObjectMixin, View):
     model = Habit

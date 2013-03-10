@@ -32,8 +32,7 @@
                  alt='Data entered for {{ habit.description }}'
                  width='44' height='44'>
           {% endif %}
-          {# TODO: Add habit descriptions to edit habit links? #}
-          <a href="#TODO"><img src="/static/images/edit@2x.png" alt="Edit {{ habit.description }}" width="44" height="44"></a>
+          <a href="{% url 'habit_edit' pk=habit.id %}"><img src="/static/images/edit@2x.png" alt="Edit {{ habit.description }}" width="44" height="44"></a>
         {% else %}
           <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
             {% csrf_token %}
