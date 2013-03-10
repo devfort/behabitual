@@ -129,6 +129,12 @@ button.meh.jeffd {
     background:             $meh_button_active_colour;
 }
 
+.copy h1 .progress,
+.copy h2 .progress,
+.copy h3 .progress{
+	float:right;
+}
+
 .secondary-action {
     color:                  $secondary_action_colour;
 }
