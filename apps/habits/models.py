@@ -46,14 +46,14 @@ class TimePeriod(TimePeriod_):
         # In order to convert an index to a date for weekdays and weekenddays,
         # we need to work out how many weeks and days to jump forward in time
         # from the start date. This turns out to be quite an interesting
-        # problem, and I found it easiest to picture the problem in a table,
+        # problem, and I found it easiest to picture the solution in a table,
         # as shown below.
         #
         # The trick is to use modular arithmetic to count weeks and days from
         # the start of the week in which the start date falls. For start dates
         # that don't fall on a Monday (or a Saturday for weekenddays), we must
-        # shift the offsets left by a number of places equivalent to the
-        # integer week number of the start date.
+        # shift the day and week offsets left by a number of places equivalent
+        # to the integer week number of the start date.
         #
         # For example, for weekdays, starting on a Tuesday, the offset is 1,
         # so:
