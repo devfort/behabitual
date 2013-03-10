@@ -145,9 +145,13 @@
       </div>
     </form>
     
-    <p>
-      {# TODO: this needs to do the right thing... #}
-      <a href="onboarding_trigger_summary.html">Skip this step.</a>
-    </p>
-  </div>
+    <form action="{% url 'add_habit_step' step='summary' %}" method="POST">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.as_hidden }}
+        <p>
+            <button type='submit'>Skip this step.</button>
+        </p>
+    </form>
+</div>
 {% endblock %}
