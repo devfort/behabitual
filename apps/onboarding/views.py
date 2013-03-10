@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from forms import HabitForm, \
     NewUserReminderForm, ExistingUserReminderForm, \
     NewUserSummaryForm, ExistingUserSummaryForm
-from apps.habits.models import Habit, record_habit_created
+from apps.habits.models import Habit, habit_created
 from util.render_to_email import render_to_email
 
 User = get_user_model()
@@ -53,7 +53,7 @@ class OnboardingWizard(NamedUrlSessionWizardView):
             target_value=habit_form.cleaned_data.get('target_value'),
             start=datetime.now(),
         )
-        record_habit_created.send(habit)
+        habit_created.send(habit)
         #TODO Create a reminder
 
     def user(self):
@@ -69,6 +69,8 @@ class OnboardingWizard(NamedUrlSessionWizardView):
         )
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(self.request, user)
+
+        record_user_created.send(user)
 
         render_to_email(
             text_template='onboarding/emails/welcome.txt',

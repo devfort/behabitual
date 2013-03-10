@@ -9,9 +9,9 @@ import django.dispatch
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.humanize.templatetags.humanize import ordinal
 
-record_habit_data = django.dispatch.Signal()
-record_habit_archived = django.dispatch.Signal()
-record_habit_created = django.dispatch.Signal()
+habit_data_recorded = django.dispatch.Signal()
+habit_archived = django.dispatch.Signal()
+habit_created = django.dispatch.Signal()
 
 RESOLUTION_NAMES = (
     _('day'),
@@ -287,7 +287,7 @@ class Habit(models.Model):
             tp = self.get_time_period(time_period.date, 'month')
             _increment_bucket(self, tp, value)
 
-        record_habit_data.send(sender=self)
+        habit_data_recorded.send(sender=self)
 
     def get_buckets(self, order_by='index'):
         return self.buckets.filter(

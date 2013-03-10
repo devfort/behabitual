@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django import forms
 
-from apps.habits.models import Habit, record_habit_archived
+from apps.habits.models import Habit, habit_archived
 from lib.metrics import statsd
 
 class HabitDetailView(DetailView):
@@ -32,7 +32,7 @@ class HabitArchiveView(SingleObjectMixin, View):
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
         obj.archived = request.POST.get("archive") == "1"
-        record_habit_archived.send(obj)
+        habit_archived.send(obj)
         obj.save()
         return HttpResponseRedirect(self.get_success_url())
 
