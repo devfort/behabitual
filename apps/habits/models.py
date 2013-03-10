@@ -36,25 +36,6 @@ def _validate_non_negative(val):
 
 TimePeriod_ = namedtuple('TimePeriod', 'resolution index date')
 
-def _num_weekend_days_between(from_date, to_date):
-    from_week = from_date - datetime.timedelta(days=from_date.weekday())
-    to_week = to_date - datetime.timedelta(days=to_date.weekday())
-
-    num_weekend_days = 2 * (to_week - from_week).days // 7
-
-    # If start is a Sunday, one less weekendday
-    if from_date.weekday() == 6:
-        num_weekend_days -= 1
-    # If when is a Saturday, one more weekendday
-    if to_date.weekday() == 5:
-        num_weekend_days += 1
-    # If when is a Sunday, two more weekenddays
-    if to_date.weekday() == 6:
-        num_weekend_days += 2
-
-    return num_weekend_days
-
-
 class TimePeriod(TimePeriod_):
 
     @classmethod
@@ -324,18 +305,6 @@ class Habit(models.Model):
             self.description, self.start, self.resolution
         )
 
-def _increment_bucket(habit, time_period, value):
-    try:
-        b = habit.buckets.get(resolution=time_period.resolution,
-                              index=time_period.index)
-    except Bucket.DoesNotExist:
-        b = Bucket(habit=habit,
-                   resolution=time_period.resolution,
-                   index=time_period.index)
-
-    b.value += value
-    b.save()
-    return b
 
 class Bucket(models.Model):
     """
@@ -363,3 +332,36 @@ class Bucket(models.Model):
 
     def __unicode__(self):
         return "resolution=%s index=%s value=%s" % (self.resolution, self.index, self.value)
+
+
+def _increment_bucket(habit, time_period, value):
+    try:
+        b = habit.buckets.get(resolution=time_period.resolution,
+                              index=time_period.index)
+    except Bucket.DoesNotExist:
+        b = Bucket(habit=habit,
+                   resolution=time_period.resolution,
+                   index=time_period.index)
+
+    b.value += value
+    b.save()
+    return b
+
+
+def _num_weekend_days_between(from_date, to_date):
+    from_week = from_date - datetime.timedelta(days=from_date.weekday())
+    to_week = to_date - datetime.timedelta(days=to_date.weekday())
+
+    num_weekend_days = 2 * (to_week - from_week).days // 7
+
+    # If start is a Sunday, one less weekendday
+    if from_date.weekday() == 6:
+        num_weekend_days -= 1
+    # If when is a Saturday, one more weekendday
+    if to_date.weekday() == 5:
+        num_weekend_days += 1
+    # If when is a Sunday, two more weekenddays
+    if to_date.weekday() == 6:
+        num_weekend_days += 2
+
+    return num_weekend_days
