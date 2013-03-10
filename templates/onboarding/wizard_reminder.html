@@ -58,7 +58,7 @@
        <label for='id_reminder-trigger'>When I</label>
        <input type='text' name='reminder-trigger' id="id_reminder-trigger"
               placeholder='close the dishwasher' type='text'>,
-       then I {{ habit.description }}.
+       then I <q>{{ habit.description }}</q>.
       </p>
       </fieldset>
       
@@ -136,6 +136,7 @@
             <option value="22">22:00</option>
             <option value="23">23:00</option>
           </select>
+          <!-- GMT or GTFO -->
         </p>
       </fieldset>
       <div class='form-continue'>
