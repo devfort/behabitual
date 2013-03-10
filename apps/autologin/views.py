@@ -85,7 +85,7 @@ def auto_login(request, uidb36, token, template="autologin/failed.html", redirec
             user = None
 
     if user is None or not default_token_generator.check_token(user, token):
-        return TemplateResponse(request, template, {})
+        return TemplateResponse(request, template, {}, status=400)
     else:
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
