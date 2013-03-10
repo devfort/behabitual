@@ -1,0 +1,28 @@
+.edit-habit{
+	font-weight:bold;
+}
+
+.edit-habit #id_description {
+    width:                  8em;
+}
+.edit-habit #id_target_value {
+    padding-left:           0.2em;
+    width:                  1.3em;
+}
+
+.edit-habit p{
+	@extend .contain;
+	border-radius:			$border-radius;
+	padding:				15px;
+	background-color:		$darker_body_colour;
+	line-height:			2;
+}
+
+.edit-habit .progress{
+	float:					right;
+}
+
+.edit-habit input,
+.edit-habit select{
+	font-weight:			normal;
+}

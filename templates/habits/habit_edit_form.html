@@ -1,34 +1,34 @@
 {% extends "base.html" %}
 {% block title %}Good Job!{% endblock %}
+{% block main-class %}copy{% endblock %}
 
 {% block body %}
-  <h1>Edit Action <button>TODO: Put to rest</button></h1>
+  <h1>Edit Action <button class="progress meh">TODO: Put to rest</button></h1>
 
-<form id="edit-habit-form" action="" method="POST" class="add-habbit">
+<form id="edit-habit-form" action="" method="POST" class="edit-habit">
     {% csrf_token %}
-    <p>
       {% if form.errors %}
           <p class="alert">
             <strong>
               {% if form.errors.description %}
-                "I want to" {{ form.errors.description.as_text }}
+                "I want to" {{ form.errors.description.as_text }} <br>
               {% endif %}
               {% if form.errors.target_value %}
-                "times" {{ form.errors.target_value.as_text }}
+                "times" {{ form.errors.target_value.as_text }} <br>
               {% endif %}
               {% if form.errors.resolution %}
-                "per" {{ form.errors.resolution.as_text }}
+                "per" {{ form.errors.resolution.as_text }} <br>
               {% endif %}
             </strong>
           </p>
       {% endif %}
 
-      <label for="habit-description">I want to {{ form.description }}</label>,
-      <label for="habit-target_value">{{ form.target_value }} times</label>
-      <label for="id_habit-resolution">per {{ form.resolution }}</label>
-    </p>
     <p>
-      <button type='submit'>Save</button>
+      <label for="id_description">I want to {{ form.description }}</label>,<br>
+      <label for="id_target_value">{{ form.target_value }} times</label>
+      <label for="id_resolution">per {{ form.resolution }}</label>
+      <br>
+      <button type='submit' class="progress">Save</button>
     </p>
 </form>
 
