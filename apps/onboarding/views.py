@@ -10,6 +10,7 @@ from forms import HabitForm, \
     NewUserReminderForm, ExistingUserReminderForm, \
     NewUserSummaryForm, ExistingUserSummaryForm
 from apps.habits.models import Habit, record_habit_created
+from util.render_to_email import render_to_email
 
 User = get_user_model()
 
@@ -60,8 +61,7 @@ class OnboardingWizard(NamedUrlSessionWizardView):
 
     def create_user(self):
         """
-        Creates and logs in a new user for the habit, or just returns the
-        current user if they're already authenticated.
+        Creates and logs in a new user for the habit
         """
         summary_form = self.form_list[2]
         user = User.objects.create_user(
@@ -69,6 +69,14 @@ class OnboardingWizard(NamedUrlSessionWizardView):
         )
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(self.request, user)
+
+        render_to_email(
+            text_template='onboarding/emails/welcome.txt',
+            html_template='onboarding/emails/welcome.html',
+            to=(user,),
+            subject='Welcome!',
+        )
+
         return user
 
 
