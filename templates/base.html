@@ -17,14 +17,14 @@
       {% if user.is_authenticated %}
       <form action="{% url 'logout' %}" method="POST" class="login-out">
         {% csrf_token %}
-        <button type="submit">Sign out</button>
+        <button type="submit">Logout</button>
       </form>
       {% else %}
-      <a href="{% url 'login' %}" class="login-out">Sign in</a>
+      <a href="{% url 'login' %}" class="login-out">Login</a>
       {% endif %}
     </div>
   </header>
-  <div id="main"><div id="main-inner">
+  <div id="main" class='{% block main-class %}{% endblock %}'><div id="main-inner">
     {% if user.is_authenticated and not view.is_dashboard %}
       <div id='breadcrumb'>
         <a href='{% url "homepage" %}'>Dashboard</a>
