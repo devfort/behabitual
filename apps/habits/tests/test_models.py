@@ -3,7 +3,9 @@ import calendar
 import datetime
 import functools
 
+from django.core.exceptions import ValidationError
 from django.test import TestCase
+from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.habits.models import Habit, TimePeriod
@@ -371,6 +373,21 @@ class HabitTests(TestCase):
         self.assertEquals(len(self._scheduled(calendar.MONDAY,    16)), 2)
         self.assertEquals(len(self._scheduled(calendar.WEDNESDAY, 0)),  0)
         self.assertEquals(len(self._scheduled(calendar.WEDNESDAY, 16)), 1)
+
+    def test_reminder_last_sent(self):
+        h = Habit(user=self.user,
+                  start=datetime.date(2013, 3, 4),
+                  description='Test my reminders')
+
+        d = timezone.now()
+        h.reminder_last_sent = d
+        with self.assertRaises(ValidationError):
+            h.save()
+
+        d = d.replace(minute=0, second=0, microsecond=0)
+        h.reminder_last_sent = d
+        h.save()
+        self.assertEqual(h.reminder_last_sent, d)
 
 class TimePeriodTests(TestCase):
     pass

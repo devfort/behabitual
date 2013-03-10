@@ -29,6 +29,9 @@ def _validate_non_negative(val):
     if val < 0:
         raise ValidationError(u'%s is not greater than or equal to zero' % val)
 
+def _validate_datetime_is_hour(val):
+    if val.minute != 0 or val.second != 0 or val.microsecond != 0:
+        raise ValidationError(u'%s must have zero-valued minutes, seconds, and microseconds when representing an hour' % val)
 
 TimePeriod_ = namedtuple('TimePeriod', 'resolution index date')
 
@@ -220,6 +223,11 @@ class Habit(models.Model):
     reminder_hour = models.IntegerField(
         validators=[_validate_non_negative],
         default=None,
+        null=True,
+        blank=True
+    )
+    reminder_last_sent = models.DateTimeField(
+        validators=[_validate_datetime_is_hour],
         null=True,
         blank=True
     )
