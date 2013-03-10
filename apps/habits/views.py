@@ -9,6 +9,7 @@ from django import forms
 
 from apps.habits.models import Habit, habit_archived
 from apps.habits.forms import HabitForm
+from apps.encouragements import get_encouragement
 from lib.metrics import statsd
 
 class HabitDetailView(DetailView):
@@ -93,3 +94,8 @@ def habit_record_view(request, pk):
 class HabitEncouragementView(DetailView):
     model = Habit
     template_name = "habits/habit_encouragement.html"
+
+    def get_context_data(self, **kwargs):
+       ctx = super(HabitEncouragementView, self).get_context_data(**kwargs)
+       ctx['encouragement'] = get_encouragement(self.get_object())
+       return ctx

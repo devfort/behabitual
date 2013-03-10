@@ -2,5 +2,10 @@
 {% block title %}Good Job!{% endblock %}
 
 {% block body %}
-  <h1>CAT GIF YO</h1>
+  <h2>Well done!</h1>
+  {% if encouragement %}
+    <p>{{ encouragement }}</p>
+  {% else %}
+    <p>Good job on keeping track of your data. YO.</p>
+  {% endif %}
 {% endblock %}
