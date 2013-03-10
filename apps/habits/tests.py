@@ -468,3 +468,15 @@ class HabitRecordViewTest(WebTest):
         self.assertEquals(17, bucket.value)
         bucket = self.habit.get_buckets().get(index=1)
         self.assertEquals(2, bucket.value)
+
+    def test_post_leading_gap(self):
+        time_period = self.habit.get_current_time_period()
+        params = {
+            '0-date': time_period.date,
+            '0-value': ' 2',
+        }
+        response = self.app.post(reverse('habit_record', args=[self.habit.id]), params, user='someone@example.com')
+        self.assertRedirects(response, reverse('habit_encouragement', args=[self.habit.id]))
+
+        bucket = self.habit.get_buckets().get(index=time_period.index)
+        self.assertEquals(2, bucket.value)
