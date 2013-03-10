@@ -389,7 +389,7 @@ class HabitRecordViewTest(WebTest):
             resolution='day'
         )
         response = self.app.get(reverse('habit_record', args=[self.habit.id]), user='someone@example.com')
-        form = response.form # FIXME: will break if other forms added to page or chrome
+        form = form = response.forms['data-entry']
         form.set('0-value', 1)
         form.set('1-value', 2)
         resp = form.submit()
@@ -410,7 +410,7 @@ class HabitRecordViewTest(WebTest):
         )
         self.habit.record(self.habit.get_time_period(self.habit.start), 17)
         response = self.app.get(reverse('habit_record', args=[self.habit.id]), user='someone@example.com')
-        form = response.form # FIXME: will break if other forms added to page or chrome
+        form = response.forms['data-entry']
         with self.assertRaises(AssertionError):
             # not in the form because data already exists
             form.set('0-value', 1000)
