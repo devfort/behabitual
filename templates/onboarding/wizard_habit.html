@@ -7,7 +7,7 @@
   <div class="copy">
     <h1>What habit are you trying to form?</h1>
 
-    <form method="POST" action="">
+    <form id="add-habit-form" method="POST" action="">
       {% csrf_token %}
       {{ wizard.management_form }}
       <p>

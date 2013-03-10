@@ -4,7 +4,7 @@
 {% block body %}
   <h1>Add a habit</h1>
 
-  <form method="POST" action="">
+  <form id="summary-form" method="POST" action="">
     {% csrf_token %}
     {{ wizard.management_form }}
     {{ form.as_p }}

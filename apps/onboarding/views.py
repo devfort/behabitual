@@ -23,6 +23,7 @@ class OnboardingWizard(NamedUrlSessionWizardView):
     isn't authenticated.
     """
     template_name = 'onboarding/wizard.html'
+    send_habit_email = False
 
     def get_template_names(self):
         return ['onboarding/wizard_%s.html' % self.steps.current]
@@ -47,19 +48,34 @@ class OnboardingWizard(NamedUrlSessionWizardView):
         """
         Saves the habit.
         """
+
         habit_form = self.form_list[0]
         habit = Habit.objects.create(
-            user=self.user(),
+            user=self.user,
             description=habit_form.cleaned_data.get('description'),
             resolution=habit_form.cleaned_data.get('resolution'),
             target_value=habit_form.cleaned_data.get('target_value'),
             start=datetime.now(),
         )
         habit_created.send(habit)
+
+        if self.send_habit_email:
+            render_to_email(
+                text_template='onboarding/emails/habit_created.txt',
+                html_template='onboarding/emails/habit_created.html',
+                to=(self.user,),
+                subject='You set up a new habit!',
+            )
+
         #TODO Create a reminder
 
+    @property
     def user(self):
-        return self.create_user()
+        try:
+            u = self._user
+        except AttributeError:
+            u = self._user = self.create_user()
+        return u
 
     def create_user(self):
         """
@@ -89,6 +105,9 @@ class AddHabitWizard(OnboardingWizard):
     """
     Add a habit, when you're already authenticated.
     """
+    send_habit_email = True
+
+    @property
     def user(self):
         return self.request.user
 
