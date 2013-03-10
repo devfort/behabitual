@@ -26,6 +26,10 @@ class HabitEditView(UpdateView):
     def get_success_url(self):
         return reverse('homepage')
 
+    def get_queryset(self):
+        return self.request.user.habits.all()
+
+
 class HabitArchiveView(SingleObjectMixin, View):
     model = Habit
 
