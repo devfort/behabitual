@@ -6,7 +6,11 @@
   <form id="data-entry" method="POST" action="">
     {% csrf_token %}
     {% for form in forms %}
-      {{ form }}
+      {% for field in form %}
+        {{ field.errors }}
+        {{ field.label_tag }}
+        {{ field }}
+      {% endfor %}
     {% endfor %}
     <input type="submit" value="Done">
   </form>
