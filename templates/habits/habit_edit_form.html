@@ -6,13 +6,29 @@
 
 <form id="edit-habit-form" action="" method="POST">
     {% csrf_token %}
-    {% for field in form %}
-        {{ field.errors }}
-        {{ field.label_tag }}
-        {{ field }}
-    {% endfor %}
-        <p>
-            <button type='submit'>Save</button>
-        </p>
+    <p>
+      {% if form.errors %}
+          <p class="alert">
+            <strong>
+              {% if form.errors.description %}
+                The description {{ form.errors.description.as_text }}
+              {% endif %}
+              {% if form.errors.target_value %}
+                The target value {{ form.errors.target_value.as_text }}
+              {% endif %}
+              {% if form.errors.resolution %}
+                The resolution {{ form.errors.resolution.as_text }}
+              {% endif %}
+            </strong>
+          </p>
+      {% endif %}
+
+      <label for="habit-description">I want to {{ form.description }}</label>,
+      <label for="habit-target_value">{{ form.target_value }} times</label>
+      <label for="id_habit-resolution">per {{ form.resolution }}</label>
+    </p>
+    <p>
+      <button type='submit'>Save</button>
+    </p>
 </form>
 {% endblock %}

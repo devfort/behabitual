@@ -5,3 +5,6 @@ class HabitForm(forms.ModelForm):
     class Meta:
         model = Habit
         fields = ('archived', 'description', 'target_value', 'resolution')
+        widgets = {
+            'description': forms.TextInput(),
+        }
