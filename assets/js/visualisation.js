@@ -125,7 +125,7 @@ Orbital.prototype.tick = function(time, params) {
                  ) *
                  this._radius,
 
-        center = new Point(Math.sin(angle), -Math.cos(angle))
+        center = new Point(-Math.sin(angle), -Math.cos(angle))
                  .scale(orbit)
                  .add(this._canvas.getCenter());
 
@@ -195,11 +195,12 @@ Ring.prototype.tick = function(time, params) {
     new Ring(140, '#d4d8d2', true,  [6]),
     new Ring(60,  '#4389b8', false, [2]),
     new Ring(50,  '#4389b8', true,  [4]),
-    new Orbital(160, '#f94630', [0, 0.2], [1.5])
+    new Orbital(150, '#f94630', [0, 0.02, 0.04, 0.08, 0.16], [1.5]),
+    new Orbital(170, '#4389b8', [1, 1.02, 1.04, 1.08, 1.16], [1.2])
   ];
 
   var canvas = new Canvas('visualisation', 480, 480);
   map(objects, function(r) { r.renderOn(canvas) });
-  canvas.play({from: 1, to: 0.05, tick: 20, easing: new Easing.Exponent(4)});
+  canvas.play({from: 1, to: 0, tick: 20, easing: new Easing.Exponent(4)});
 })();
 
