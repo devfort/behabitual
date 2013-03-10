@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 import django.dispatch
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.humanize.templatetags.humanize import ordinal
 
 record_habit_data = django.dispatch.Signal()
 record_habit_archived = django.dispatch.Signal()
@@ -177,6 +178,30 @@ class TimePeriod(TimePeriod_):
 
         return cls(resolution, tp_index, tp_date)
 
+    def friendly_date(self):
+        return self._friendly_date_relative_to(datetime.date.today())
+
+    def _friendly_date_relative_to(self, relative_to):
+        if self.resolution == "week":
+            return self._friendly_weekly_date(relative_to)
+        else:
+            return self._friendly_daily_date(relative_to)
+
+    def _friendly_daily_date(self, relative_to):
+        delta_days = (relative_to - self.date).days
+        if delta_days == 0:
+           return _("Today")
+        elif delta_days == 1:
+            return _("Yesterday")
+        elif delta_days < 7:
+            # Full day name
+            return self.date.strftime("%A")
+        else:
+            # "March 1st"
+            return "%s %s" % (self.date.strftime("%B"), ordinal(self.date.day))
+
+    def _friendly_weekly_date(self, relative_to):
+        return "Week of %s %s" % (self.date.strftime("%B"), ordinal(self.date.day))
 
 class Habit(models.Model):
     """
@@ -210,6 +235,10 @@ class Habit(models.Model):
             resolution = self.resolution
 
         return TimePeriod.from_date(self.start, resolution, when)
+
+    def is_up_to_date(self):
+        time_period = self.get_current_time_period()
+        return self.get_buckets().filter(index=time_period.index).count() != 0
 
     def is_up_to_date(self):
         time_period = self.get_current_time_period()

@@ -189,6 +189,22 @@ RECENT_TIME_PERIODS_FIXTURES = (
     RTPT('2013-03-01', 'day', (('2013-03-05',1),), '2013-03-05', []),
 )
 
+TPFNF = namedtuple('TimePeriodFriendlyNameFixture', 'start resolution relative expected')
+
+TIME_PERIOD_FRIENDLY_NAME_FIXTURES = (
+    TPFNF('2013-03-05', 'day', '2013-03-05', 'Today'),
+    TPFNF('2013-03-04', 'day', '2013-03-05', 'Yesterday'),
+    TPFNF('2013-03-03', 'day', '2013-03-05', 'Sunday'),
+    TPFNF('2013-03-02', 'day', '2013-03-05', 'Saturday'),
+    TPFNF('2013-03-01', 'day', '2013-03-05', 'Friday'),
+    TPFNF('2013-02-28', 'day', '2013-03-05', 'Thursday'),
+    TPFNF('2013-02-27', 'day', '2013-03-05', 'Wednesday'),
+    TPFNF('2013-02-26', 'day', '2013-03-05', 'February 26th'),
+    TPFNF('2013-03-05', 'day', '2013-03-15', 'March 5th'),
+    TPFNF('2013-03-05', 'week', '2013-03-15', 'Week of March 5th'),
+)
+
+
 class HabitTests(TestCase):
 
     def setUp(self):
@@ -263,6 +279,17 @@ def test_time_period_from_index(self, fixture):
         self.assertEqual(TimePeriod.from_index(start_date, resolution, result), exp)
 
 helpers.attach_fixture_tests(TimePeriodTests, test_time_period_from_index, TIME_PERIOD_FIXTURES)
+
+def test_time_period_friendly_name(self, fixture):
+
+    start_date = helpers.parse_isodate(fixture.start)
+    relative = helpers.parse_isodate(fixture.relative)
+
+    tp = TimePeriod(fixture.resolution, 0, start_date)
+    got = tp._friendly_date_relative_to(relative)
+    self.assertEqual(fixture.expected, got)
+
+helpers.attach_fixture_tests(TimePeriodTests, test_time_period_friendly_name, TIME_PERIOD_FRIENDLY_NAME_FIXTURES)
 
 def test_recent_unentered_time_periods(self, fixture):
     # start, resolution, data, date, expected = fixture

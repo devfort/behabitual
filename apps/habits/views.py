@@ -45,25 +45,31 @@ def habit_record_view(request, pk):
     if len(time_periods) == 0:
         return HttpResponseRedirect(reverse('homepage'))
 
-    class HabitForm(forms.Form):
-        date = forms.DateField(required=True, widget=forms.HiddenInput)
-        value = forms.IntegerField(min_value=0, required=True)
+    _forms = []
+
+    for period in time_periods:
+        # To make the lable for the input dynamic we need to create a new class
+        # each time. This might be better done as a Widget instead...?
+        class HabitForm(forms.Form):
+            date = forms.DateField(required=True, widget=forms.HiddenInput)
+            value = forms.IntegerField(min_value=0, label=period.friendly_date())
+
+        if request.method == 'POST': # If the form has been submitted...
+            data = request.POST
+            initial = None
+        else:
+            data = None
+            initial = {'date': period.date}
+
+        _forms.append(HabitForm(data=data, initial=initial, prefix=str(period.index)))
 
     if request.method == 'POST': # If the form has been submitted...
-        _forms = []
-        for period in time_periods:
-            _forms.append(HabitForm(request.POST, prefix=str(period.index)))
-
         if all(map(lambda f: f.is_valid(), _forms)):
             # TODO: record all data points
             for form in _forms:
                 time_period = habit.get_time_period(form.cleaned_data['date'])
                 habit.record(time_period, form.cleaned_data['value'])
             return HttpResponseRedirect(reverse('habit_encouragement', args=[habit.id]))
-    else:
-        _forms = []
-        for period in time_periods:
-            _forms.append(HabitForm(initial={'date': period.date}, prefix=str(period.index)))
 
     return render(request, 'habits/habit_record_form.html', {
         'forms': _forms,
