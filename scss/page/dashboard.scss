@@ -1,0 +1,77 @@
+.dashboard #main h1 {
+    @extend .offleft
+}
+.dashboard #progress {
+    background:             $darker_body_colour;
+}
+.dashboard #habits li {
+    @extend .contain;
+    background:             $darkest_body_colour;
+    margin:                 2px 0;
+    font-size:              20px;
+    padding:                25px 30px 20px;
+}
+.dashboard #habits li.archived {
+    background:             $darker_body_colour;
+    color:                  $meh_button_colour;
+}
+.dashboard #habits li .actions {
+    float:                  right;
+}
+.dashboard li .actions a {
+    margin-left:            15px;
+}
+.dashboard #habits li .progress {
+    background:             $meh_button_colour;
+    color:                  $darker_body_colour;
+    cursor:                 pointer;
+    min-width:              0;
+}
+.dashboard #habits li .progress:active,
+.dashboard #habits li .progress:focus,
+.dashboard #habits li .progress:hover {
+    background:             $meh_button_active_colour;
+}
+
+.dashboard h2 {
+    float:                  left;
+    line-height:            24px;
+    margin:                 0;
+}
+.dashboard q {
+    display:                block;
+    font-size:              24px;
+    font-weight:            bold;
+}
+.dashboard .add-habit {
+    border-bottom:          1px solid $darker_body_colour;
+    display:                block;
+    margin:                 15px 30px 20px;
+    padding-bottom:         10px;
+}
+.dashboard .add-habit a {
+    display:                block;
+    padding-left:           40px;
+    position:               relative;
+}
+.dashboard .add-habit a:before {
+    content:                "+";
+    color:                  $meh_button_colour;
+    display:                block;
+    font-weight:            bold;
+    font-size:              44px;
+    left:                   0;
+    position:               absolute;
+    top:                    -18px;
+}
+.dashboard .add-habit a:visited {
+    color:                  $links_colour;
+}
+.dashboard .add-habit a:hover,
+.dashboard .add-habit a:focus {
+    color:                  $links_active_colour;
+}
+.dashboard .add-habit a:hover:before,
+.dashboard .add-habit a:focus:before {
+    color:                  $meh_button_active_colour;
+}

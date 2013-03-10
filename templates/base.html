@@ -5,5 +5,19 @@
 {% endblock %}
 
 {% block body-sheath %}
+  <header>
+    <div>
+      <h1><img src="/static/images/logo@2x.png" alt="Habitually" height="51" width="144"></h1>
+      {% if user.is_authenticated %}
+      <form action="{% url 'logout' %}" method="POST">
+        <button type="submit">Sign out</button>
+      </form>
+      {% else %}
+      <a href="{% url 'login' %}">Sign in</a>
+      {% endif %}
+    </div>
+  </header>
+  <div id="main">
   {% block body %}{% endblock %}
+  </div>
 {% endblock %}

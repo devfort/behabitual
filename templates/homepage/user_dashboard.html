@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% load humanize_repetition %}
+{% block body-class %}dashboard{% endblock %}
 {% block title %}Home{% endblock %}
 {% block body %}
-<section>
+<section id="progress">
   <h1>Progress</h1>
-  <img alt="Visual progress" src="#TODO">
+  <!-- TODO: Insert visualisation here -->
+  <img alt="You're doing pretty well. But this should say somethign better." src="#TODO">
 </section>
 
-<section>
+<section id="habits">
   <h1>Habits</h1>
 
   <ul>
@@ -21,21 +23,24 @@
         {% humanize_repetition habit %}
       </h2>
 
-      {# TODO: Add habit descriptions to enter data/edit habit links? #}
-      <a href="{% url "habit_record" pk=habit.id %}">Enter data</a> <a href="#TODO">Edit habit</a>
-
-      <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
-        {% csrf_token %}
+      <div class="actions">
         {% if not habit.archived %}
-          <input type="hidden" name="archive" value="1">
-          <input type="submit" value="Archive">
+        {# TODO: Add habit descriptions to enter data/edit habit links? #}
+        <a href="{% url "habit_record" pk=habit.id %}"><img src="/static/images/log-action@2x.png" alt="Enter data for {{ habit.description }}" width="44" height="44"></a>
+        <a href="#TODO"><img src="/static/images/edit@2x.png" alt="Edit {{ habit.description }}" width="44" height="44"></a>
         {% else %}
+        <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
+          {% csrf_token %}
           <input type="hidden" name="archive" value="0">
-          <input type="submit" value="Unarchive">
-        {% endif %}
-      </form>
+          <button type="submit" class="progress">Revive</button>
+        </form>
+      {% endif %}
+      </div>
     </li>
   {% endfor %}
   </ul>
+  <div class="add-habit">
+    <a href="{% url 'add_habit' %}">Add new habit</a>
+  </div>
 </section>
 {% endblock %}

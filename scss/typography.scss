@@ -22,29 +22,29 @@ body {
     color:                  #333;
 }
 
-h1 {
+/*#main h1 {
     font-weight:            bold;
     font-size:              36px;
     font-size:              3.6rem;
     color:                  $header_colour;
     margin:                 30px 0;
 }
-body.centred-wtf h1 {
+*/body.centred-wtf h1 {
     text-align:             center;
 }
-h2 {
+/*#main h2 {
     font-weight:            bold;
     font-size:              28px;
     font-size:              2.8rem;
     color:                  $header_colour;
     margin:                 30px 0;
 }
-h3 {
+#main h3 {
     font-weight:            bold;
     margin:                 30px 0;
 }
-
-p {
+*/
+#main p {
     margin:                 30px 0;
 }
 .highlight {
@@ -56,17 +56,16 @@ a {
     color:                  $links_colour;
     text-decoration:        none;
 }
-a:hover, a:focus {
-    color:                  $links_active_colour;
-    text-decoration:        underline;
-}
 a:visited {
     color:                  $secondary_action_colour;
     text-decoration:        underline;
 }
+a:hover, a:focus {
+    color:                  $links_active_colour;
+    text-decoration:        underline;
+}
 
-button,
-.action {
+.progress {
     background:             $links_colour;
     border-radius:          5px;
     border:                 0;
@@ -76,14 +75,11 @@ button,
     font-size:              2.4rem;
     color:                  white;
 }
-button:focus,
-button:hover,
-button:active,
-.action:focus,
-.action:hover,
-.action:active {
+.progress:focus,
+.progress:hover,
+.progress:active {
     background:             $links_active_colour;
-    text-decoration:        underline;
+    text-decoration:        none;
 }
 button.jeffd {
     background:             $links_active_colour;
