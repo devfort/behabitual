@@ -6,12 +6,12 @@ from django.db import connection
 from django.db.utils import IntegrityError
 from django.http import HttpResponse
 
-from apps.accounts.signals import user_created
-from apps.habits.models import Habit
-from apps.habits.signals import habit_created
 from forms import HabitForm, \
     NewUserReminderForm, ExistingUserReminderForm, \
     NewUserSummaryForm, ExistingUserSummaryForm
+from apps.accounts.signals import user_created
+from apps.habits.models import Habit
+from apps.habits.signals import habit_created
 from util.render_to_email import render_to_email
 
 User = get_user_model()
@@ -79,6 +79,7 @@ class OnboardingWizard(NamedUrlSessionWizardView):
             html_template='onboarding/emails/welcome.html',
             to=(user,),
             subject='Welcome!',
+            opt_out=False,
         )
 
         return user

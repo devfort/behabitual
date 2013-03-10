@@ -145,7 +145,7 @@
       </div>
     </form>
     
-    <form action="{% url 'add_habit_step' step='summary' %}" method="POST">
+    <form id="skip-reminder-form" action="{% url 'add_habit_step' step='summary' %}" method="POST">
         {% csrf_token %}
         {{ wizard.management_form }}
         {{ form.as_hidden }}
