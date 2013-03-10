@@ -21,6 +21,6 @@ def humanize_repetition(habit):
         apnumber(target_value), resolution_name
     )
     else:
-      return "%s times a %s" % (
+      return "<em>%s</em> times a <em>%s</em>" % (
         apnumber(target_value), resolution_name
     )

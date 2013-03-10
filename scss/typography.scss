@@ -121,3 +121,9 @@ button.meh.jeffd {
 select {
     border:                 1px solid $button_colour;
 }
+.alert {
+    background:             $alert_colour;
+    font-weight:            bold;
+    margin:                 15px 0 -10px;
+    padding:                20px 40px;
+}

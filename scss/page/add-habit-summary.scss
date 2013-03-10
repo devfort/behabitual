@@ -1,4 +1,5 @@
-.add-habit-summary blockquote {
+.add-habit-summary blockquote,
+.add-habit-summary .form-continue form p {
     background:             $darkest_body_colour;
     border-radius:          5px;
     margin:                 15px 0 0;
@@ -31,5 +32,10 @@
 .add-habit-summary .form-continue {
     border-top:             1px solid $darker_body_colour;
     padding-top:            30px;
+}
+.add-habit-summary .form-continue form {
     text-align:             center;
+}
+.add-habit-summary .form-continue form p {
+    margin-bottom:          20px;
 }

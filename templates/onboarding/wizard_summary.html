@@ -12,7 +12,6 @@
   <form action="{% url 'add_habit_step' step='habit' %}" method="POST" class="edit">
     {% csrf_token %}
     {{ wizard.management_form }}
-    {{ form.as_p }}
     <button type="submit">Edit this habit</button>
   </form>
   {% if reminder.trigger %}
@@ -30,10 +29,25 @@
     <button type="submit">Add a reminder</button>
     {% endif %}
   </form>
-  <form method="POST" action="" id="summary-form" class="form-continue">
-    {% csrf_token %}
-    {{ wizard.management_form }}
-    {{ form.as_p }}
-    <button type="submit" class="progress">Finish!</button>
-  </form>
+  <div class="form-continue">
+    <p>
+      Save your account by entering your email address&mdash;you’ll
+      get emails to help you track your progress.
+    </p>
+    {% if form.email.errors %}
+    <p class="alert"><strong>
+      We need a valid email address to track your progress
+    </strong></p>
+    {% endif %}
+    <form method="POST" action="" id="summary-form">
+      {% csrf_token %}
+      {{ wizard.management_form }}
+      <p><label for="id_summary-email">
+        My email is
+        <input type="text" name="summary-email" id="id_summary-email">
+        <b>({{ form.email.errors.as_text }})</b>
+      </label></p>
+      <button type="submit" class="progress">Finish!</button>
+    </form>
+  </div>
 {% endblock %}
