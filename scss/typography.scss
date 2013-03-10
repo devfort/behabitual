@@ -64,6 +64,18 @@ a:hover, a:focus {
     text-decoration:        underline;
 }
 
+q {
+    font-weight:            bold;
+}
+q:before {
+    content:                '“';
+    font-weight:            normal;
+}
+q:after {
+    content:                '”';
+    font-weight:            normal;
+}
+
 .progress {
     background:             $links_colour;
     border-radius:          5px;
