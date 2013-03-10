@@ -260,6 +260,11 @@ def _every_xday_this_month(habit, target_value=1):
 
     buckets = habit.buckets.filter(resolution=habit.resolution).order_by('-index')
 
+    # 4 (or 5) weeks in a month so don't try to calculate this encouragement if
+    # we don't have enough data.
+    if buckets.count() < 4:
+        return False
+
     latest = buckets[0]
     latest_date = habit.start + datetime.timedelta(days=latest.index)
     month_weekdays = _weekdays_in_month(latest_date.year, latest_date.month)
