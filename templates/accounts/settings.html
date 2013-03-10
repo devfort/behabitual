@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Account settings{% endblock %}
+
+{% block body %}
+  <h2>Email address</h2>
+  <p>
+    Hi! Your email address is <strong>{{ user.email }}</strong>. If you want to
+    change it you should get in touch.
+  </p>
+
+  {% if user.has_usable_password %}
+    <h2>Password</h2>
+    <p>
+      <a href='{% url 'password_change' %}'>Change your password</a>.
+    </p>
+  {% endif %}
+{% endblock %}
