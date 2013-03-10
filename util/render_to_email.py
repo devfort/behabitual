@@ -21,7 +21,8 @@ def render_to_email(
     subject=None,
     subject_template=None,
     context=None,
-    send=True
+    send=True,
+    opt_out=True
 ):
     """
     Send a multipart email using the three given templates. Note that to should
@@ -40,8 +41,15 @@ def render_to_email(
     subject preferred over subject_template if both are given.
     """
 
-    if context is None:
-        context = {}
+    if context is None: context = {}
+
+    def active_user(user_or_email):
+        try:
+            return user_or_email.is_active
+        except AttributeError:
+            return False
+
+    if opt_out: to = filter(active_user, to)
     context['recipients'] = to
 
     def as_email_address(user_or_email):

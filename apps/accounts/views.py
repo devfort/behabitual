@@ -93,5 +93,6 @@ def password_change(request, *args, **kwargs):
             html_template='accounts/emails/password_changed.html',
             to=(request.user,),
             subject='Your password has been changed',
+            opt_out=False,
         )
     return response
