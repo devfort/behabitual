@@ -7,7 +7,7 @@ header {
     padding:                7px 0;
 }
 header div {
-    @extend .contain;
+    @extend                 .contain;
     position:               relative;
 }
 header h1 {
@@ -15,18 +15,18 @@ header h1 {
     margin-bottom:          -22px;
 }
 header .login-out {
-    bottom:                 -5px;
     color:                  $links_active_colour;
     float:                  right;
     position:               absolute;
     right:                  0;
+    top:                    6px;
 }
 header button {
     background:             none;
     border:                 none;
     color:                  $links_colour;
     font-size:              100%;
-    padding:                20px 0 0;
+    padding:                0;
 }
 header button:hover,
 header button:focus {
