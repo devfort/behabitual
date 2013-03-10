@@ -6,6 +6,7 @@ import random
 from django.db.models import Max
 
 from apps.habits.models import Bucket
+from strings import *
 
 
 class ProviderRegistry(object):
@@ -44,24 +45,25 @@ def static_encouragement_provider(habit):
     """
     Returns a randomly selected static encouragement.
     """
-    return random.choice((
-        "Fuck YEAH!",
-        "AWESOME!",
-    ))
+    return random.choice(ENCOURAGEMENT_0)
 
 
 # 1A. Most periods in a row success
 @providers.register
 def longest_streak_succeeding(habit):
     if _longest_streak(habit):
-        return "Longest succeeding streak. You're a carrot!"
+        return random.choice(ENCOURAGEMENT_1)
+        # return "Longest succeeding streak. You're a carrot!"
 
 
 # 1B. Most periods in a row non-zero
 @providers.register
 def longest_streak_nonzero(habit):
     if _longest_streak(habit, success=lambda b: b.value > 0):
-        return "Longest streak where you did anything. You're a not entirely lazy carrot!"
+        return random.choice(ENCOURAGEMENT_2)
+        # return random.choice((
+        #     "Longest streak where you did anything. You're a not entirely lazy carrot!",
+        # ))
 
 
 # 2A. The highest value for a time period ... ever ... volume 3
@@ -71,7 +73,8 @@ def best_day_ever(habit):
         return None
 
     if _best_bucket_ever(habit, habit.resolution):
-        return "BEST. DAY. EVERRR!"
+        return random.choice(ENCOURAGEMENT_3)
+        # return "BEST. DAY. EVERRR!"
 
 
 # 2b. Highest number for a week ever
@@ -81,14 +84,16 @@ def best_week_ever(habit):
         return None
 
     if _best_bucket_ever(habit, 'week'):
-        return "BEST. WEEK. EVERRR!"
+        return random.choice(ENCOURAGEMENT_4)
+        # return "BEST. WEEK. EVERRR!"
 
 
 # 2c. Highest number for a month ever
 @providers.register
 def best_month_ever(habit):
     if _best_bucket_ever(habit, 'month'):
-        return "BEST. MONTH. EVERRR!"
+        return random.choice(ENCOURAGEMENT_5)
+        # return "BEST. MONTH. EVERRR!"
 
 
 # 4.  For n we consecutively you have entered a zero data point (as opposed
@@ -116,13 +121,16 @@ def streak_of_doom(habit):
     if buckets.count() < doom_threshold:
         return None
     else:
-        return "Hooray DOOOM, happy hippy DOOOOOOM"
+        return random.choice(ENCOURAGEMENT_6)
 
 
 # 5.  The value of the previous consecutive time period is less than the value of this
 #     time period
 @providers.register
 def better_than_before(habit):
+    if habit.target_value == 1:
+        return None
+
     buckets = habit.get_buckets(order_by='-index')
     if buckets.count() < 2:
         return None
@@ -133,16 +141,18 @@ def better_than_before(habit):
     if (buckets[0].value <= buckets[1].value):
         return None
 
-    return "FUCK YEAH OTTERS"
+    return random.choice(ENCOURAGEMENT_7)
 
 
 # 7a. Success if you've done your action every day in the past month.
 @providers.register
 def every_day_this_month_nonzero(habit):
-    if _every_day_this_month(habit):
+    if habit.target_value > 1 and _every_day_this_month(habit):
         latest = habit.get_buckets(order_by='-index')[0]
         latest_date = habit.start + datetime.timedelta(days=latest.index)
-        return "Wahey! You've done your action at least once every day in %s!" % calendar.month_name[latest_date.month]
+        return random.choice(ENCOURAGEMENT_8) % {
+            'month': calendar.month_name[latest_date.month]
+        }
 
 
 # 7b. Success if you've hit your target every day in the past month.
@@ -151,7 +161,9 @@ def every_day_this_month_succeeding(habit):
     if _every_day_this_month(habit, habit.target_value):
         latest = habit.get_buckets(order_by='-index')[0]
         latest_date = habit.start + datetime.timedelta(days=latest.index)
-        return "Wahey! You've hit your target every day in %s!" % calendar.month_name[latest_date.month]
+        return random.choice(ENCOURAGEMENT_9) % {
+            'month': calendar.month_name[latest_date.month]
+        }
 
 
 
@@ -163,9 +175,10 @@ def every_xday_this_month_nonzero(habit):
     if _every_xday_this_month(habit):
         latest = habit.get_buckets(order_by='-index')[0]
         latest_date = habit.start + datetime.timedelta(days=latest.index)
-        return "Congratulations, you've done your task every %s this %s!" % (
-            calendar.day_name[latest_date.weekday()],
-            calendar.month_name[latest_date.month])
+        return random.choice(ENCOURAGEMENT_10) % {
+            'day': calendar.day_name[latest_date.weekday()],
+            'month': calendar.month_name[latest_date.month]
+        }
 
 
 # 3b. Only for a daily action if you have hit your target every {Monday,
@@ -176,9 +189,10 @@ def every_xday_this_month_succeeding(habit):
     if _every_xday_this_month(habit, habit.target_value):
         latest = habit.get_buckets(order_by='-index')[0]
         latest_date = habit.start + datetime.timedelta(days=latest.index)
-        return "Congratulations, you've hit your target every %s this %s!" % (
-            calendar.day_name[latest_date.weekday()],
-            calendar.month_name[latest_date.month])
+        return random.choice(ENCOURAGEMENT_11) % {
+            'day': calendar.day_name[latest_date.weekday()],
+            'month': calendar.month_name[latest_date.month],
+        }
 
 # 6.  "Don't call it a comeback" - n time periods of success, followed by
 #     m time periods of failure, followed by k time periods of success
@@ -236,7 +250,7 @@ def _every_day_this_month(habit, target_value=1):
     latest_date = habit.start + datetime.timedelta(days=latest.index)
 
     # Only proceed to check all buckets this month if we've just entered the
-    # last bucket this month. Use != because months aren't monotonically
+    # last bucket this month. Use == because months aren't monotonically
     # increasing (December -> January).
     next_date = latest_date + datetime.timedelta(days=1)
     if latest_date.month == next_date.month:
