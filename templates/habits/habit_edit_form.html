@@ -2,22 +2,22 @@
 {% block title %}Good Job!{% endblock %}
 
 {% block body %}
-  <h1>Hi Mazz!</h1>
+  <h1>Edit Action <button>TODO: Put to rest</button></h1>
 
-<form id="edit-habit-form" action="" method="POST">
+<form id="edit-habit-form" action="" method="POST" class="add-habbit">
     {% csrf_token %}
     <p>
       {% if form.errors %}
           <p class="alert">
             <strong>
               {% if form.errors.description %}
-                The description {{ form.errors.description.as_text }}
+                "I want to" {{ form.errors.description.as_text }}
               {% endif %}
               {% if form.errors.target_value %}
-                The target value {{ form.errors.target_value.as_text }}
+                "times" {{ form.errors.target_value.as_text }}
               {% endif %}
               {% if form.errors.resolution %}
-                The resolution {{ form.errors.resolution.as_text }}
+                "per" {{ form.errors.resolution.as_text }}
               {% endif %}
             </strong>
           </p>
@@ -31,4 +31,11 @@
       <button type='submit'>Save</button>
     </p>
 </form>
+
+<form>
+  TODO: Trigger reminder edit
+</form>
+
+<button>TODO: delete habit button</button>
+
 {% endblock %}
