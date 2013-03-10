@@ -1,4 +1,5 @@
 from collections import namedtuple
+import calendar
 import datetime
 import functools
 
@@ -202,6 +203,9 @@ TIME_PERIOD_FRIENDLY_NAME_FIXTURES = (
     TPFNF('2013-03-05', 'week', '2013-03-15', 'Week of March 5th'),
 )
 
+SCHEDULE_MONDAYS     = [n == 0 for n in range(7)]
+SCHEDULE_MON_WED_FRI = [n % 2 == 0 and n != 6 for n in range(7)]
+SCHEDULE_WEEKENDS    = [n > 4 for n in range(7)]
 
 class HabitTests(TestCase):
 
@@ -266,48 +270,107 @@ class HabitTests(TestCase):
             h.set_reminder_schedule(mondays + [True], 12)
 
     def test_set_reminder_schedule(self):
-        mondays = [n == 0 for n in range(7)]
-        mon_wed_fri = [n % 2 == 0 and n != 6 for n in range(7)]
-        weekends = [n > 4 for n in range(7)]
-
         h = Habit()
 
-        h.set_reminder_schedule(mondays, 12)
+        h.set_reminder_schedule(SCHEDULE_MONDAYS, 12)
         self.assertEquals(h.reminder_days, 1)
         self.assertEquals(h.reminder_hour, 12)
 
-        h.set_reminder_schedule(mon_wed_fri, 3)
+        h.set_reminder_schedule(SCHEDULE_MON_WED_FRI, 3)
         self.assertEquals(h.reminder_days, 1 | 4 | 16)
         self.assertEquals(h.reminder_hour, 3)
 
-        h.set_reminder_schedule(weekends, 0)
+        h.set_reminder_schedule(SCHEDULE_WEEKENDS, 0)
         self.assertEquals(h.reminder_days, 32 | 64)
         self.assertEquals(h.reminder_hour, 0)
 
     def test_get_reminder_schedule(self):
-        mondays = [n == 0 for n in range(7)]
-        mon_wed_fri = [n % 2 == 0 and n != 6 for n in range(7)]
-        weekends = [n > 4 for n in range(7)]
-
         h = Habit()
 
         h.reminder_days = 1
         h.reminder_hour = 12
         weekdays, hour = h.get_reminder_schedule()
-        self.assertEquals(mondays, weekdays)
+        self.assertEquals(SCHEDULE_MONDAYS, weekdays)
         self.assertEquals(hour, 12)
 
         h.reminder_days = 1 | 4 | 16
         h.reminder_hour = 3
         weekdays, hour = h.get_reminder_schedule()
-        self.assertEquals(mon_wed_fri, weekdays)
+        self.assertEquals(SCHEDULE_MON_WED_FRI, weekdays)
         self.assertEquals(hour, 3)
 
         h.reminder_days = 32 | 64
         h.reminder_hour = 0
         weekdays, hour = h.get_reminder_schedule()
-        self.assertEquals(weekends, weekdays)
+        self.assertEquals(SCHEDULE_WEEKENDS, weekdays)
         self.assertEquals(hour, 0)
+
+    def _scheduled(self, weekday, hour):
+        return list(Habit.scheduled_for_reminder(weekday, hour))
+
+    def test_scheduled_for_reminder_no_schedule(self):
+        h = Habit.objects.create(user=self.user,
+                                 start=datetime.date(2013, 3, 4),
+                                 description='Do a thing. On a day.')
+
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,  12)), 0)
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,  6)),  0)
+        self.assertEquals(len(self._scheduled(calendar.TUESDAY, 6)),  0)
+
+    def test_scheduled_for_reminder_mondays(self):
+        h = Habit(user=self.user,
+                  start=datetime.date(2013, 3, 4),
+                  description='Do a thing. On a day.')
+        h.set_reminder_schedule(SCHEDULE_MONDAYS, 12)
+        h.save()
+
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,  12)),   1)
+        self.assertEquals(self._scheduled(calendar.MONDAY,      12)[0], h)
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,  6)),    0)
+        self.assertEquals(len(self._scheduled(calendar.TUESDAY, 12)),   0)
+
+    def test_scheduled_for_reminder_mon_wed_fri(self):
+        h = Habit(user=self.user,
+                  start=datetime.date(2013, 3, 4),
+                  description='Do a thing. On a day.')
+        h.set_reminder_schedule(SCHEDULE_MON_WED_FRI, 15)
+        h.save()
+
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,    15)),   1)
+        self.assertEquals(self._scheduled(calendar.MONDAY,        15)[0], h)
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,    6)),    0)
+        self.assertEquals(len(self._scheduled(calendar.TUESDAY,   15)),   0)
+        self.assertEquals(self._scheduled(calendar.WEDNESDAY,     15)[0], h)
+        self.assertEquals(len(self._scheduled(calendar.WEDNESDAY, 6)),    0)
+
+    def test_scheduled_for_reminder_weekends(self):
+        h = Habit(user=self.user,
+                  start=datetime.date(2013, 3, 4),
+                  description='Do a thing. On a day.')
+        h.set_reminder_schedule(SCHEDULE_WEEKENDS, 0)
+        h.save()
+
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,   0)),   0)
+        self.assertEquals(len(self._scheduled(calendar.SATURDAY, 6)),   0)
+        self.assertEquals(len(self._scheduled(calendar.SATURDAY, 0)),   1)
+        self.assertEquals(self._scheduled(calendar.SATURDAY,     0)[0], h)
+
+    def test_scheduled_for_reminder_multiple_habits(self):
+        h1 = Habit(user=self.user,
+                   start=datetime.date(2013, 3, 4),
+                   description='Habit 1')
+        h1.set_reminder_schedule(SCHEDULE_MONDAYS, 16)
+        h1.save()
+        h2 = Habit(user=self.user,
+                   start=datetime.date(2013, 3, 4),
+                   description='Habit 2')
+        h2.set_reminder_schedule(SCHEDULE_MON_WED_FRI, 16)
+        h2.save()
+
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,    0)),  0)
+        self.assertEquals(len(self._scheduled(calendar.MONDAY,    16)), 2)
+        self.assertEquals(len(self._scheduled(calendar.WEDNESDAY, 0)),  0)
+        self.assertEquals(len(self._scheduled(calendar.WEDNESDAY, 16)), 1)
 
 class TimePeriodTests(TestCase):
     pass

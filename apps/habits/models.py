@@ -228,6 +228,19 @@ class Habit(models.Model):
         # HACK: Use ID as proxy for creation order
         ordering = ['archived', '-id']
 
+    @classmethod
+    def scheduled_for_reminder(cls, weekday, hour):
+        """
+        Get all habits scheduled for a reminder on the given ``weekday`` and
+        ``hour``. ``weekday`` should be an integer weekday
+        (Monday=0...Sunday=6).
+        """
+        return cls.objects.raw("""
+            SELECT * FROM habits_habit
+            WHERE (reminder_days & %s) != 0
+            AND reminder_hour = %s
+        """, [1 << weekday, hour])
+
     def get_current_time_period(self):
         return self.get_time_period(datetime.date.today())
 
