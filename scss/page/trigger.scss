@@ -83,15 +83,15 @@
     margin-top:             24px;
     text-align:             center;
 }
-#skip-reminder button {
+#skip-reminder-form button {
     background:             none;
     border:                 none;
     color:                  $links_colour;
     cursor:                 pointer;
     font:                   inherit;
 }
-#skip-reminder button:focus,
-#skip-reminder button:hover {
+#skip-reminder-form button:focus,
+#skip-reminder-form button:hover {
     color:                  $links_active_colour;
     text-decoration:        underline;
 }

@@ -24,7 +24,7 @@ class OnboardingViewTest(WebTest):
         response = response.follow()
 
         # Submit to email entry page
-        response = response.forms['skip-reminder'].submit()
+        response = response.forms['skip-reminder-form'].submit()
         response = response.follow()
 
         # Submit email entry form
