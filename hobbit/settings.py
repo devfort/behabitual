@@ -24,7 +24,7 @@ else:
     EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD', 'vagrant')
     EMAIL_USE_TLS       = env.get('EMAIL_USE_TLS', 'true') == 'true'
     DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'hobbit@dev.fort')
-
+    DEFAULT_TO_EMAIL    = ('vagrant@dev.fort',)
 
 DATABASES = {
     'default': {
