@@ -26,24 +26,24 @@ def render_to_email(
     """
     Send a multipart email using the three given templates. Note that to should
     be either User objects or email addresses as strings.
-    
+
     The context gets augmented with:
-    
+
      * recipients -- whatever you passed in to (use .is_authenticated() to see
        if it's a User)
      * subject -- whatever was passed or rendered (except for rendering the
        subject)
-    
+
     Note that we aren't using a RequestContext, so context processors won't run.
     Add your stuff in directly using the context parameter.
-    
+
     subject preferred over subject_template if both are given.
     """
 
     if context is None:
         context = {}
     context['recipients'] = to
-    
+
     def as_email_address(user_or_email):
         try:
             return user_or_email.email
