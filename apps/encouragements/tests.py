@@ -72,7 +72,8 @@ def _test_provider(self, fixture):
     start, resolution = fixture.habit
     start_date = helpers.parse_isodate(start)
 
-    hab = Habit.objects.create(start=start_date,
+    hab = Habit.objects.create(description="Go for a walk",
+                               start=start_date,
                                user=self.user,
                                resolution=resolution,
                                target_value=3)

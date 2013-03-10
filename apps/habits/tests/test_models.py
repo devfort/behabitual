@@ -418,7 +418,8 @@ helpers.attach_fixture_tests(TimePeriodTests, test_time_period_friendly_name, TI
 def test_recent_unentered_time_periods(self, fixture):
     # start, resolution, data, date, expected = fixture
     start_date = helpers.parse_isodate(fixture.start)
-    h = Habit.objects.create(start=start_date,
+    h = Habit.objects.create(description="Tangle my wobble",
+                             start=start_date,
                              user=self.user,
                              resolution=fixture.resolution,
                              target_value=1)
@@ -465,7 +466,8 @@ helpers.attach_fixture_tests(HabitTests, test_record, RECORD_FIXTURES)
 def test_get_streaks(self, fixture):
     start, resolution, target_value = fixture.habit
     start_date = helpers.parse_isodate(start)
-    h = Habit.objects.create(start=start_date,
+    h = Habit.objects.create(description="Foo my bar",
+                             start=start_date,
                              user=self.user,
                              resolution=resolution,
                              target_value=target_value)

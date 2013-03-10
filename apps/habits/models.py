@@ -220,7 +220,8 @@ class Habit(models.Model):
     reminder_hour = models.IntegerField(
         validators=[_validate_non_negative],
         default=None,
-        null=True
+        null=True,
+        blank=True
     )
 
     class Meta:
@@ -239,6 +240,10 @@ class Habit(models.Model):
             WHERE (reminder_days & %s) != 0
             AND reminder_hour = %s
         """, [1 << weekday, hour])
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(Habit, self).save(*args, **kwargs)
 
     def get_current_time_period(self):
         return self.get_time_period(datetime.date.today())
