@@ -10,21 +10,20 @@ from django.contrib.humanize.templatetags.humanize import ordinal
 
 from .signals import habit_archived, habit_created, habit_data_recorded
 
-RESOLUTION_NAMES = (
-    _('day'),
-    _('day on weekdays'),
-    _('day on weekends'),
-    _('week'),
-)
-
 RESOLUTIONS = (
-    'day',
-    'weekday',
-    'weekendday',
-    'week',
+    ('day',        _('day')),
+    ('weekday',    _('day on weekdays')),
+    ('weekendday', _('day on weekends')),
+    ('week',       _('week')),
+    ('month',      _('month')),
 )
 
-RESOLUTION_CHOICES = zip(RESOLUTIONS, RESOLUTION_NAMES)
+RESOLUTIONS_NO_MONTH = (
+    ('day',        _('day')),
+    ('weekday',    _('day on weekdays')),
+    ('weekendday', _('day on weekends')),
+    ('week',       _('week')),
+)
 
 def _validate_non_negative(val):
     if val < 0:
@@ -207,7 +206,7 @@ class Habit(models.Model):
     user = models.ForeignKey('accounts.User', related_name='habits')
     resolution = models.CharField(
         max_length=10,
-        choices=RESOLUTION_CHOICES,
+        choices=RESOLUTIONS,
         default='day',
     )
     start = models.DateField()
@@ -347,8 +346,9 @@ class Habit(models.Model):
             yield streak
 
     def get_resolution_name(self):
-        resolution_index = RESOLUTIONS.index(self.resolution)
-        return RESOLUTION_NAMES[resolution_index]
+        for ident, name in RESOLUTIONS:
+            if self.resolution == ident:
+                return name
 
     def set_reminder_schedule(self, weekdays, hour):
         """
@@ -407,7 +407,7 @@ class Bucket(models.Model):
     )
     resolution = models.CharField(
         max_length=10,
-        choices=zip(RESOLUTIONS, RESOLUTION_NAMES),
+        choices=RESOLUTIONS,
         default='day',
     )
 

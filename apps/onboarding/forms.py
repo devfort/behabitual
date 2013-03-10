@@ -1,7 +1,11 @@
 from django import forms
 from django.contrib.auth import get_user_model
+<<<<<<< HEAD
 from django.utils.safestring import mark_safe
 from apps.habits.models import RESOLUTION_CHOICES
+=======
+from apps.habits.models import RESOLUTIONS_NO_MONTH
+>>>>>>> Reinstate 'month' resolution at the model level
 
 User = get_user_model()
 
@@ -33,7 +37,7 @@ class HabitForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': '2'}),
     )
     resolution = forms.ChoiceField(
-        choices=RESOLUTION_CHOICES,
+        choices=RESOLUTIONS_NO_MONTH,
     )
 
 
