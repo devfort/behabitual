@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm your email address{% endblock %}
+
+{% block body %}
+  <div class='copy'>
+    <h1>Confirm your email address</h1>
+
+  	<p>Someone (hopefully you!) has set up a new account with us using your email address <strong>{{ email }}</strong>.</p>
+
+    <p>So we know you're okay with us sending you emails, please hit the button below to tell us everything's okay. If you didn't set up an account with us and don't hit the button, we'll never send you an email again.</p>
+
+  	<form id='confirm-email-form' method='POST' action=''>
+    	{% csrf_token %}
+    	<input type='hidden' name='next' value='{{ next }}'>
+    	<button type='submit' class='progress'>Confirm this email</button>
+  	</form>
+  </div>
+{% endblock %}

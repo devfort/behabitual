@@ -5,5 +5,10 @@
   </head>
   <body>
     <p>Welcome to Habitually!</p>
+
+	<p>
+		You will need to 
+<a href='{{ protocol }}://{{ domain }}{% url 'apps.onboarding.views.confirm_email_address' uidb36=uid token=token %}'>confirm your email address</a> before using Habitually.
+    </p>
   </body>
 </html>

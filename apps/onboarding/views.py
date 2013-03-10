@@ -1,17 +1,23 @@
 from datetime import datetime
-from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model, login
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
+from django.contrib.sites.models import get_current_site
 from django.db import connection
 from django.db.utils import IntegrityError
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template.response import TemplateResponse
+from django.utils.http import base36_to_int, int_to_base36
+from django.views.decorators.cache import never_cache
 
-from forms import HabitForm, \
+from apps.onboarding.forms import HabitForm, \
     NewUserReminderForm, ExistingUserReminderForm, \
     NewUserSummaryForm, ExistingUserSummaryForm
+
 from apps.accounts.signals import user_created
+from apps.autologin.views import FlexibleTokenGenerator
 from apps.habits.models import Habit
 from apps.habits.signals import habit_created
+
 from util.render_to_email import render_to_email
 
 User = get_user_model()
@@ -96,12 +102,27 @@ class OnboardingWizard(NamedUrlSessionWizardView):
 
         user_created.send(user)
 
+        current_site = get_current_site(self.request)
+        site_name = current_site.name
+        domain = current_site.domain
+
+        c = {
+            'email': user.email,
+            'domain': domain,
+            'site_name': site_name,
+            'uid': int_to_base36(user.pk),
+            'user': user,
+            'token': token_generator.make_token(user),
+            'protocol': self.request.is_secure() and 'https' or 'http',
+        }
+
         render_to_email(
             text_template='onboarding/emails/welcome.txt',
             html_template='onboarding/emails/welcome.html',
             to=(user,),
             subject='Welcome!',
             opt_out=False,
+            context=c,
         )
 
         return user
@@ -136,3 +157,62 @@ def add_habit_wizard(request, *args, **kwargs):
             ('summary', NewUserSummaryForm),
         ), url_name='add_habit_step', done_step_name='done')
     return wizard(request, *args, **kwargs)
+
+
+class EmailConfirmationTokenGenerator(FlexibleTokenGenerator):
+    key_salt = "apps.onboarding.EmailConfirmationTokenGenerator"
+
+token_generator = EmailConfirmationTokenGenerator()
+
+
+@never_cache
+def confirm_email_address(
+    request,
+    uidb36,
+    token,
+    error_template="onboarding/failed_email_confirm.html",
+    template="onboarding/email_confirm.html",
+    redirect_to="/"
+):
+    redirect = request.GET.get('next', None)
+    args = request.GET.copy()
+    if 'next' in args:
+        del args['next']
+    args = args.urlencode()
+    if redirect is None:
+        redirect = redirect_to
+    if args != "":
+        if '?' in redirect:
+            redirect += '&'
+        else:
+            redirect += '?'
+        redirect += args
+
+    try:
+        user = User.objects.get(pk=base36_to_int(uidb36))
+    except (ValueError, User.DoesNotExist):
+        user = None
+
+    if request.user.is_authenticated() and request.user != user:
+        user = None
+
+    if user is None or not token_generator.check_token(user, token):
+        return TemplateResponse(request, error_template, {}, status=400)
+
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            if request.user == user:
+                user.is_active = True
+                user.save()
+                update_last_login(None, user)
+                return HttpResponseRedirect(redirect)
+            else:
+                return TemplateResponse(request, error_template, {}, status=400)
+
+        user.is_active = True
+        user.save()
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        login(request, user)
+        return HttpResponseRedirect(redirect)
+    else:
+        return TemplateResponse(request, template, { 'next': redirect, 'email': user.email })

@@ -1,1 +1,8 @@
 Welcome to Habitually!
+
+You will need to confirm your email address before using Habitually. Just go to the following address.
+
+{{ protocol }}://{{ domain }}{% url 'apps.onboarding.views.confirm_email_address' uidb36=uid token=token %}
+
+Yours,
+The Monks of Habit

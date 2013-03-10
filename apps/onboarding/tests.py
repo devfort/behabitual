@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 from django.core import mail
@@ -37,6 +38,28 @@ class OnboardingViewTest(WebTest):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
         self.assertTrue('welcome' in email.subject.lower())
+
+    def test_sends_welcome_email_with_functioning_confirm_link(self):
+        self.test_sends_welcome_email()
+        email = mail.outbox[0]
+        self.assertEqual('text/html', email.alternatives[0][1])
+        soup = BeautifulSoup(email.alternatives[0][0])
+        confirm_url = soup.find('a')['href']
+
+        # user should be inactive; when we hit the URL it should become active
+        self.assertEqual(1, User.objects.filter(is_active=False, email='foo@bar.com').count())
+        response = self.app.get(confirm_url)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, User.objects.filter(is_active=False, email='foo@bar.com').count())
+        form = response.forms['confirm-email-form']
+        response = form.submit()
+        self.assertEqual(302, response.status_code)
+        self.assertEqual(1, User.objects.filter(is_active=True, email='foo@bar.com').count())
+        # also our session (ie access via self.app) should be logged in
+        # we test this by hitting the password change URL and seeing if we're
+        # redirected (not logged in)
+        response = self.app.get(reverse('password_change'))
+        self.assertEqual(200, response.status_code)
 
     def test_add_habit_sends_email(self):
         self.user.is_active = True
