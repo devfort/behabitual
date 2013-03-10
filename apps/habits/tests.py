@@ -402,7 +402,8 @@ class HabitRecordViewTest(WebTest):
             description="Brush my teeth",
             start=datetime.date.today(),
             user=self.user,
-            resolution='day'
+            resolution='day',
+            target_value=2,
         )
 
     def test_record_get(self):
@@ -432,7 +433,8 @@ class HabitRecordViewTest(WebTest):
             description="Frob my Hobbits",
             start=datetime.date.today() - datetime.timedelta(days=1),
             user=self.user,
-            resolution='day'
+            resolution='day',
+            target_value=2,
         )
         response = self.app.get(reverse('habit_record', args=[self.habit.id]), user='someone@example.com')
         form = form = response.forms['data-entry']
@@ -452,7 +454,8 @@ class HabitRecordViewTest(WebTest):
             description="Frob my Hobbits",
             start=datetime.date.today() - datetime.timedelta(days=2),
             user=self.user,
-            resolution='day'
+            resolution='day',
+            target_value=2,
         )
         self.habit.record(self.habit.get_time_period(self.habit.start), 17)
         response = self.app.get(reverse('habit_record', args=[self.habit.id]), user='someone@example.com')
@@ -478,7 +481,8 @@ class HabitRecordViewTest(WebTest):
             description="Frob my Hobbits",
             start=datetime.date.today() - datetime.timedelta(days=1),
             user=self.user,
-            resolution='day'
+            resolution='day',
+            target_value=2,
         )
         self.habit.record(self.habit.get_time_period(self.habit.start), 17)
         time_period = self.habit.get_current_time_period()
@@ -507,3 +511,31 @@ class HabitRecordViewTest(WebTest):
 
         bucket = self.habit.get_buckets().get(index=time_period.index)
         self.assertEquals(2, bucket.value)
+
+    def test_post_yes_no_habit(self):
+        self.habit = Habit.objects.create(
+            description="Frob my Hobbits",
+            start=datetime.date.today() - datetime.timedelta(days=2),
+            user=self.user,
+            resolution='day',
+            target_value=1,
+        )
+        self.habit.record(self.habit.get_time_period(self.habit.start), 1)
+        response = self.app.get(reverse('habit_record', args=[self.habit.id]), user='someone@example.com')
+        form = response.forms['data-entry']
+        with self.assertRaises(AssertionError):
+            # not in the form because data already exists
+            form.set('0-value', 1000)
+
+        # Index=1 says submit the second (0-based). 0: hidden, 1: checkbox
+        form.set('2-value', 1, index=1)
+        resp = form.submit()
+        self.assertEqual(302, resp.status_code)
+        self.assertEqual('http://localhost:80' + reverse('habit_encouragement', args=[self.habit.id]), resp.headers['Location'])
+
+        bucket = self.habit.get_buckets().get(index=0)
+        self.assertEquals(1, bucket.value)
+        bucket = self.habit.get_buckets().get(index=1)
+        self.assertEquals(0, bucket.value)
+        bucket = self.habit.get_buckets().get(index=2)
+        self.assertEquals(1, bucket.value)
