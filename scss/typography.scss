@@ -23,10 +23,10 @@ body {
 }
 
 .copy h1 {
+    color:                  $header_colour;
     font-weight:            bold;
     font-size:              36px;
     font-size:              3.6rem;
-    color:                  $header_colour;
     margin:                 30px 0;
 }
 body.centred-wtf .copy h1 {
@@ -75,7 +75,24 @@ q:after {
     content:                '”';
     font-weight:            normal;
 }
+h1 q {
+    display:                block;
+    color:                  $header_colour;
+    font-weight:            bold;
+    font-size:              36px;
+    font-size:              3.6rem;
+    margin-bottom:          36px;
+}
+q:before {
+    content:                '';
+}
+q:after {
+    content:                '';
+}
 
+button {
+    font-family:            'Ubuntu';
+}
 .progress {
     background:             $button_colour;
     border-radius:          5px;

@@ -1,26 +1,83 @@
 {% extends "base.html" %}
 {% block title %}SOMETHING SOMETHING HABIT{% endblock %}
 {% block body %}
-  <h1>Did you do your habit: <q>{{ habit.description }}</q>?</h1>
+  {% if habit.is_binary %}
+    <h1>Did you do your habit: <q>{{ habit.description }}?</q></h1>
+  {% else %}
+    <h1>How many times did you <q>{{ habit.description }}?</q></h1>
+  {% endif %}
 
   <form id="data-entry" method="POST" action="">
     {% csrf_token %}
-    {% for form in forms %}
-      {% for field in form %}
-        {% if field.is_hidden %}
-          {{ field }}
-        {% else %}
-          {{ field.errors }}
-          {{ field.label_tag }}
-          {% if habit.is_binary %}
-            <input type="hidden" name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="0">
-            <input type="checkbox" name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="1">
-          {% else %}
-            {{ field }}
-          {% endif %}
-        {% endif %}
+    <ul>
+      {% for form in forms %}
+        <li>
+          {% for field in form %}
+            {% if field.is_hidden %}
+              {{ field }}
+            {% else %}
+              {{ field.errors }}
+              {{ field.label_tag }}
+              {% if habit.is_binary %}
+                {# the hidden input means that unchecked still submits #}
+                <input type='hidden' name='{{ field.html_name }}' 
+                       id='{{ field.id_for_label }}' value='0'>
+                <input type='checkbox' name='{{ field.html_name }}' 
+                       id='{{ field.id_for_label }}' checked='checked' value='1'>
+              {% else %}
+                {{ field }}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </li>
       {% endfor %}
-    {% endfor %}
-    <input type="submit" value="Done">
+    </ul>
+    <button type='submit' class='progress'>Done</button>
   </form>
+{% endblock %}
+
+{% block javascript-enhance %}
+  (function( $ ){
+      $.fn.make_into_switch = function() {
+          var create_switch_html = function (el) {
+              var $button = $('<button/>').text('Y').bind(
+                      'click', function(ev) {
+                          change_switch_state(ev, el);
+                          return false;
+                      }
+                  );
+              
+              if ( $(el).attr('checked') ) {
+                  $button.addClass('on');
+              }
+              
+              $(el).before( $button ).addClass('enhanced');
+          }
+          
+          var change_switch_state = function (ev, el) {
+              console.log('change switch state', el);
+              var $button = $('button', $(ev.target).parent() );
+              if ( $(el).attr('value') == 1 ) {
+                  $(el).attr('value', 0);
+                  $button.removeClass('on');
+              }
+              else {
+                  $(el).attr('value', 1);
+                  $button.addClass('on');
+              }
+          };
+          
+          this.each( function() {
+              create_switch_html( $(this) );
+          })
+          
+          this.bind('change', function(ev) {
+              change_switch_state(ev, this);
+          });
+      };
+  })( jQuery );
+
+  $(function() {
+      $('input[type=checkbox]').make_into_switch();
+  });
 {% endblock %}
