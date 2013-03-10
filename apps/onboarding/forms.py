@@ -1,5 +1,8 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from apps.habits.models import RESOLUTION_CHOICES
+
+User = get_user_model()
 
 DAYS_OF_WEEK = (
     ('MONDAY', 'Monday'),
@@ -39,7 +42,15 @@ class ExistingUserReminderForm(forms.Form):
     hour = forms.ChoiceField(choices=HOURS, required=False)
 
 
-class NewUserReminderForm(ExistingUserReminderForm):
+class EmailUniqueness(object):
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        user_count = User.objects.filter(email=email).count()
+        if user_count > 0:
+            raise forms.ValidationError("Email is already taken")
+
+
+class NewUserReminderForm(ExistingUserReminderForm, EmailUniqueness):
     email = forms.EmailField(required=False)
 
     def clean(self):
@@ -52,12 +63,12 @@ class NewUserReminderForm(ExistingUserReminderForm):
             raise forms.ValidationError("Email is required for reminder")
         return cleaned_data
 
-class NewUserSummaryForm(forms.Form):
+
+class NewUserSummaryForm(forms.Form, EmailUniqueness):
     """
     Captures user information. The final step of the OnboardingWizard.
     """
     email = forms.EmailField()
-
 
 class ExistingUserSummaryForm(forms.Form):
     """

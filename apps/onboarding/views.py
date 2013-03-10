@@ -2,6 +2,9 @@ from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model, login
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
+from django.db import connection
+from django.db.utils import IntegrityError
+from django.http import HttpResponse
 
 from forms import HabitForm, \
     NewUserReminderForm, ExistingUserReminderForm, \
@@ -23,8 +26,12 @@ class OnboardingWizard(NamedUrlSessionWizardView):
 
     def done(self, form_list, **kwargs):
         self.form_list = form_list
-        self.save()
-        return HttpResponseRedirect('/')
+        try:
+            self.save()
+            return HttpResponseRedirect('/')
+        except IntegrityError:
+            connection.close()
+            return HttpResponse('WRONG', content_type='text/html', status=403)
 
     def get_form_initial(self, step):
         if step == 'summary':
