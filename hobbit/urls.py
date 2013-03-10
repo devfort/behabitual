@@ -41,7 +41,6 @@ urlpatterns = patterns('',
     url(r'^accounts/forgot/done/$', 'password_reset_done'),
 
     url(r'^styletile$', TemplateView.as_view(template_name='styles/tile.html'), name='styletile'),
-    url(r'^add-trigger$', TemplateView.as_view(template_name='styles/add_trigger.html'), name='add-trigger-placeholder'),
 )
 
 from apps.monitoring import *

@@ -5,7 +5,7 @@
     border-radius:          3px;
 }
 
-.add-trigger .highlight span.name-the-thing {
+.add-trigger .highlight span.term-explanation {
     position:               relative;
     padding-left:           50px;
 }
@@ -16,16 +16,16 @@
 .add-trigger .highlight .trigger strong {
     background:             $highlight_colour_b;
 }
-.add-trigger .highlight .trigger span.name-the-thing {
+.add-trigger .highlight .trigger span.term-explanation {
     color:                  $highlight_colour_b;
 }
 .add-trigger .highlight .habit strong {
     background:             $positive_colour;
 }
-.add-trigger .highlight .habit span.name-the-thing {
+.add-trigger .highlight .habit span.term-explanation {
     color:                  $positive_colour;
 }
-.add-trigger .highlight span.name-the-thing:before {
+.add-trigger .highlight span.term-explanation:before {
     content:                '';
     display:                block;
     position:               absolute;
@@ -35,7 +35,7 @@
     height:                 2px;
     width:                  40px;
 }
-.add-trigger .highlight .habit span.name-the-thing:before {
+.add-trigger .highlight .habit span.term-explanation:before {
     background:             $positive_colour;
 }
 

@@ -22,29 +22,28 @@ body {
     color:                  #333;
 }
 
-/*#main h1 {
+.copy h1 {
     font-weight:            bold;
     font-size:              36px;
     font-size:              3.6rem;
     color:                  $header_colour;
     margin:                 30px 0;
 }
-*/body.centred-wtf h1 {
+body.centred-wtf .copy h1 {
     text-align:             center;
 }
-/*#main h2 {
+.copy h2 {
     font-weight:            bold;
     font-size:              28px;
     font-size:              2.8rem;
     color:                  $header_colour;
     margin:                 30px 0;
 }
-#main h3 {
+.copy h3 {
     font-weight:            bold;
     margin:                 30px 0;
 }
-*/
-#main p {
+.copy p {
     margin:                 30px 0;
 }
 .highlight {

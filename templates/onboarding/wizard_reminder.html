@@ -1,13 +1,153 @@
 {% extends "base.html" %}
 
-{% block title %}Add a habit{% endblock %}
-{% block body %}
-  <h1>Add a habit</h1>
+{% block body-class %}centred-wtf add-trigger{% endblock %}
+{% block title %}Add a trigger{% endblock %}
 
-  <form method="POST" action="">
-    {% csrf_token %}
-    {{ wizard.management_form }}
-    {{ form.as_p }}
-    <button type="submit">Go</button>
-  </form>
+{% block body %}
+  <div class='copy'>
+    
+    <h1>Triggers</h1>
+
+    <p>Starting a new habit is about adding it to your daily routine. If you
+    associate a regular task with your new habit (ie. <a href="">creating a
+    trigger</a>), you’ll find it easier to adopt.</p>
+
+    <p class='highlight'>
+      <span class='trigger'>
+        eg. After you
+        <strong>put your cereal bowl in the sink</strong>
+          <span class='term-explanation'>
+            <b> (the</b> trigger<b>),</b>
+          </span>
+      </span>
+      <span class='habit'>then you
+        <strong>brush your teeth</strong>
+        <span class='term-explanation'>
+          <b> (the</b> habit<b>).</b>
+        </span>
+      </span>
+    </p>
+    
+    <p>We can email you a reminder about your trigger.</p>
+    
+    <form action='' method='POST'>
+      {% csrf_token %}
+      {% for field in form %}
+        {{ field.errors }}
+      {% endfor %}
+      
+      {% if user.is_authenticated %}
+        <input id='id_add_habit_wizard-current_step'
+               name='add_habit_wizard-current_step'
+               type='hidden' value='reminder'>
+      {% else %}
+        <input id='id_onboarding_wizard-current_step'
+               name='onboarding_wizard-current_step'
+               type='hidden' value='reminder'>
+      {% endif %}
+      
+      <fieldset class='trigger-text'>
+      {% if not user.is_authenticated %}
+        <p>
+         <label for='id_reminder-email'>My email is</label>
+         <input type='email' name='reminder-email' id='id_reminder-email'>
+        </p>
+      {% endif %}
+      <h2>My trigger reminder:</h2>
+      <p class='reminder'>
+       <label for='id_reminder-trigger'>When I</label>
+       <input type='text' name='reminder-trigger' id="id_reminder-trigger"
+              placeholder='close the dishwasher' type='text'>,
+       <label for="trigger_habbit">then I</label>
+       <input type='text' name='trigger_habbit' id='trigger_habbit'
+              placeholder='brush my teeth'>.
+      </p>
+      </fieldset>
+      
+      <fieldset class='trigger-time'>
+        <legend>Send reminder</legend>
+        <h2>When should we send this?</h2>
+        <div class='columnar'>
+          <span>Every</span>
+          <ul>
+            <li>
+              <input type='checkbox' name="reminder-days"
+                     id='id_reminder-days_0' value='MONDAY'>
+              <label for='id_reminder-days_0'><b>Every</b> Monday</label>
+            </li>
+            <li>
+              <input type='checkbox' name="reminder-days"
+                     id='id_reminder-days_1' value='TUESDAY'>
+              <label for='id_reminder-days_1'><b>Every</b> Tuesday</label>
+            </li>
+            <li>
+              <input type='checkbox' name="reminder-days"
+                     id='id_reminder-days_2' value='WEDNESDAY'>
+              <label for='id_reminder-days_2'><b>Every</b> Wednesday</label>
+            </li>
+            <li>
+              <input type='checkbox' name="reminder-days"
+                     id='id_reminder-days_3' value='THURSDAY'>
+              <label for='id_reminder-days_3'><b>Every</b> Thursday</label>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <input type='checkbox' name="reminder-days"
+                     id='id_reminder-days_4' value='FRIDAY'>
+              <label for='id_reminder-days_4'><b>Every</b> Friday</label>
+            </li>
+            <li>
+              <input type='checkbox' name="reminder-days"
+                     id='id_reminder-days_5' value='SATURDAY'>
+              <label for='id_reminder-days_5'><b>Every</b> Saturday</label>
+            </li>
+            <li>
+              <input type='checkbox' name="reminder-days"
+                     id='id_reminder-days_6' value='SUNDAY'>
+              <label for='id_reminder-days_6'><b>Every</b> Sunday</label>
+            </li>
+            <li>
+          </ul>
+        </div>
+        <p>
+          <label for="id_reminder-hour">at</label>
+          <select id="id_reminder-hour" name="reminder-hour">
+            <option value="0">00:00</option>
+            <option value="1">01:00</option>
+            <option value="2">02:00</option>
+            <option value="3">03:00</option>
+            <option value="4">04:00</option>
+            <option value="5">05:00</option>
+            <option value="6">06:00</option>
+            <option value="7">07:00</option>
+            <option value="8">08:00</option>
+            <option value="9">09:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+            <option value="17">17:00</option>
+            <option value="18">18:00</option>
+            <option value="19">19:00</option>
+            <option value="20">20:00</option>
+            <option value="21">21:00</option>
+            <option value="22">22:00</option>
+            <option value="23">23:00</option>
+          </select>
+        </p>
+      </fieldset>
+      <div class='form-continue'>
+        <button type='submit' class='progress'>Remind me</button>
+      </div>
+    </form>
+    
+    <p>
+      {# TODO: this needs to do the right thing... #}
+      <a href="onboarding_trigger_summary.html">Skip this step.</a>
+    </p>
+  </div>
 {% endblock %}
