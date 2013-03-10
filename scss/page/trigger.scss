@@ -39,12 +39,12 @@
     background:             $positive_colour;
 }
 
-.add-trigger form {
+.add-trigger #body form {
     background:             #97c1dc;
     border-radius:          5px;
     padding:                30px 40px 20px;
 }
-.add-trigger form .reminder {
+.add-trigger #body form .reminder {
     background:             #bcd7e9;
     border-radius:          5px;
     padding:                15px 40px;
@@ -76,7 +76,7 @@
     color:                  #333;
     margin:                 0 0 24px;
 }
-.add-trigger button.submit {
+.add-trigger #body button.submit {
     margin-left:            200px;
 }
 .add-trigger .form-continue {
