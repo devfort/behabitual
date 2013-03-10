@@ -8,6 +8,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 
 from apps.habits.models import Habit, habit_archived
+from apps.habits.forms import HabitForm
 from lib.metrics import statsd
 
 class HabitDetailView(DetailView):
@@ -19,11 +20,10 @@ class HabitDetailView(DetailView):
 
 class HabitEditView(UpdateView):
     model = Habit
-
+    form_class = HabitForm
+    success_url = '/'
+    #success_url = reverse('homepage')
     template_name_suffix = '_edit_form'
-
-#    def get_queryset(self):
-#        return self.request.user.habits.all()
 
 
 class HabitArchiveView(SingleObjectMixin, View):
