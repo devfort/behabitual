@@ -32,7 +32,9 @@ var Canvas = function(id, width, height) {
   this._objects = [];
 };
 
-Canvas.LOGO_PATH = '/static/images/repeat-icon.svg';
+Canvas.LOGO_PATH   = '/static/images/repeat-icon.svg';
+Canvas.LOGO_WIDTH  = 120;
+Canvas.LOGO_HEIGHT = 120;
 
 Canvas.prototype.createCircle = function(center, radius) {
   return this._raph.circle(center.x, center.y, radius);
@@ -48,9 +50,9 @@ Canvas.prototype.getCenter = function() {
 
 Canvas.prototype.play = function(params) {
   var logo = this._raph.image(Canvas.LOGO_PATH,
-                this._center.x - 120/2,
-                this._center.y - 120/2,
-                120, 120);
+                this._center.x - Canvas.LOGO_WIDTH/2,
+                this._center.y - Canvas.LOGO_HEIGHT/2,
+                Canvas.LOGO_WIDTH, Canvas.LOGO_HEIGHT);
 
   logo.attr('opacity', 0);
   logo.animate({opacity: 1}, params.easing.duration * 1000);
