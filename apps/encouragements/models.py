@@ -51,19 +51,21 @@ def static_encouragement_provider(habit):
 # 1A. Most periods in a row success
 @providers.register
 def longest_streak_succeeding(habit):
-    if _longest_streak(habit):
-        return random.choice(ENCOURAGEMENT_1)
-        # return "Longest succeeding streak. You're a carrot!"
+    longest = _longest_streak(habit)
+    if longest:
+        return random.choice(ENCOURAGEMENT_1) % {
+            'length': longest,
+            # TODO: pluralize this. Some names are already pluralized :(
+            'resolution': habit.get_resolution_name(),
+        }
 
 
 # 1B. Most periods in a row non-zero
 @providers.register
 def longest_streak_nonzero(habit):
-    if _longest_streak(habit, success=lambda b: b.value > 0):
+    longest = _longest_streak(habit, success=lambda b: b.value > 0)
+    if longest:
         return random.choice(ENCOURAGEMENT_2)
-        # return random.choice((
-        #     "Longest streak where you did anything. You're a not entirely lazy carrot!",
-        # ))
 
 
 # 2A. The highest value for a time period ... ever ... volume 3
@@ -74,7 +76,6 @@ def best_day_ever(habit):
 
     if _best_bucket_ever(habit, habit.resolution):
         return random.choice(ENCOURAGEMENT_3)
-        # return "BEST. DAY. EVERRR!"
 
 
 # 2b. Highest number for a week ever
@@ -85,7 +86,6 @@ def best_week_ever(habit):
 
     if _best_bucket_ever(habit, 'week'):
         return random.choice(ENCOURAGEMENT_4)
-        # return "BEST. WEEK. EVERRR!"
 
 
 # 2c. Highest number for a month ever
@@ -209,12 +209,15 @@ def _longest_streak(habit, **kwargs):
     except StopIteration:
         return False
 
+    longest = None
+
     # If any previous streaks are longer, return None
     for s in streaks:
         if s >= latest:
-            return False
+            return None
+        longest = s
 
-    return True
+    return longest
 
 
 def _best_bucket_ever(habit, resolution):

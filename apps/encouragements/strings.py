@@ -13,7 +13,7 @@ ENCOURAGEMENT_0 = (
   "Up and atom!",
   "In 1972 a crack commando squad...",
   "Puppies!",
-  "Friday's child is something something hadoop",
+  "Friday's child is something something Hadoop",
   "We believe in you. You can do it!",
   "Awesome sauce.",
   "Cool beans, Batman.",
@@ -32,7 +32,7 @@ ENCOURAGEMENT_0 = (
 
 ENCOURAGEMENT_1 = (
     "Longest streak like a pile of tasty streaky bacon. Yum",
-    "NEW RECORD! <n> <resolution> in a row",
+    "NEW RECORD! %(length)d %(resolution)s in a row",
     "The road is long, you've not given up. Respect.",
 )
 
