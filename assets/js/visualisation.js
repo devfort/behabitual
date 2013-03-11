@@ -1,3 +1,111 @@
+/**
+ * Visualisation module
+ * ====================
+ *
+ * Listen, alright, shut up, just listen. This will make sense eventually, though
+ * I'm not convinced the rest of the week will. I took George's demo and turned
+ * it into a bunch of drawing objects that you can use to make visualisations
+ * easily (read: rewrote 30 lines of JS in 200 lines because webscale). By the
+ * way George is one of the most helpful and generous humans I know, you should
+ * definitely buy him an drink.
+ *
+ * Oh and plus also Chris brought me and George some whisky while we were up on
+ * the roof of the officer's mess, trying to use a computer. That was pretty much
+ * the nicest thing anyone ever did for me. In these tumultuous times, with the
+ * wind lashing across the island and the causeway submerged by vengeful seas, it
+ * is these memories that give us all hope.
+ *
+ * You find our intrepid explorers facing potential perpetual entombment on the
+ * island of Alderney. Faceplanes having been deemed unable to face the howling
+ * gales of March 2013, which were said to have left Beaufort himself rotating at
+ * a steady clip in his watery grave, the survivors of /dev/fort 7 take shelter
+ * in the kitchen of Fort Clonque, surviving as best they can on half a bottle of
+ * Scotch and some ham of questionable provenance.
+ *
+ * It is Monday morning. Send halp.
+ *
+ * Anyway, where were we. Right, JavaScripts. This module will help you visualize
+ * a person's habits, such as they are.
+ *
+ * You make a visualization by making some drawing objects, and rendering them to
+ * a canvas. There are two types of drawing objects: Rings and Orbitals.
+ *
+ * A Ring represents a circle that rotates about the center of the canvas. You
+ * instantiate it with a radius, color, a boolean that says whether it should be
+ * filled or not, and a list containing rotation frequency parameters.
+ *
+ *    var ring = new Ring(140, '#4389b8', true, [4]);
+ *
+ * An Orbital represents a string of dots that orbit the center of the canvas.
+ * They are instantiated with an orbit radius, a color, a list of values between
+ * 0 and 1 that denote the positions of dots around the orbit ring, and a list of
+ * orbit frequencies.
+ *
+ *    var orbital = new Orbital(160, '#f9c32c', [0, 0.2, 0.4], [1]);
+ *
+ * Once you've made a bunch of drawing objects, you render them to a canvas, and
+ * then you tell the canvas to play itself, which means run the animation with
+ * some defined parameters.
+ *
+ *    var objects = [ring, orbital, ...];
+ *    var canvas  = new Canvas('visualisation', 480, 480);
+ *    objects.forEach(function(o) { o.renderOn(canvas) });
+ *    canvas.play({from: 1, to: 0.05, tick: 20, easing: new Easing.Exponent(4)});
+ *
+ * Here are the options for canvas.play():
+ *
+ *    * `from`: the maximum orbital reach, on the range 0-1
+ *    * `to`: the minimum orbital reach, from 0-1
+ *    * `tick`: the frequency of the `setInterval()` for the animation loop
+ *    * `easing`: an Easing object that determines the progression of `from` to `to` 
+ *
+ * During start-up, the animation transitions from the `from` to the `to` orbital
+ * reach. Converging on `to=0` means reaching maximal concentricity. Values above
+ * 0 result in some excentricity of the animation in the steady state.
+ *
+ * This is all you should need to know. It is implicit in the above documentation
+ * and the below code that #loljs, because of <%= reasons %>.
+ *
+ * While trapped on this island we have learned many things. We can slice onions
+ * without crying. I learned some Python. Children will skip rope on the verge of
+ * a 50ft cliff. You should aim for the elbow. There is still room for blue-sky
+ * innovation in the space around 'Call Me Maybe' parodies. Alas, it is our fear
+ * that such knowledge will never reach the mainland.
+ *
+ * I don't think we're leaving today. We wish you well.
+ *
+ *
+ * Addendum
+ * --------
+ *
+ * In the hopes that our struggles have not been in vain, we include herewith the
+ * Proceedings of Cohort 7.
+ *
+ *  1. Space Jesus. Am I right?
+ *  2. Wheee... I'm programming!
+ *  3. It was tough, Norm, but I had to Mazz up.
+ *  4. GMT or GTFO.
+ *  5. Just a word of advice: bellend sounds much funnier than cockend.
+ *  6. James will type, I will direct, Anna will make dirty Unix jokes.
+ *  7. Since we don't have any cat gifs right now, YAGNI.
+ *  8. You've got Stockholm Syndrome from working with Rails.
+ *  9. You've got Stockholm Syndrome from living in Stockholm.
+ * 10. That's going in the fucking book. The Book of Rueing.
+ * 11. Fucking dynamic toothbrusth motherfucker! We're gonna brush that shit up!
+ * 12. There's some crazy ass pink shit going on.
+ * 13. Shit is gonna get real. It's gonna get really really real.
+ * 14. Your face is not a TTY.
+ * 15. Romance is a sales problem.
+ * 16. I'm running out of fingers to flip you guys off with.
+ * 17. You finally worked it out, Nobbo.
+ * 18. Just fucking drink the whisky or I'll throw it at a dolphin.
+ * 19. We're never getting off this rock, are we?
+ * 20. Fuck you!
+ *
+ * Felicitations. You look nice today. Supertrain will be along presently.
+ **/
+
+
 var filter = function(list, callback, context) {
   if (list.filter) return list.filter(callback, context);
   var result = [];
