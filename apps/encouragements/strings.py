@@ -28,6 +28,7 @@ ENCOURAGEMENT_0 = (
   "Good job",
   "Woot!* *not affiliated with the e-commerce site",
   "We believe in you. You can do it!",
+  "Clean, lemony-fresh victory is yours!",
 )
 
 ENCOURAGEMENT_1 = (
