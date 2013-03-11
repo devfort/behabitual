@@ -1,3 +1,8 @@
+var filter = function(list, callback, context) {
+  if (list.filter) return list.filter(callback, context);
+};
+
+
 var map = function(list, callback, context) {
   if (list.map) return list.map(callback, context);
   var result = [];
@@ -207,19 +212,4 @@ Ring.prototype.tick = function(time, params) {
     notch.attr('rotation', -theta * 180/Math.PI);
   }, this);
 };
-
-
-(function() {
-  var objects = [
-    new Ring(140, '#d4d8d2', true,  [6]),
-    new Ring(110, '#4389b8', false, [2]),
-    new Ring(100, '#4389b8', true,  [4]),
-    new Orbital(150, '#f94630', [0.01, 0.02, 0.04, 0.08, 0.16], [1.5]),
-    new Orbital(170, '#4389b8', [1.04, 1.08, 1.16], [1.2])
-  ];
-
-  var canvas = new Canvas('visualisation', 480, 480);
-  map(objects, function(r) { r.renderOn(canvas) });
-  canvas.play({from: 1, to: 0.05, tick: 20, easing: new Easing.Exponent(4)});
-})();
 

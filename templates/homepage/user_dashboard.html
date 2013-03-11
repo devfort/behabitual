@@ -5,8 +5,8 @@
 {% block body %}
 <section id="progress">
   <h1>Progress</h1>
-  <!-- TODO: Insert visualisation here -->
-  <img alt="You're doing pretty well. But this should say somethign better." src="#TODO">
+
+  <div id="visualisation"></div>
 </section>
 
 <section id="habits">
@@ -50,4 +50,34 @@
 </section>
 
 <a href="{% url 'hobbit' %}" id="hobbit"><img src="/static/images/ring@2x.png" alt="" height="25" width="25"></a>
+{% endblock %}
+
+{% block javascript-asynchronous %}
+  <script type="text/javascript" src="/static/js/raphael-min.js"></script>
+  <script type="text/javascript" src="/static/js/visualisation.js"></script>
+  <script type="text/javascript">
+    $.getJSON('{% url "habit_performance" %}', function(data) {
+      var habits = data.habits.slice(0,3);
+
+      var objects = [
+        new Ring(140, '#d4d8d2', true,  [6]),
+        new Ring(110, '#4389b8', false, [2]),
+        new Ring(100, '#4389b8', true,  [4]),
+      ];
+
+      map(habits, function(habit, i) {
+        var dots = map(habit.recent_buckets, function(n,i) {
+          return n < habit.target_value ? null : i * 1/habit.recent_buckets.length;
+        });
+        dots = filter(dots, function(n) { return typeof n === 'number' });
+
+        var orbital = new Orbital(150 + 10*i, '#f9c32c', dots, [1]);
+        objects.push(orbital);
+      });
+
+      var canvas = new Canvas('visualisation', 480, 480);
+      map(objects, function(r) { r.renderOn(canvas) });
+      canvas.play({from: 1, to: 0.05, tick: 20, easing: new Easing.Exponent(4)});
+    });
+  </script>
 {% endblock %}
