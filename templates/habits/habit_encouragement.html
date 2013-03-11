@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+
 {% block title %}Good Job!{% endblock %}
 
 {% block body %}
   <h2>Well done!</h1>
-  {% if encouragement %}
-    <p>{{ encouragement }}</p>
-  {% else %}
-    <p>Good job on keeping track of your data. YO.</p>
-  {% endif %}
+  <p id='encouragement'>{{ encouragement }}</p>
+  
+  <form method='GET' action='{% url "homepage" %}'>
+    <button type='submit' class='progress'>Yo.</button>
+  </form>
 {% endblock %}
