@@ -1,5 +1,11 @@
 var filter = function(list, callback, context) {
   if (list.filter) return list.filter(callback, context);
+  var result = [];
+  for (var i = 0, n = list.length; i < n; i++) {
+    if (callback.call(context, list[i], i, list))
+      result.push(list[i]);
+  }
+  return result;
 };
 
 
