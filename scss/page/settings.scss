@@ -1,0 +1,41 @@
+/* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
+
+.settings #habits {
+    margin-bottom:          30px;
+}
+.settings #habits li {
+    @extend .contain;
+    background:             $darkest_body_colour;
+    margin:                 2px 0;
+    font-size:              20px;
+    padding:                25px 30px 20px;
+}
+.settings #habits li.archived {
+    background:             $darker_body_colour;
+    color:                  $meh_button_colour;
+}
+.settings #habits li .actions {
+    float:                  right;
+}
+.settings li .actions a {
+    margin-left:            15px;
+}
+.settings #habits li .progress {
+    background:             $meh_button_colour;
+    color:                  $darker_body_colour;
+    cursor:                 pointer;
+    min-width:              0;
+}
+.settings #habits li .progress:active,
+.settings #habits li .progress:focus,
+.settings #habits li .progress:hover {
+    background:             $meh_button_active_colour;
+}
+
+.settings code {
+    font-weight:            bold;
+}
+.settings h2 {
+    font-weight:            bold;
+    margin-top:             20px;
+}

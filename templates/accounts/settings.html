@@ -1,10 +1,12 @@
 {% extends "base.html" %}
+
 {% block title %}Account settings{% endblock %}
+{% block body-class %}settings{% endblock %}
 
 {% block body %}
   <h2>Email address</h2>
   <p>
-    Hi! Your email address is <strong>{{ user.email }}</strong>. If you want to
+    Hi! Your email address is <code>{{ user.email }}</code>. If you want to
     change it you should get in touch.
   </p>
 
@@ -19,18 +21,66 @@
   <form method='POST' action='' id='settings-form'>
     {% csrf_token %}
     {{ form.management_form }}
-    <ul>
+    <div id='data-entry'><ul id='habits'>
       {% for subform in form %}
         <li>
           <label for='{{ subform.send_data_collection_emails.auto_id }}'>
             <b>Remind me to input data for</b>
             <q>{{ subform.instance.description }}</q>
           </label>
-          {{ subform.send_data_collection_emails }}
-          {{ subform.id }}
+          <div class="actions">
+            {{ subform.send_data_collection_emails }}
+            {{ subform.id }}
+          </div>
         </li>
       {% endfor %}
-    </ul>
-    <button type='submit'>Update it</button>
+    </ul></div>
+    <button type='submit' class='progress'>Update it</button>
   </form>
+{% endblock %}
+
+{% block javascript-enhance %}
+  (function( $ ){
+      $.fn.make_into_switch = function() {
+          var create_switch_html = function (el) {
+              var $button = $('<button/>').text('Y').bind(
+                      'click', function(ev) {
+                          change_switch_state(ev, el);
+                          return false;
+                      }
+                  );
+              
+              if ( $(el).attr('checked') ) {
+                  $button.addClass('on');
+              }
+              
+              $(el).before( $button ).addClass('enhanced');
+          }
+          
+          var change_switch_state = function (ev, el) {
+              console.log('change switch state', el);
+              var $button = $('button', $(ev.target).parent() );
+              if ( $(el).attr('checked') ) {
+                  $(el).attr('checked', false);
+                  $button.removeClass('on');
+              }
+              else {
+                  $(el).attr('checked', 'checked');
+                  $button.addClass('on');
+              }
+          };
+          
+          this.each( function() {
+              create_switch_html( $(this) );
+          })
+          
+          this.bind('change', function(ev) {
+              change_switch_state(ev, this);
+          });
+      };
+  })( jQuery );
+
+  $(function() {
+      $('input[type=checkbox]').make_into_switch();
+  });
 {% endblock %}
