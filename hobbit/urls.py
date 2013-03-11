@@ -48,6 +48,8 @@ urlpatterns = patterns('',
     url(r'^accounts/forgot/done/$', 'password_reset_done'),
 
     url(r'^styletile$', TemplateView.as_view(template_name='styles/tile.html'), name='styletile'),
+    
+    url(r'^hobbit$', TemplateView.as_view(template_name='hobbit.html'), name='hobbit'),
 )
 
 from apps.monitoring import *

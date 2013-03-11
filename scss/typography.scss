@@ -151,3 +151,17 @@ select {
     margin:                 15px 0 -10px;
     padding:                20px 40px;
 }
+
+#hobbit {
+    bottom:                 0;
+    opacity:                0.3;
+    position:               absolute;
+    right:                  0;
+}
+#hobbit:hover {
+    opacity:                1;
+}
+
+.hobbit h1 {
+    text-align:             center;
+}

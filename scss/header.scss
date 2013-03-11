@@ -5,6 +5,8 @@ header {
     font-size:              16px;
     font-size:              1.6rem;
     padding:                7px 0;
+    position:               relative;
+    z-index:                2;
 }
 header div {
     @extend                 .contain;
