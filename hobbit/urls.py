@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^add-habit/(?P<step>.+)/$', apps.onboarding.views.add_habit_wizard, name='add_habit_step'),
     url(r'^add-habit/$', apps.onboarding.views.add_habit_wizard, name='add_habit'),
 
+    secured_url(r'^habit-performance.json$', apps.habits.views.HabitPerformanceView.as_view(), name='habit_performance'),
     secured_url(r'^habit/(?P<pk>\d+)/$', apps.habits.views.HabitDetailView.as_view(), name='habit'),
     secured_url(r'^habit/(?P<pk>\d+)/edit$', apps.habits.views.HabitEditView.as_view(), name='habit_edit'),
     secured_url(r'^habit/(?P<pk>\d+)/archive$', apps.habits.views.HabitArchiveView.as_view(), name='habit_archive'),

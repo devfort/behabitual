@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.test import TestCase
 from django_webtest import WebTest
@@ -193,3 +194,29 @@ class HabitRecordViewTest(WebTest):
         self.assertEquals(0, bucket.value)
         bucket = self.habit.get_buckets().get(index=2)
         self.assertEquals(1, bucket.value)
+
+
+class HabitPerformanceViewTest(WebTest):
+    def setUp(self):
+        self.user = User.objects.create_user(email='someone@example.com',
+                                             password='123456')
+
+    def test_get_json(self):
+        start = datetime.date.today() - datetime.timedelta(days=10)
+        self.habit = Habit.objects.create(description="Measure my performance",
+                                          start=start,
+                                          user=self.user,
+                                          resolution='day',
+                                          target_value=3)
+        for i in xrange(10):
+            tp = self.habit.get_time_period(start + datetime.timedelta(days=i))
+            self.habit.record(tp, i % 5)
+
+        buckets = [None] * 10 + [i % 5 for i in xrange(10)]
+        expect = {'habits': [{'description': 'Measure my performance',
+                              'resolution': 'day',
+                              'target_value': 3,
+                              'recent_buckets': buckets}]}
+
+        response = self.app.get(reverse('habit_performance'), user='someone@example.com')
+        self.assertEqual(expect, json.loads(response.body))

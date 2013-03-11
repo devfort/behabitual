@@ -1,8 +1,10 @@
+import json
+
 from django.views.generic import View, DetailView, FormView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.decorators.cache import never_cache
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django import forms
@@ -96,3 +98,25 @@ class HabitEncouragementView(DetailView):
        ctx = super(HabitEncouragementView, self).get_context_data(**kwargs)
        ctx['encouragement'] = get_encouragement(self.get_object())
        return ctx
+
+
+RECENT_BUCKETS = 20
+
+class HabitPerformanceView(View):
+
+    def get(self, request, *args, **kwargs):
+        result = {'habits': []}
+
+        for habit in request.user.habits.filter(archived=False):
+            current = habit.get_current_time_period()
+            recent_buckets = [None] * RECENT_BUCKETS
+
+            for bucket in habit.get_buckets().filter(index__gt=current.index - RECENT_BUCKETS):
+                recent_buckets[bucket.index - current.index - 1] = bucket.value
+
+            result['habits'].append({'description': habit.description,
+                                     'resolution': habit.resolution,
+                                     'target_value': habit.target_value,
+                                     'recent_buckets': recent_buckets})
+
+        return HttpResponse(json.dumps(result), content_type='application/json')
