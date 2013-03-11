@@ -47,7 +47,7 @@
                       }
                   );
               
-              if ( $(el).attr('checked') ) {
+              if ( $(el).attr('checked') == 'checked' ) {
                   $button.addClass('on');
               }
               
@@ -55,14 +55,13 @@
           }
           
           var change_switch_state = function (ev, el) {
-              console.log('change switch state', el);
               var $button = $('button', $(ev.target).parent() );
-              if ( $(el).attr('value') == 1 ) {
-                  $(el).attr('value', 0);
+              if ( $(el).attr('checked') ) {
+                  $(el).attr('checked', false);
                   $button.removeClass('on');
               }
               else {
-                  $(el).attr('value', 1);
+                  $(el).attr('checked', true);
                   $button.addClass('on');
               }
           };
