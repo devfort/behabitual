@@ -1,136 +1,135 @@
 /* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
 
-
-.welcome{
-	@extend .contain;
-	margin:					11.42% 0 4.2% 0;
-	text-align:				center;
+.welcome {
+    @extend .contain;
+    margin:                 11.42% 0 4.2% 0;
+    text-align:             center;
 }
 
-.welcome h1{
+.welcome h1 {
     font-size:              48px;
     font-size:              4.8rem;
     color:                  $lighter_copy_colour;
-	line-height:			1;
+    line-height:            1;
 }
 
-.welcome h1 em{
-	display:				block;
-	margin-top:				10px;
-	color:					$header_colour;
-	font-weight:			bold;
+.welcome h1 em {
+    display:                block;
+    margin-top:             10px;
+    color:                  $header_colour;
+    font-weight:            bold;
 }
 
-.welcome p{
-	margin:10px 0;
-	font-size:				16px;
-	font-size:				1.6rem;
+.welcome p {
+    margin:10px 0;
+    font-size:              16px;
+    font-size:              1.6rem;
 }
 
-.welcome img{
-	border-radius:			$border_radius;
-	margin:0 auto;
+.welcome img {
+    border-radius:          $border_radius;
+    margin:0 auto;
 }
 
-@media all and (min-width:600px){
-	.welcome{
-		text-align:left;
-	}
-	.welcome img{
-		float:left;
-	}
-	
-	.welcome h1,
-	.welcome p{
-		padding-left:260px;
-	}
+@media all and (min-width:600px) {
+    .welcome {
+        text-align:left;
+    }
+    .welcome img {
+        float:left;
+    }
+    
+    .welcome h1,
+    .welcome p {
+        padding-left:260px;
+    }
 }
 
-.minor-heading{
-	margin-bottom:			5px;
-	font-weight:            bold;
+.minor-heading {
+    margin-bottom:          5px;
+    font-weight:            bold;
     font-size:              24px;
     font-size:              2.4rem;
     color:                  $header_secondary_colour;
-	text-align:				center;
+    text-align:             center;
 }
 
-.quickstart{
-	border:					2px solid $darker_body_colour;
-	border-width:			2px 0;
-	padding:				20px 0 25px 0;
+.quickstart {
+    border:                 2px solid $darker_body_colour;
+    border-width:           2px 0;
+    padding:                20px 0 25px 0;
 }
 
-.quickstart form{
-	border-radius:			$border_radius;
-	padding:				15px;
-	background-color:		$darker_body_colour;
-	text-align:				center;
-	width:                  70%;
+.quickstart form {
+    border-radius:          $border_radius;
+    padding:                15px;
+    background-color:       $darker_body_colour;
+    text-align:             center;
+    width:                  70%;
     margin:                 0 auto 20px;
 }
 
-.quickstart p{
-	margin-bottom:			10px;
+.quickstart p {
+    margin-bottom:          10px;
 }
 
-#habit-description{
-	width:					230px;
+#habit-description {
+    width:                  230px;
 }
 
-#habit-target_value{
-	width:					46px;
+#habit-target_value {
+    width:                  46px;
 }
 
-.examples{
-	@extend .contain;
-	margin-top:				15px;
-	text-align:center;
+.examples {
+    @extend .contain;
+    margin-top:             15px;
+    text-align:center;
 }
 
-.examples .minor-heading{
-	margin-right:			20px; /* to account for the negative margin that makes the columns possible */
-	margin-bottom:			20px;
-	color:					$header_colour;
+.examples .minor-heading {
+    margin-right:           20px; /* to account for the negative margin that makes the columns possible */
+    margin-bottom:          20px;
+    color:                  $header_colour;
 }
 
-.example{
-	margin-bottom:			7%;
+.example {
+    margin-bottom:          7%;
 }
 
-.example img{
-	@extend .responsiveimg;
-	border-radius:			$border_radius;
-	margin:0 auto;
+.example img {
+    @extend .responsiveimg;
+    border-radius:          $border_radius;
+    margin:0 auto;
 }
 
-.example p{
-	font-size:			18px;
-	font-size:			1.8rem;
-	line-height:		1.3;
+.example p {
+    font-size:          18px;
+    font-size:          1.8rem;
+    line-height:        1.3;
 }
 
-.example strong{
-	font-weight:bold;
+.example strong {
+    font-weight:bold;
 }
 
-@media all and (min-width:700px){
-	
-	.examples{
-		margin-right:-20px;
-	}
-	
-	.example{
-		@include box-sizing(border-box);
-		width:33.33%;
-		float:left;
-		padding-right:20px;
-	}
-	
-	.example p{
-		text-align:left;
-	}
-	
+@media all and (min-width:700px) {
+    
+    .examples {
+        margin-right:-20px;
+    }
+    
+    .example {
+        @include box-sizing(border-box);
+        width:33.33%;
+        float:left;
+        padding-right:20px;
+    }
+    
+    .example p {
+        text-align:left;
+    }
+    
 }
 
 .home #id_habit-description {
