@@ -8,6 +8,14 @@ var map = function(list, callback, context) {
 };
 
 
+var stepRange = function(begin, end, count) {
+  var dx = (end - begin) / count, result = [];
+  for (var i = 0; i < count; i++)
+    result[i] = begin + i * dx;
+  return result;
+};
+
+
 var Point = function(x, y) {
   this.x = x;
   this.y = y;
@@ -143,19 +151,27 @@ var Ring = function(size, color, filled, frequencies) {
 };
 
 Ring.MARKER_WIDTH  = 2;
-Ring.MARKER_HEIGHT = 12;
+Ring.MARKER_HEIGHT = 8;
+Ring.NUM_NOTCHES   = 3;
+Ring.NOTCH_OPACITY = 0.4;
+Ring.NOTCH_COLOR   = '#ffffff';
 
 Ring.prototype.renderOn = function(canvas) {
   this._canvas = canvas;
   canvas.register(this);
   this._circle = canvas.createCircle(canvas.getCenter(), this._radius);
+
   if (this._filled) {
     this._circle.attr('fill', this._color);
     this._circle.attr('stroke-width', 0);
-    this._notch = this._canvas.createNotch(Ring.MARKER_WIDTH, Ring.MARKER_HEIGHT);
-    this._notch.attr('fill', '#ffffff');
-    this._notch.attr('stroke-width', 0);
-  } else {
+
+    this._notches = map(stepRange(0, 1, Ring.NUM_NOTCHES), function(offset) {
+      var notch = this._canvas.createNotch(Ring.MARKER_WIDTH, Ring.MARKER_HEIGHT);
+      notch.attr({'fill': Ring.NOTCH_COLOR, 'stroke-width': 0, 'opacity': Ring.NOTCH_OPACITY});
+      return notch;
+    }, this);
+  }
+  else {
     this._circle.attr('stroke', this._color);
     this._circle.attr('stroke-width', this._radius / 20);
   }
@@ -176,31 +192,35 @@ Ring.prototype.tick = function(time, params) {
   this._circle.attr('cx', center.x);
   this._circle.attr('cy', center.y);
 
-  if (!this._notch) return;
+  if (!this._notches) return;
 
-  angle = (angle * (orbit + this._radius)) / (2 * Math.PI * this._radius);
+  map(this._notches, function(notch, i) {
 
-  var notch = new Point(-Math.sin(angle), -Math.cos(angle))
+  var a = 2 * Math.PI * i * 1/Ring.NUM_NOTCHES + (angle * (orbit + this._radius)) / (2 * Math.PI * this._radius);
+
+  var n = new Point(-Math.sin(a), -Math.cos(a))
               .scale(this._radius - Ring.MARKER_HEIGHT/2)
               .add(center);
 
-  this._notch.attr('x', notch.x - Ring.MARKER_WIDTH/2);
-  this._notch.attr('y', notch.y - Ring.MARKER_HEIGHT/2);
-  this._notch.attr('rotation', -angle * 180/Math.PI);
+  notch.attr('x', n.x - Ring.MARKER_WIDTH/2);
+  notch.attr('y', n.y - Ring.MARKER_HEIGHT/2);
+  notch.attr('rotation', -a * 180/Math.PI);
+
+  }, this);
 };
 
 
 (function() {
   var objects = [
     new Ring(140, '#d4d8d2', true,  [6]),
-    new Ring(60,  '#4389b8', false, [2]),
-    new Ring(50,  '#4389b8', true,  [4]),
-    new Orbital(150, '#f94630', [0, 0.02, 0.04, 0.08, 0.16], [1.5]),
-    new Orbital(170, '#4389b8', [1, 1.02, 1.04, 1.08, 1.16], [1.2])
+    new Ring(110, '#4389b8', false, [2]),
+    new Ring(100, '#4389b8', true,  [4]),
+    new Orbital(150, '#f94630', [0.01, 0.02, 0.04, 0.08, 0.16], [1.5]),
+    new Orbital(170, '#4389b8', [1.04, 1.08, 1.16], [1.2])
   ];
 
   var canvas = new Canvas('visualisation', 480, 480);
   map(objects, function(r) { r.renderOn(canvas) });
-  canvas.play({from: 1, to: 0, tick: 20, easing: new Easing.Exponent(4)});
+  canvas.play({from: 1, to: 0.05, tick: 20, easing: new Easing.Exponent(4)});
 })();
 
