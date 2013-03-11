@@ -209,15 +209,12 @@ def _longest_streak(habit, **kwargs):
     except StopIteration:
         return False
 
-    longest = None
-
     # If any previous streaks are longer, return None
     for s in streaks:
         if s >= latest:
             return None
-        longest = s
 
-    return longest
+    return latest
 
 
 def _best_bucket_ever(habit, resolution):
