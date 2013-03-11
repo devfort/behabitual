@@ -46,7 +46,7 @@ class HabitForm(forms.Form):
     """
     description = forms.CharField(
         max_length=100,
-        widget=forms.TextInput(attrs={'placeholder': 'brush my teeth'},
+        widget=forms.TextInput(attrs={'placeholder': ' brush my teeth'},
     ))
     target_value = forms.IntegerField(
         widget=forms.TextInput(attrs={'placeholder': '2'}),
