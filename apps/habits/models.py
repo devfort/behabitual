@@ -201,6 +201,7 @@ class TimePeriod(TimePeriod_):
     def _friendly_weekly_date(self, relative_to):
         return "Week of %s %s" % (self.date.strftime("%B"), ordinal(self.date.day))
 
+
 class Habit(models.Model):
     """
     A habit and its associated data.

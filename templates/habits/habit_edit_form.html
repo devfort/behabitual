@@ -22,7 +22,19 @@
             </strong>
           </p>
       {% endif %}
-
+      <fieldset class='trigger-time'>
+        <legend>Send reminder</legend>
+        {{ form.reminder }}
+        <h2>When should we send this?</h2>
+        <div class='columnar'>
+          <span>Every</span>
+          {{ form.reminder_days }}
+        </div>
+        <p>
+          <label for="id_reminder-hour">at</label> {{ form.reminder_hour }}
+          <!-- GMT or GTFO -->
+        </p>
+      </fieldset>
     <p>
       <label for="id_description">I want to {{ form.description }}</label>,<br>
       <label for="id_target_value">{{ form.target_value }} times</label>
@@ -30,10 +42,6 @@
       <br>
       <button type='submit' class="progress">Save</button>
     </p>
-</form>
-
-<form>
-  TODO: Trigger reminder edit
 </form>
 
 <button>TODO: delete habit button</button>

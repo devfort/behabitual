@@ -15,10 +15,29 @@ DAYS_OF_WEEK = (
     ('SUNDAY', mark_safe('<b>Every</b> Sunday')),
 )
 
+DAYS = (
+    'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY',
+    'FRIDAY', 'SATURDAY', 'SUNDAY',
+)
+
 HOURS = map(
     lambda hour: (hour, '%02d:00' % hour),
     range(24)
 )
+
+
+class ReminderDaysField(forms.MultipleChoiceField):
+    def prepare_value(self, value):
+        if isinstance(value, int):
+            booleans = [value & (1 << i) != 0 for i in range(7)]
+            return map(lambda x: x[0], filter(lambda x: x[1], zip(DAYS, booleans)))
+        else:
+            return value
+
+    def clean(self, value):
+        booleans = map(lambda d: d in value, DAYS)
+        day_bits = [1 << i if d else 0 for i, d in enumerate(booleans)]
+        return reduce(lambda x, y: x | y, day_bits)
 
 
 class HabitForm(forms.Form):
@@ -47,7 +66,7 @@ class ExistingUserReminderForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'placeholder': 'close the dishwasher'}),
     )
-    days = forms.MultipleChoiceField(
+    days = ReminderDaysField(
         choices=DAYS_OF_WEEK,
         widget=forms.CheckboxSelectMultiple,
         required=False,

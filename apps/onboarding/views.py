@@ -63,11 +63,16 @@ class OnboardingWizard(NamedUrlSessionWizardView):
         """
 
         habit_form = self.form_list[0]
+        reminder_form = self.form_list[1]
+
         habit = Habit.objects.create(
             user=self.user,
             description=habit_form.cleaned_data.get('description'),
             resolution=habit_form.cleaned_data.get('resolution'),
             target_value=habit_form.cleaned_data.get('target_value'),
+            reminder=reminder_form.cleaned_data.get('trigger'),
+            reminder_hour=reminder_form.cleaned_data.get('hour'),
+            reminder_days=reminder_form.cleaned_data.get('days'),
             start=datetime.now(),
         )
         habit_created.send(habit)
@@ -79,8 +84,6 @@ class OnboardingWizard(NamedUrlSessionWizardView):
                 to=(self.user,),
                 subject='You set up a new habit!',
             )
-
-        #TODO Create a reminder
 
     @property
     def user(self):
