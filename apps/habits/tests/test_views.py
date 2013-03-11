@@ -202,7 +202,7 @@ class HabitPerformanceViewTest(WebTest):
                                              password='123456')
 
     def test_get_json(self):
-        start = datetime.date.today() - datetime.timedelta(days=10)
+        start = datetime.date.today() - datetime.timedelta(days=9)
         self.habit = Habit.objects.create(description="Measure my performance",
                                           start=start,
                                           user=self.user,
@@ -219,4 +219,5 @@ class HabitPerformanceViewTest(WebTest):
                               'recent_buckets': buckets}]}
 
         response = self.app.get(reverse('habit_performance'), user='someone@example.com')
+        print(expect, json.loads(response.body))
         self.assertEqual(expect, json.loads(response.body))
