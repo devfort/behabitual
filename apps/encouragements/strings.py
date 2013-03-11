@@ -11,11 +11,11 @@ ENCOURAGEMENT_0 = (
   "Like a boss.",
   "Bruce Waymne looks up to you.",
   "Up and atom!",
-  "In 1972 a crack commando squad...",
+  "In 1972 a crack commando squad was sentenced to prison by a military court for a crime they didn't commit. They promptly escaped from a maximum security stockade to the Los Angeles underground. Today, still wanted by the government, they survive as soldiers of fortune. If you have a problem, if no-one else can help, and if you can find them, maybe YOU ARE THE A-TEAM.",
   "Puppies!",
   "Friday's child is something something Hadoop",
   "We believe in you. You can do it!",
-  "Awesome sauce.",
+  "Awesomesauce.",
   "Cool beans, Batman.",
   "Look at you an yo' bad self",
   "You're Ace. Like Cake!",
@@ -23,7 +23,7 @@ ENCOURAGEMENT_0 = (
   "Happy Happy Joy Joy",
   "*Jazz hands*",
   "Whenever you're sad just stop being sad and start being AWESOME",
-  "Awesomesaus",
+  "Awesomesaurus",
   "Way to go!",
   "Good job",
   "Woot!* *not affiliated with the e-commerce site",
@@ -53,7 +53,7 @@ ENCOURAGEMENT_5 = (
 )
 
 ENCOURAGEMENT_6 = (
-    "You're consistently consistent",
+    "You're consistently consistant.",
 )
 
 ENCOURAGEMENT_7 = (
