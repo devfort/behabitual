@@ -195,17 +195,16 @@ Ring.prototype.tick = function(time, params) {
   if (!this._notches) return;
 
   map(this._notches, function(notch, i) {
+    var theta = 2 * Math.PI * i * 1/Ring.NUM_NOTCHES +
+                (angle * (orbit + this._radius)) / (2 * Math.PI * this._radius);
 
-  var a = 2 * Math.PI * i * 1/Ring.NUM_NOTCHES + (angle * (orbit + this._radius)) / (2 * Math.PI * this._radius);
+    var N = new Point(-Math.sin(theta), -Math.cos(theta))
+                .scale(this._radius - Ring.MARKER_HEIGHT/2)
+                .add(center);
 
-  var n = new Point(-Math.sin(a), -Math.cos(a))
-              .scale(this._radius - Ring.MARKER_HEIGHT/2)
-              .add(center);
-
-  notch.attr('x', n.x - Ring.MARKER_WIDTH/2);
-  notch.attr('y', n.y - Ring.MARKER_HEIGHT/2);
-  notch.attr('rotation', -a * 180/Math.PI);
-
+    notch.attr('x', N.x - Ring.MARKER_WIDTH/2);
+    notch.attr('y', N.y - Ring.MARKER_HEIGHT/2);
+    notch.attr('rotation', -theta * 180/Math.PI);
   }, this);
 };
 
