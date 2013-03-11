@@ -14,7 +14,7 @@ class HomepageTest(TestCase):
                                              password=self.user_password,
                                              is_active=True)
 
-    # TODO: Logged out homepage
+    # TODO: Test logged out homepage?
     def test_logged_out_homepage(self):
         response = self.client.get(reverse('homepage'))
         self.assertEqual(200, response.status_code)

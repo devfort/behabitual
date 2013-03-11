@@ -78,7 +78,6 @@ def habit_record_view(request, pk):
 
     if request.method == 'POST': # If the form has been submitted...
         if all(map(lambda f: f.is_valid(), _forms)):
-            # TODO: record all data points
             for form in _forms:
                 time_period = habit.get_time_period(form.cleaned_data['date'])
                 habit.record(time_period, form.cleaned_data['value'])
