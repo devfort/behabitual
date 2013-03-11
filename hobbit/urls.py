@@ -6,6 +6,7 @@ import apps.accounts.views
 import apps.onboarding.views
 import apps.homepage.views
 import apps.habits.views
+from apps.accounts.forms import HobbitAuthenticationForm
 
 from django.contrib import admin
 admin.autodiscover()
@@ -42,7 +43,7 @@ urlpatterns = patterns('',
     secured_url(r'^habit/(?P<pk>\d+)/recorded/$', apps.habits.views.HabitEncouragementView.as_view(), name='habit_encouragement'),
 
 ) + patterns('django.contrib.auth.views',
-    url(r'^login/$', 'login', {'template_name': 'accounts/login.html'}, name='login'),
+    url(r'^login/$', 'login', {'template_name': 'accounts/login.html', 'authentication_form': HobbitAuthenticationForm}, name='login'),
     url(r'^accounts/forgot/$', 'password_reset', name='account_forgotten'),
     url(r'^accounts/forgot/done/$', 'password_reset_done'),
 
