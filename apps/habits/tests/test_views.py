@@ -219,5 +219,4 @@ class HabitPerformanceViewTest(WebTest):
                               'recent_buckets': buckets}]}
 
         response = self.app.get(reverse('habit_performance'), user='someone@example.com')
-        print(expect, json.loads(response.body))
         self.assertEqual(expect, json.loads(response.body))
