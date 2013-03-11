@@ -39,10 +39,16 @@ header button:focus {
 #breadcrumb {
     @extend                 .contain;
     margin-bottom:          36px;
+    padding-left:           30px;
+    background:             url(/static/images/back.png)
+                            center left no-repeat;
 }
 #breadcrumb a {
-    background:             $darker_body_colour;
+    background:             url(/static/images/back.png) $darker_body_colour;
     color:                  $links_colour;
-    padding:                12px 24px;
-    border-radius:          3px;
+    display:                block;
+    float:                  left;
+    padding:                12px 24px 12px 5px;
+    border-top-right-radius:    3px;
+    border-bottom-right-radius: 3px;
 }
