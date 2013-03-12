@@ -83,6 +83,9 @@ class OnboardingWizard(NamedUrlSessionWizardView):
                 html_template='emails/onboarding/habit_created.html',
                 to=(self.user,),
                 subject='You set up a new habit!',
+                context={
+                    'habit': habit,
+                }
             )
 
     @property

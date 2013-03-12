@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html lang='en'>
-  <head>
-    <title>{{ subject }}</title>
-  </head>
-  <body>
-    <p>You dun created a new habit!</p>
-  </body>
-</html>
+{% extends "emails/base.html" %}
+
+{% block content %}
+    <p>Hey! You're building a new habit with <a href='https://behabitual.com/'>behabitual</a>:</p>
+    <blockquote>{{ habit.description }}</blockquote>
+{% endblock %}
+
+{% block why %}
+  <p>You are receiving this email because you've just started to build a new habit with <a href='https://behabitual.com/'>behabitual</a>.</p>
+{% endblock %}

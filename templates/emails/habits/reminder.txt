@@ -1,1 +1,18 @@
-This is your reminder: {{ description }}!
+{% extends "emails/base.txt" %}
+
+{% block content %}
+You said you wanted to:
+
+{{ habit.description }}
+
+and that we should tell you:
+
+{{ habit.reminder }}
+{% endblock %}
+
+{% block why %}
+You are receiving this email because you have are building a habit with
+behabitual.com and you've asked us to remind you. If you don't want to receive
+these emails any more, you can change your reminder settings for this habit at
+{{ unsubscribe_url }}
+{% endblock %}

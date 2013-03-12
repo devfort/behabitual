@@ -1,1 +1,17 @@
-Let us know how you did {{ time_period }}...
+{% extends "emails/base.txt" %}
+
+{% block content %}
+You said you wanted to:
+
+{{ habit.description }}
+
+Let us know how you did in {{ time_period_name }} by going to
+{{ record_url }}
+{% endblock %}
+
+{% block why %}
+You are receiving this email because you have are building a habit with
+behabitual.com and it's time to tell us how you're doing. If you don't want
+to receive these emails any more, you can turn them off at
+{{ unsubscribe_url }}
+{% endblock %}

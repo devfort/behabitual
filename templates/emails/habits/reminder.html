@@ -1,9 +1,12 @@
-<!DOCTYPE html>
-<html lang='en'>
-  <head>
-    <title>{{ subject }}</title>
-  </head>
-  <body>
-    <p>This is your reminder: {{ description }}!</p>
-  </body>
-</html>
+{% extends "emails/base.html" %}
+
+{% block content %}
+    <p>You said you wanted to:</p>
+    <blockquote>{{ habit.description }}</blockquote>
+    <p>and that we should tell you:</p>
+    <blockquote>{{ habit.reminder }}</blockquote>
+{% endblock %}
+
+{% block why %}
+  <p>You are receiving this email because you have are building a habit with <a href='https://behabitual.com/'>behabitual</a> and you've asked us to remind you. If you don't want to receive these emails any more, you can <a href='{{ unsubscribe_url }}'>change your reminder settings for this habit</a>.</p>
+{% endblock %}

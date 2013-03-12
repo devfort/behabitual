@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html lang='en'>
-  <head>
-    <title>{{ subject }}</title>
-  </head>
-  <body>
-    <p>Welcome to Habitually!</p>
+{% extends "emails/base.html" %}
 
+{% block content %}
+  <p>Welcome to <a href='https://behabitual.com/'>behabitual</a>!</p>
+  <p>You've just set up an account with us and are on your way to building a new habit.</p>
 	<p>
 		You will need to 
-<a href='{{ protocol }}://{{ domain }}{% url 'apps.onboarding.views.confirm_email_address' uidb36=uid token=token %}'>confirm your email address</a> before using Habitually.
-    </p>
-  </body>
-</html>
+<a href='{{ protocol }}://{{ domain }}{% url 'apps.onboarding.views.confirm_email_address' uidb36=uid token=token %}'>confirm your email address</a> before using behabitual.
+  </p>
+  <p>If this wasn't you, don't worry: if you don't confirm your email address we'll never send you another email.</p>
+{% endblock %}
+
+{% block why %}
+  <p>You are receiving this email because you've just created an account with <a href='https://behabitual.com/'>behabitual</a>.</p>
+{% endblock %}

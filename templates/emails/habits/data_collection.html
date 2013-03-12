@@ -1,9 +1,11 @@
-<!DOCTYPE html>
-<html lang='en'>
-  <head>
-    <title>{{ subject }}</title>
-  </head>
-  <body>
-    <p>Let us know how you did {{ time_period }}...</p>
-  </body>
-</html>
+{% extends "emails/base.html" %}
+
+{% block content %}
+    <p>You said you wanted to:</p>
+    <blockquote>{{ habit.description }}</blockquote>
+    <p>Let us know how you did in {{ time_period_name }}: <a href='{{ record_url }}'>record your progress</a>.</p>
+{% endblock %}
+
+{% block why %}
+  <p>You are receiving this email because you have are building a habit with <a href='https://behabitual.com/'>behabitual</a> and it's time to tell us how you're doing. If you don't want to receive these emails any more, you can <a href='{{ unsubscribe_url }}'>turn them off</a>, either for this habit or for all the habits you're building.</p>
+{% endblock %}

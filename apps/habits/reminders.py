@@ -1,6 +1,9 @@
 import datetime
 
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+
+from apps.autologin.views import make_auto_login_link
 
 from util.render_to_email import render_to_email
 
@@ -10,7 +13,16 @@ def send_reminder_email(habit):
         html_template='emails/habits/reminder.html',
         to=(habit.user,),
         subject=habit.description,
-        context=dict(description=habit.description),
+        context={
+            'habit': habit,
+            'unsubscribe_url': make_auto_login_link(
+                habit.user,
+                redirect=reverse(
+                    'habit_edit',
+                    args=[habit.pk],
+                )
+            ),
+        },
     )
 
 def send_data_collection_email(habit, today=None):
@@ -52,13 +64,16 @@ def send_data_collection_email(habit, today=None):
         'month':      _('last month'),
     }[habit.resolution]
 
-    context = {'time_period_name': time_period_name}
-
     return render_to_email(
         text_template='emails/habits/data_collection.txt',
         html_template='emails/habits/data_collection.html',
         to=(habit.user,),
         subject='Let us know how you did',
-        context=context,
+        context={
+            'time_period_name': time_period_name,
+            'habit': habit,
+            'unsubscribe_url': make_auto_login_link(habit.user, redirect=reverse('account_settings')),
+            'record_url': make_auto_login_link(habit.user, redirect=reverse('habit_record', args=[habit.pk])),
+        },
     )
 

@@ -1,8 +1,16 @@
-Welcome to Habitually!
+{% extends "emails/base.html" %}
+
+{% block content %}
+Welcome to behabitual.com!
+
+You've just set up an account with us and are on your way to building a new habit.
 
 You will need to confirm your email address before using Habitually. Just go to the following address.
 
 {{ protocol }}://{{ domain }}{% url 'apps.onboarding.views.confirm_email_address' uidb36=uid token=token %}
+{% endblock %}
 
-Yours,
-The Monks of Habit
+{% block why %}
+You are receiving this email because you've just created an account
+with behabitual.com.
+{% endblock %}

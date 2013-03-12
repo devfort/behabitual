@@ -44,7 +44,7 @@ class OnboardingViewTest(WebTest):
         email = mail.outbox[0]
         self.assertEqual('text/html', email.alternatives[0][1])
         soup = BeautifulSoup(email.alternatives[0][0])
-        confirm_url = soup.find('a')['href']
+        confirm_url = soup.findAll('a')[1]['href'] # FIXME: fragile dependency on HTML email details!
 
         # user should be inactive; when we hit the URL it should become active
         self.assertEqual(1, User.objects.filter(is_active=False, email='foo@bar.com').count())

@@ -1,1 +1,12 @@
-You dun created a new habit!
+{% extends "emails/base.txt" %}
+
+{% block content %}
+Hey! You're building a new habit with behabitual.com:
+
+{{ habit.description }}
+{% endblock %}
+
+{% block why %}
+You are receiving this email because you've just started to build a new
+habit with behabitual.com.
+{% endblock %}
