@@ -6,8 +6,8 @@ from util.render_to_email import render_to_email
 
 def send_reminder_email(habit):
     return render_to_email(
-        text_template='habits/emails/reminder.txt',
-        html_template='habits/emails/reminder.html',
+        text_template='emails/habits/reminder.txt',
+        html_template='emails/habits/reminder.html',
         to=(habit.user,),
         subject=habit.description,
         context=dict(description=habit.description),
@@ -55,8 +55,8 @@ def send_data_collection_email(habit, today=None):
     context = {'time_period_name': time_period_name}
 
     return render_to_email(
-        text_template='habits/emails/data_collection.txt',
-        html_template='habits/emails/data_collection.html',
+        text_template='emails/habits/data_collection.txt',
+        html_template='emails/habits/data_collection.html',
         to=(habit.user,),
         subject='Let us know how you did',
         context=context,

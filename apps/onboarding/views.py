@@ -79,8 +79,8 @@ class OnboardingWizard(NamedUrlSessionWizardView):
 
         if self.send_habit_email:
             render_to_email(
-                text_template='onboarding/emails/habit_created.txt',
-                html_template='onboarding/emails/habit_created.html',
+                text_template='emails/onboarding/habit_created.txt',
+                html_template='emails/onboarding/habit_created.html',
                 to=(self.user,),
                 subject='You set up a new habit!',
             )
@@ -121,8 +121,8 @@ class OnboardingWizard(NamedUrlSessionWizardView):
         }
 
         render_to_email(
-            text_template='onboarding/emails/welcome.txt',
-            html_template='onboarding/emails/welcome.html',
+            text_template='emails/onboarding/welcome.txt',
+            html_template='emails/onboarding/welcome.html',
             to=(user,),
             subject='Welcome!',
             opt_out=False,

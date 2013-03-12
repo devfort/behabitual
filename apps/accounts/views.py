@@ -91,8 +91,8 @@ def password_change(request, *args, **kwargs):
     if request.method == 'POST' and response.status_code == 302:
         user_changed_password.send(sender=password_change)
         render_to_email(
-            text_template='accounts/emails/password_changed.txt',
-            html_template='accounts/emails/password_changed.html',
+            text_template='emails/accounts/password_changed.txt',
+            html_template='emails/accounts/password_changed.html',
             to=(request.user,),
             subject='Your password has been changed',
             opt_out=False,

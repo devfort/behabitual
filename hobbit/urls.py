@@ -45,7 +45,7 @@ urlpatterns = patterns('',
 
 ) + patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', {'template_name': 'accounts/login.html', 'authentication_form': HobbitAuthenticationForm}, name='login'),
-    url(r'^accounts/forgot/$', 'password_reset', {'password_reset_form': HobbitPasswordResetNotStupidForm}, name='account_forgotten'),
+    url(r'^accounts/forgot/$', 'password_reset', {'password_reset_form': HobbitPasswordResetNotStupidForm, 'email_template_name': 'emails/accounts/password_reset.html'}, name='account_forgotten'),
     url(r'^accounts/forgot/done/$', 'password_reset_done'),
 
     url(r'^styletile$', TemplateView.as_view(template_name='styles/tile.html'), name='styletile'),
