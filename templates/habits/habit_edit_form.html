@@ -1,30 +1,61 @@
 {% extends "base.html" %}
-{% block title %}Good Job!{% endblock %}
+{% block title %}Edit habit{% endblock %}
 {% block main-class %}copy{% endblock %}
+{% block body-class %}centred-wtf add-trigger{% endblock %}
 
 {% block body %}
-  <h1>Edit Action <button class="progress meh">TODO: Put to rest</button></h1>
-
-<form id="edit-habit-form" action="" method="POST" class="edit-habit">
-    {% csrf_token %}
-      {% if form.errors %}
-          <p class="alert">
-            <strong>
-              {% if form.errors.description %}
-                "I want to" {{ form.errors.description.as_text }} <br>
-              {% endif %}
-              {% if form.errors.target_value %}
-                "times" {{ form.errors.target_value.as_text }} <br>
-              {% endif %}
-              {% if form.errors.resolution %}
-                "per" {{ form.errors.resolution.as_text }} <br>
-              {% endif %}
-            </strong>
-          </p>
+  <div class="edit-habit-header">
+    <h1>Edit Action</h1>
+    <form method="POST" action="{% url 'habit_archive' pk=habit.pk %}" class="archive">
+      {% csrf_token %}
+      {% if habit.archived %}
+      	<button type="submit" class="progress meh">Revive</button>
+	<input name="archive" value="0" type="hidden">
+      {% else %}
+        <button type="submit" class="progress meh">Put to rest</button>
+        <input name="archive" value="1" type="hidden">
       {% endif %}
+    </form>
+  </div>
+
+  <form id="edit-habit-form" action="" method="POST" class="edit-habit">
+    {% csrf_token %}
+
+    {% if form.errors %}
+        <p class="alert">
+          <strong>
+            {% if form.errors.description %}
+              "I want to" {{ form.errors.description.as_text }} <br>
+            {% endif %}
+            {% if form.errors.target_value %}
+              "times" {{ form.errors.target_value.as_text }} <br>
+            {% endif %}
+            {% if form.errors.resolution %}
+              "per" {{ form.errors.resolution.as_text }} <br>
+            {% endif %}
+          </strong>
+        </p>
+    {% endif %}
+
+    <p>
+      <label for="id_description">I want to {{ form.description }}</label>,<br>
+      <label for="id_target_value">{{ form.target_value }} times</label>
+      <label for="id_resolution">per {{ form.resolution }}</label>
+      <br>
+    </p>
+
+    <div class='reminder'>
+      <fieldset class='trigger-text'>
+        <h2>My trigger reminder:</h2>
+        <p>
+         <label for='id_reminder-trigger'>When I</label>
+         {{ form.reminder }},
+         then I <q>{{ habit.description }}</q>.
+        </p>
+      </fieldset>
+      
       <fieldset class='trigger-time'>
         <legend>Send reminder</legend>
-        {{ form.reminder }}
         <h2>When should we send this?</h2>
         <div class='columnar'>
           <span>Every</span>
@@ -35,15 +66,10 @@
           <!-- GMT or GTFO -->
         </p>
       </fieldset>
-    <p>
-      <label for="id_description">I want to {{ form.description }}</label>,<br>
-      <label for="id_target_value">{{ form.target_value }} times</label>
-      <label for="id_resolution">per {{ form.resolution }}</label>
-      <br>
+    </div>
+
+    <div class="form-continue">
       <button type='submit' class="progress">Save</button>
-    </p>
-</form>
-
-<button>TODO: delete habit button</button>
-
+    </div>
+  </form>
 {% endblock %}

@@ -1,5 +1,5 @@
 .edit-habit{
-	font-weight:bold;
+	@extend .contain;
 }
 
 .edit-habit #id_description {
@@ -10,12 +10,20 @@
     width:                  1.3em;
 }
 
-.edit-habit p{
+.edit-habit p {
 	@extend .contain;
 	border-radius:			$border-radius;
 	padding:				15px;
 	background-color:		$darker_body_colour;
 	line-height:			2;
+}
+
+.edit-habit fieldset.trigger-time {
+    border-bottom:          0;
+}
+.edit-habit fieldset.trigger-time p {
+    background:             transparent;
+    padding:                0;
 }
 
 .edit-habit .progress{
@@ -25,4 +33,13 @@
 .edit-habit input,
 .edit-habit select{
 	font-weight:			normal;
+}
+
+.edit-habit-header {
+    position:		    relative;
+}
+.edit-habit-header form.archive {
+    position: 		    absolute;
+    top:		    0;
+    right:	   	    0;
 }
