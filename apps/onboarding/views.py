@@ -71,8 +71,8 @@ class OnboardingWizard(NamedUrlSessionWizardView):
             resolution=habit_form.cleaned_data.get('resolution'),
             target_value=habit_form.cleaned_data.get('target_value'),
             reminder=reminder_form.cleaned_data.get('trigger'),
-            reminder_hour=reminder_form.cleaned_data.get('hour'),
-            reminder_days=reminder_form.cleaned_data.get('days'),
+            reminder_hour=reminder_form.cleaned_data.get('hour') or 0,
+            reminder_days=reminder_form.cleaned_data.get('days') or 0,
             start=datetime.now(),
         )
         habit_created.send(habit)
