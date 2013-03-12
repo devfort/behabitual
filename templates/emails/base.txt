@@ -3,4 +3,4 @@
 -- 
 {% block why %}{% endblock %}
 
-behabitual is a /dev/fort project.
+Be Habitual is a /dev/fort project.
