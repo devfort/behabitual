@@ -5,7 +5,7 @@ import sys
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-DEBUG = True
+DEBUG = 'true' == env.get('DJANGO_DEBUG', 'true')
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -14,17 +14,25 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-if env.get('EMAIL_DEBUG', 'false') == 'true':
+if 'true' == env.get('EMAIL_DEBUG', 'false'):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
-    EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST          = env.get('EMAIL_HOST', 'localhost')
-    EMAIL_PORT          = env.get('EMAIL_PORT', '25')
-    EMAIL_HOST_USER     = env.get('EMAIL_USER', 'vagrant')
-    EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD', 'vagrant')
-    EMAIL_USE_TLS       = env.get('EMAIL_USE_TLS', 'true') == 'true'
-    DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'hobbit@dev.fort')
-    DEFAULT_TO_EMAIL    = ('vagrant@dev.fort',)
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    if 'true' == env.get('EMAIL_LIVE', 'false'):
+        EMAIL_HOST = env.get('EMAIL_HOST')
+        EMAIL_HOST_USER = env.get('EMAIL_USER')
+        EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD')
+        EMAIL_PORT = env.get('EMAIL_PORT')
+        EMAIL_USE_TLS = 'true' == env.get('EMAIL_USE_TLS', 'true')
+        DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'help@behabitual.com')
+    else:
+        EMAIL_HOST          = env.get('EMAIL_HOST', 'localhost')
+        EMAIL_PORT          = env.get('EMAIL_PORT', '25')
+        EMAIL_HOST_USER     = env.get('EMAIL_USER', 'vagrant')
+        EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD', 'vagrant')
+        EMAIL_USE_TLS       = env.get('EMAIL_USE_TLS', 'true') == 'true'
+        DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'hobbit@dev.fort')
+        DEFAULT_TO_EMAIL    = ('vagrant@dev.fort',)
 
 DATABASES = {
     'default': {
@@ -36,71 +44,66 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default.
     }
 }
+# Pick up Heroku's database, if that's where we're running.
+try:
+    import dj_database_url
+    database = dj_database_url.config()
+    if database:
+        DATABASES['default'] = database
+except ImportError:
+    pass
 
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'UTC'
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-gb'
-
 SITE_ID = 1
-
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
 USE_I18N = True
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale.
 USE_L10N = True
-
-# If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/var/www/example.com/media/"
-MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
+if 'AWS_ACCESS_KEY_ID' in env:
+    # AWS is available, so use this for media storage *and* as a target for
+    # static assets in the staticfiles pipeline.
+    AWS_ACCESS_KEY_ID = env['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = env['AWS_SECRET_ACCESS_KEY']
+    AWS_AVAILABLE = True
+else:
+    AWS_AVAILABLE = False
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = '/media/'
+if AWS_AVAILABLE and 'AWS_STORAGE_BUCKET_NAME' in env:
+    AWS_STORAGE_BUCKET_NAME = env['AWS_STORAGE_BUCKET_NAME']
+    AWS_QUERYSTRING_AUTH = False
+    AWS_HEADERS = {
+        'Cache-Control': 'max-age=86400',
+    }
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/var/www/example.com/static/"
-STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    MEDIA_URL = "https://%s.s3.amazonaws.com/" % env['AWS_STORAGE_BUCKET_NAME']
+    MEDIA_ROOT = ''
 
-# URL prefix for static files.
-# Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    # The next two aren't really used, but staticfiles will complain without them
+    STATIC_URL = "https://%s.s3.amazonaws.com/" % env['AWS_STORAGE_BUCKET_NAME']
+    STATIC_ROOT = ''
+else:
+    MEDIA_ROOT = os.path.join(SITE_ROOT, 'media')
+    MEDIA_URL = '/media/'
+    STATIC_ROOT = os.path.join(SITE_ROOT, 'static')
+    STATIC_URL = '/static/'
 
-# Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
     os.path.join(SITE_ROOT, 'assets'),
 )
 
-# List of finder classes that know how to find static files in
-# various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '#u)ftxq%-e6_e+&jeff$=he2miu(=51k2!mcj3fffkso9rd*&8*'
+# The default is for development only; we set this via the environment for deployment
+if DEBUG:
+    SECRET_KEY = '#u)ftxq%-e6_e+&jeff$=he2miu(=51k2!mcj3fffkso9rd*&8*'
+else:
+    SECRET_KEY = env.get('DJANGO_SECRET_KEY')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -115,8 +118,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'hobbit.urls'
@@ -184,3 +186,15 @@ LOGGING = {
 # STATSD_HOST = 'localhost'
 # STATSD_PORT = 8125
 # STATSD_PREFIX = ''
+
+if 'true' == env.get('FULLY_SECURE'):
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000 # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") # Heroku sends this
+
+ALLOWED_HOSTS = env.get('ALLOWED_HOSTS', 'localhost').split(';')
