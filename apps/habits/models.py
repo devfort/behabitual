@@ -257,6 +257,7 @@ class Habit(models.Model):
         """, [1 << weekday, hour])
 
     def save(self, *args, **kwargs):
+        # ensure that model field custom validators are always run before saving
         self.full_clean()
         return super(Habit, self).save(*args, **kwargs)
 
