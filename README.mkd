@@ -13,7 +13,7 @@ Helping you form hobbits. Or maybe habits. But hobbits are better.
 
 3. Run the dev server
 
-    honcho start
+    honcho -f Procfile.dev start
 
 4. Open your web browser to http://localhost:8000/
 
