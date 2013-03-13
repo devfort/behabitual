@@ -1,7 +1,6 @@
 /.env
 *.pyc
 /.sass-cache/
-assets/hobbit.css
 *.swp
 htmlcov
 .coverage
