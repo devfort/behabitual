@@ -7,3 +7,4 @@ WebTest==2.0
 statsd-client==1.0.4
 dj_database_url
 gunicorn
+django_storages
