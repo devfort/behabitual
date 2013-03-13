@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% load humanize_repetition %}
 {% block body-class %}dashboard{% endblock %}
 {% block title %}Home{% endblock %}
@@ -24,15 +25,15 @@
         {% if not habit.archived %}
           {% if not habit.is_up_to_date %}
             <a href='{% url "habit_record" pk=habit.id %}'>
-              <img src='/static/images/log-action@2x.png'
+              <img src='{% static "images/log-action@2x.png" %}'
                    alt='Enter data for {{ habit.description }}'
                    width='44' height='44'></a>
           {% else %}
-            <img src='/static/images/logged-action@2x.png'
+            <img src='{% static "images/logged-action@2x.png" %}'
                  alt='Data entered for {{ habit.description }}'
                  width='44' height='44'>
           {% endif %}
-          <a href="{% url 'habit_edit' pk=habit.id %}"><img src="/static/images/edit@2x.png" alt="Edit {{ habit.description }}" width="44" height="44"></a>
+          <a href="{% url 'habit_edit' pk=habit.id %}"><img src="{% static "images/edit@2x.png" %}" alt="Edit {{ habit.description }}" width="44" height="44"></a>
         {% else %}
           <form method="POST" action="{% url "habit_archive" pk=habit.id %}">
             {% csrf_token %}
@@ -49,12 +50,12 @@
   </div>
 </section>
 
-<a href="{% url 'hobbit' %}" id="hobbit"><img src="/static/images/ring@2x.png" alt="" height="25" width="25"></a>
+<a href="{% url 'hobbit' %}" id="hobbit"><img src="{% static "images/ring@2x.png" %}" alt="" height="25" width="25"></a>
 {% endblock %}
 
 {% block javascript-asynchronous %}
-  <script type="text/javascript" src="/static/js/raphael-min.js"></script>
-  <script type="text/javascript" src="/static/js/visualisation.js"></script>
+  <script type="text/javascript" src="{% static "js/raphael-min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/visualisation.js" %}"></script>
   <script type="text/javascript">
     $.getJSON('{% url "habit_performance" %}', function(data) {
       var habits = data.habits.slice(0,3);

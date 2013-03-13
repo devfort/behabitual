@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}In a hole in the ground there lived a hobbit{% endblock %}
 {% block body-class %}hobbit{% endblock %}
 
 {% block body %}
 <div class="copy">
-<h1><img src="/static/images/hobbitually@2x.png" alt="Hobbitually" width="600" height="186"></h1>
+<h1><img src="{% static "images/hobbitually@2x.png" %}" alt="Hobbitually" width="600" height="186"></h1>
 <p>
   <a href="#TODO">13 geeks</a> went to live in a Napoleonic sea fort for a week. They ate good
   food, drank copious amounts of booze, and made this website.
