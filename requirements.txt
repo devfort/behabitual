@@ -8,3 +8,4 @@ statsd-client==1.0.4
 dj_database_url
 gunicorn
 django_storages
+boto
