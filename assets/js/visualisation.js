@@ -159,7 +159,7 @@ var Canvas = function(id, width, height) {
   this._objects = [];
 };
 
-Canvas.LOGO_PATH   = '/static/images/repeat-icon.svg';
+Canvas.LOGO_PATH   = '../images/repeat-icon.svg';
 Canvas.LOGO_WIDTH  = 120;
 Canvas.LOGO_HEIGHT = 120;
 

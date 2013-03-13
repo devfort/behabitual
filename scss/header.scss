@@ -40,11 +40,11 @@ header button:focus {
     @extend                 .contain;
     margin-bottom:          36px;
     padding-left:           30px;
-    background:             url(/static/images/back.png)
+    background:             url(../images/back.png)
                             center left no-repeat;
 }
 #breadcrumb a {
-    background:             url(/static/images/back.png) $darker_body_colour;
+    background:             url(../images/back.png) $darker_body_colour;
     color:                  $links_colour;
     display:                block;
     float:                  left;
