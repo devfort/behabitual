@@ -42,15 +42,15 @@ urlpatterns = patterns('',
     secured_url(r'^habit/(?P<pk>\d+)/archive$', apps.habits.views.HabitArchiveView.as_view(), name='habit_archive'),
     secured_url(r'^habit/(?P<pk>\d+)/record/$', apps.habits.views.habit_record_view, name='habit_record'),
     secured_url(r'^habit/(?P<pk>\d+)/recorded/$', apps.habits.views.HabitEncouragementView.as_view(), name='habit_encouragement'),
+    url(r'^styletile$', TemplateView.as_view(template_name='styles/tile.html'), name='styletile'),
+
+    url(r'^hobbit/$', TemplateView.as_view(template_name='hobbit.html'), name='hobbit'),
+    url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
 
 ) + patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', {'template_name': 'accounts/login.html', 'authentication_form': HobbitAuthenticationForm}, name='login'),
     url(r'^accounts/forgot/$', 'password_reset', {'password_reset_form': HobbitPasswordResetNotStupidForm, 'email_template_name': 'emails/accounts/password_reset.html'}, name='account_forgotten'),
     url(r'^accounts/forgot/done/$', 'password_reset_done'),
-
-    url(r'^styletile$', TemplateView.as_view(template_name='styles/tile.html'), name='styletile'),
-    
-    url(r'^hobbit$', TemplateView.as_view(template_name='hobbit.html'), name='hobbit'),
 )
 
 from apps.monitoring import *
