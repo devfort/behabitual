@@ -209,5 +209,6 @@ if 'true' == env.get('FULLY_SECURE'):
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") # Heroku sends this
 
 ALLOWED_HOSTS = env.get('ALLOWED_HOSTS', 'localhost').split(';')
+PREPEND_WWW = True
 
 GOOGLE_ANALYTICS_ID = env.get('GOOGLE_ANALYTICS_ID', 'UA-39256165-2')
