@@ -510,6 +510,30 @@ form.login .errorlist {
   margin-bottom: 20px; }
 
 /* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
+.change-password form {
+  background: #d7d4c6;
+  padding: 10px 30px 30px;
+  margin-bottom: 20px; }
+
+.change-password form label {
+  display: block;
+  margin: 20px 0 10px; }
+
+.change-password form input {
+  padding: 20px;
+  width: 90%;
+  color: #666;
+  margin-bottom: 20px; }
+
+.change-password #id_old_password {
+  margin-bottom: 30px; }
+
+.change-password form .errorlist {
+  font-size: 18px;
+  font-size: 1.8rem;
+  margin-bottom: 20px; }
+
+/* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
 .dashboard #progress {
   background: #e4e1d5; }
 
