@@ -19,7 +19,7 @@ CONTACT_EMAIL = 'help@behabitual.com'
 if 'true' == env.get('EMAIL_DEBUG', 'false'):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
     if 'true' == env.get('EMAIL_LIVE', 'false'):
         EMAIL_HOST = env.get('EMAIL_HOST')
         EMAIL_HOST_USER = env.get('EMAIL_USER')

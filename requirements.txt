@@ -10,3 +10,4 @@ gunicorn
 django_storages
 boto
 newrelic
+django-smtp-ssl
