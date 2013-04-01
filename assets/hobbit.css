@@ -388,6 +388,10 @@ footer p {
 footer .contact {
   float: right; }
 
+footer .contact a {
+  text-transform: capitalize;
+  margin-left: 15px; }
+
 /* -*- Mode: CSS; tab-width: 4; indent-tabs-mode: nil; -*- */
 body.styletile {
   max-width: 1000px; }
