@@ -14,6 +14,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+CONTACT_EMAIL = 'help@behabitual.com'
+
 if 'true' == env.get('EMAIL_DEBUG', 'false'):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
@@ -24,7 +26,7 @@ else:
         EMAIL_HOST_PASSWORD = env.get('EMAIL_HOST_PASSWORD')
         EMAIL_PORT = env.get('EMAIL_PORT')
         EMAIL_USE_TLS = 'true' == env.get('EMAIL_USE_TLS', 'true')
-        DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', 'help@behabitual.com')
+        DEFAULT_FROM_EMAIL  = env.get('DEFAULT_FROM_EMAIL', CONTACT_EMAIL)
     else:
         EMAIL_HOST          = env.get('EMAIL_HOST', 'localhost')
         EMAIL_PORT          = env.get('EMAIL_PORT', '25')

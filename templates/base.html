@@ -40,7 +40,7 @@
     <p class='contact'>
       <b>Learn more </b>
       <a href='{% url "about" %}'>about<b> Be Habitual</b></a><b>, or</b>
-      <a href='#TODO'>contact us</a>
+      <a href='mailto:{{ CONTACT_EMAIL }}' title='Email {{ CONTACT_EMAIL }}'>contact us</a>
     </p>
   </div></footer>
 {% endblock %}
