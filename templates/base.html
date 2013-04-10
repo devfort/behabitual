@@ -51,6 +51,12 @@
     window_height = $(window).height();
     header_height = $('header').height();
     $('#main').css('min-height', window_height - (header_height*5));
+
+    window.BeHabitual = {
+      URLs: {
+        repeatIcon: '{% static "images/repeat-icon.svg" %}'
+      }
+    };
   </script>
 {% endblock %}
 
