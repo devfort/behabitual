@@ -353,7 +353,7 @@ header button:focus {
   background: url(../images/back.png) center left no-repeat; }
 
 #breadcrumb a {
-  background: url(../images/back.png) #e4e1d5;
+  background: #e4e1d5;
   color: #438ab8;
   display: block;
   float: left;

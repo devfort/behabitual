@@ -44,7 +44,7 @@ header button:focus {
                             center left no-repeat;
 }
 #breadcrumb a {
-    background:             url(../images/back.png) $darker_body_colour;
+    background:             $darker_body_colour;
     color:                  $links_colour;
     display:                block;
     float:                  left;
