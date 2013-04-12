@@ -210,6 +210,8 @@ if 'true' == env.get('FULLY_SECURE'):
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") # Heroku sends this
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = True # coming in 1.6
 
 ALLOWED_HOSTS = env.get('ALLOWED_HOSTS', 'localhost').split(';')
 
