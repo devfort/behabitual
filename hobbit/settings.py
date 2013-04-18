@@ -132,6 +132,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'djangosecure.middleware.SecurityMiddleware',
 )
 
 ROOT_URLCONF = 'hobbit.urls'
@@ -154,6 +155,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'gunicorn',
     'south',
+    'djangosecure',
     'apps.accounts',
     'apps.encouragements',
     'apps.habits',

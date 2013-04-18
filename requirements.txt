@@ -11,3 +11,4 @@ django_storages
 boto
 newrelic
 django-smtp-ssl
+django-secure
