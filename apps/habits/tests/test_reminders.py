@@ -46,8 +46,24 @@ class TestReminders(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertTrue('Frobble your wingdangle' in mail.outbox[0].subject)
 
+    def test_send_reminder_email_for_archived_habit(self):
+        self.h.archived = True
+
+        result = send_reminder_email(self.h)
+
+        self.assertIsNone(result)
+        self.assertEqual(len(mail.outbox), 0)
+
     def test_disable_send_data_collection_email(self):
         self.h.send_data_collection_emails = False
+
+        result = send_data_collection_email(self.h)
+
+        self.assertIsNone(result)
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_send_data_collection_email_for_archived_habit(self):
+        self.h.archived = True
 
         result = send_data_collection_email(self.h)
 

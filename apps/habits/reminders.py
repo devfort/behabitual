@@ -8,6 +8,9 @@ from apps.autologin.views import make_auto_login_link
 from util.render_to_email import render_to_email
 
 def send_reminder_email(habit):
+    if habit.archived:
+        return
+
     return render_to_email(
         text_template='emails/habits/reminder.txt',
         html_template='emails/habits/reminder.html',
@@ -29,7 +32,7 @@ def send_data_collection_email(habit, today=None):
     if today is None:
         today = datetime.date.today()
 
-    if not habit.send_data_collection_emails:
+    if not habit.send_data_collection_emails or habit.archived:
         return
 
     if today == habit.start:
