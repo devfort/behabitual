@@ -13,7 +13,7 @@ from django.views.generic import TemplateView, FormView
 
 from apps.habits.models import Habit
 from apps.habits.forms import HabitEmailOptionsForm
-from util.render_to_email import render_to_email
+from lib.render_to_email import render_to_email
 
 from .signals import user_changed_password
 

@@ -18,7 +18,7 @@ from apps.autologin.views import FlexibleTokenGenerator
 from apps.habits.models import Habit
 from apps.habits.signals import habit_created
 
-from util.render_to_email import render_to_email
+from lib.render_to_email import render_to_email
 
 User = get_user_model()
 

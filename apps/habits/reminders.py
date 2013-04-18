@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from apps.autologin.views import make_auto_login_link
 
-from util.render_to_email import render_to_email
+from lib.render_to_email import render_to_email
 
 def send_reminder_email(habit):
     if habit.archived:
