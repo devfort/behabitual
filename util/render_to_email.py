@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
 from django.template import Context
 from django.template.loader import render_to_string
@@ -34,6 +35,10 @@ def render_to_email(
        if it's a User)
      * subject -- whatever was passed or rendered (except for rendering the
        subject)
+     * site_name -- the name of the site, according to the django.contrib.sites
+       framework
+     * domain -- the domain, according to the django.contrib.sites framework
+     * protocol -- either "http" or "https" based on settings.SECURE_SSL_REDIRECT
 
     Note that we aren't using a RequestContext, so context processors won't run.
     Add your stuff in directly using the context parameter.
@@ -56,6 +61,11 @@ def render_to_email(
         return None
 
     context['recipients'] = to
+
+    site = Site.objects.get_current()
+    context['site_name'] = site.name
+    context['domain'] = site.domain
+    context['protocol'] = settings.SECURE_SSL_REDIRECT and 'https' or 'http'
 
     def as_email_address(user_or_email):
         try:

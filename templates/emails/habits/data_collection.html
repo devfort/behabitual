@@ -3,9 +3,9 @@
 {% block content %}
     <p>You said you wanted to:</p>
     <blockquote>{{ habit.description }}</blockquote>
-    <p>Let us know how you did in {{ time_period_name }}: <a href='{{ record_url }}'>record your progress</a>.</p>
+    <p>Let us know how you did in {{ time_period_name }}: <a href='{{ protocol }}://{{ domain }}{{ record_url }}'>record your progress</a>.</p>
 {% endblock %}
 
 {% block why %}
-  <p>You are receiving this email because you have are building a habit with <a href='https://behabitual.com/'>Be Habitual</a> and it's time to tell us how you're doing. If you don't want to receive these emails any more, you can <a href='{{ unsubscribe_url }}'>turn them off</a>, either for this habit or for all the habits you're building.</p>
+  <p>You are receiving this email because you have are building a habit with <a href='{{ protocol }}://{{ domain }}/'>{{ site_name }}</a> and it's time to tell us how you're doing. If you don't want to receive these emails any more, you can <a href='{{ protocol }}://{{ domain }}{{ unsubscribe_url }}'>turn them off</a>, either for this habit or for all the habits you're building.</p>
 {% endblock %}

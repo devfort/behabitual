@@ -12,5 +12,5 @@ You will need to confirm your email address before using behabitual.com. Just go
 
 {% block why %}
 You are receiving this email because you've just created an account
-with behabitual.com.
+with {{ site_name }}.
 {% endblock %}

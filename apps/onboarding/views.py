@@ -2,7 +2,6 @@ from datetime import datetime
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.models import update_last_login
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
-from django.contrib.sites.models import get_current_site
 from django.db import connection
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -109,18 +108,11 @@ class OnboardingWizard(NamedUrlSessionWizardView):
 
         user_created.send(user)
 
-        current_site = get_current_site(self.request)
-        site_name = current_site.name
-        domain = current_site.domain
-
         c = {
             'email': user.email,
-            'domain': domain,
-            'site_name': site_name,
             'uid': int_to_base36(user.pk),
             'user': user,
             'token': token_generator.make_token(user),
-            'protocol': self.request.is_secure() and 'https' or 'http',
         }
 
         render_to_email(

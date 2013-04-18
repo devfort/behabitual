@@ -1,7 +1,7 @@
 {% extends "emails/base.html" %}
 
 {% block content %}
-  <p>Welcome to <a href='https://behabitual.com/'>Be Habitual</a>!</p>
+  <p>Welcome to <a href='{{ protocol }}://{{ domain }}/'>{{ site_name }}</a>!</p>
   <p>You've just set up an account with us and are on your way to building a new habit.</p>
 	<p>
 		You will need to 
@@ -11,5 +11,5 @@
 {% endblock %}
 
 {% block why %}
-  <p>You are receiving this email because you've just created an account with <a href='https://behabitual.com/'>Be Habitual</a>.</p>
+  <p>You are receiving this email because you've just created an account with <a href='{{ protocol }}://{{ domain }}/'>{{ site_name }}</a>.</p>
 {% endblock %}

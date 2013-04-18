@@ -8,5 +8,5 @@
 {% endblock %}
 
 {% block why %}
-  <p>You are receiving this email because you have are building a habit with <a href='https://behabitual.com/'>Be Habitual</a> and you've asked us to remind you. If you don't want to receive these emails any more, you can <a href='{{ unsubscribe_url }}'>change your reminder settings for this habit</a>.</p>
+  <p>You are receiving this email because you have are building a habit with <a href='{{ protocol }}://{{ domain }}/'>{{ site_name }}</a> and you've asked us to remind you. If you don't want to receive these emails any more, you can <a href='{{ protocol }}://{{ domain }}{{ unsubscribe_url }}'>change your reminder settings for this habit</a>.</p>
 {% endblock %}

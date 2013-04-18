@@ -1,10 +1,10 @@
 {% extends "emails/base.html" %}
 
 {% block content %}
-    <p>Hey! You're building a new habit with <a href='https://behabitual.com/'>Be Habitual</a>:</p>
+    <p>Hey! You're building a new habit with <a href='{{ protocol }}://{{ domain }}/'>{{ site_name }}</a>:</p>
     <blockquote>{{ habit.description }}</blockquote>
 {% endblock %}
 
 {% block why %}
-  <p>You are receiving this email because you've just started to build a new habit with <a href='https://behabitual.com/'>Be Habitual</a>.</p>
+  <p>You are receiving this email because you've just started to build a new habit with <a href='{{ protocol }}://{{ domain }}/'>{{ site_name }}</a>.</p>
 {% endblock %}

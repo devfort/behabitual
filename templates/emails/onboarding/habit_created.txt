@@ -1,12 +1,12 @@
 {% extends "emails/base.txt" %}
 
 {% block content %}
-Hey! You're building a new habit with behabitual.com:
+Hey! You're building a new habit with {{ domain }}:
 
 {{ habit.description }}
 {% endblock %}
 
 {% block why %}
 You are receiving this email because you've just started to build a new
-habit with behabitual.com.
+habit with {{ site_name }}
 {% endblock %}

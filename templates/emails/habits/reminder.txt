@@ -14,5 +14,5 @@ and that we should tell you:
 You are receiving this email because you have are building a habit with
 behabitual.com and you've asked us to remind you. If you don't want to receive
 these emails any more, you can change your reminder settings for this habit at
-{{ unsubscribe_url }}
+{{ protocol }}://{{ domain }}{{ unsubscribe_url }}
 {% endblock %}
