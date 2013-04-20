@@ -5,14 +5,14 @@ You said you wanted to:
 
 {{ habit.description }}
 
-and that we should tell you:
+and that we should remind you when you:
 
 {{ habit.reminder }}
 {% endblock %}
 
 {% block why %}
-You are receiving this email because you have are building a habit with
-behabitual.com and you've asked us to remind you. If you don't want to receive
-these emails any more, you can change your reminder settings for this habit at
+You received this email because you are building a habit with behabitual.com
+and you've asked us to remind you. If you don't want to receive these emails
+any more, you can change your reminder settings for this habit at
 {{ protocol }}://{{ domain }}{{ unsubscribe_url }}
 {% endblock %}
