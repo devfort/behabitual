@@ -3,6 +3,17 @@ Hobbit
 
 Helping you form hobbits. Or maybe habits. But hobbits are better.
 
+These instructions allow you to set up an environment on Mac OSX. You can also use a VM - see https://github.com/devfort/shire.
+
+You need virtualenv:
+
+pip install virtualenv virtualenvwrapper
+
+add the following line to ~/.bashrc:
+[ -f /opt/boxen/homebrew/share/python/virtualenvwrapper_lazy.sh ] && /opt/boxen/homebrew/share/python/virtualenvwrapper_lazy.sh
+
+You also need PostgreSQL and Sass (if you are running it on Mac OSX rather than in the VM).
+
 1. Make a virtualenv and move into it
 
     mkvirtualenv hobbit && cd hobbit
