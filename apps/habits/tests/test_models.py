@@ -200,6 +200,14 @@ RECENT_TIME_PERIODS_FIXTURES = (
     # Today is 5th March.
     # Therefore, we consider ourselves to be up-to-date with data.
     RTPT('2013-03-01', 'day', (('2013-03-05',1),), '2013-03-05', []),
+    # Habit started 1st May, weekly, no data has been entered.
+    # Today is 2nd May.
+    # Therefore we expect data for the 0th week.
+    # This is the logic I think is incorrect.
+    # The TimePeriod returned is this:
+    # [TimePeriod(resolution='week', index=0, date=datetime.date(2013, 4, 29))]
+    # i.e. it expects data for the w/c 29th April. I say that's wrong.
+    RTPT('2013-05-01', 'week', (), '2013-05-02', [0]),
 )
 
 TPFNF = namedtuple('TimePeriodFriendlyNameFixture', 'start resolution relative expected')
