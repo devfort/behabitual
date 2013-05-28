@@ -61,7 +61,7 @@ def habit_record_view(request, pk):
     _forms = []
 
     for period in time_periods:
-        # To make the lable for the input dynamic we need to create a new class
+        # To make the label for the input dynamic we need to create a new class
         # each time. This might be better done as a Widget instead...?
         class HabitForm(forms.Form):
             date = forms.DateField(required=True, widget=forms.HiddenInput)
