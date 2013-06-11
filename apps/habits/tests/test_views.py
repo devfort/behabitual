@@ -85,7 +85,7 @@ class HabitRecordViewTest(WebTest):
     def test_record_post_two(self):
         self.habit = Habit.objects.create(
             description="Frob my Hobbits",
-            start=datetime.date.today() - datetime.timedelta(days=1),
+            start=datetime.date.today() - datetime.timedelta(days=2),
             user=self.user,
             resolution='day',
             target_value=2,
@@ -106,7 +106,7 @@ class HabitRecordViewTest(WebTest):
     def test_record_post_two_not_at_start(self):
         self.habit = Habit.objects.create(
             description="Frob my Hobbits",
-            start=datetime.date.today() - datetime.timedelta(days=2),
+            start=datetime.date.today() - datetime.timedelta(days=3),
             user=self.user,
             resolution='day',
             target_value=2,
@@ -169,7 +169,7 @@ class HabitRecordViewTest(WebTest):
     def test_post_yes_no_habit(self):
         self.habit = Habit.objects.create(
             description="Frob my Hobbits",
-            start=datetime.date.today() - datetime.timedelta(days=2),
+            start=datetime.date.today() - datetime.timedelta(days=3),
             user=self.user,
             resolution='day',
             target_value=1,
