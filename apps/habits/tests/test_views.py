@@ -54,7 +54,7 @@ class HabitRecordViewTest(WebTest):
         )
         self.habit = Habit.objects.create(
             description="Brush my teeth",
-            start=datetime.date.today(),
+            start=datetime.date.today() - datetime.timedelta(days=1),
             user=self.user,
             resolution='day',
             target_value=2,
