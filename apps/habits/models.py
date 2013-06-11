@@ -297,7 +297,7 @@ class Habit(models.Model):
             min_index = buckets[0].index + 1
 
         ret = []
-        for idx in reversed(range(min_index, time_period.index + 1)):
+        for idx in reversed(range(min_index, time_period.index)):
             ret.append(TimePeriod.from_index(self.start, self.resolution, idx))
 
         return ret
