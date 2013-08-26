@@ -24,7 +24,7 @@ DATA_COLLECTION_FIXTURES = (
     ('weekendday', '2013-03-11', True),
     ('weekendday', '2013-03-12', False),
     ('week', '2013-03-10', False),
-    ('week', '2013-03-11', True),
+    ('week', '2013-03-11', True), # only send week reminders on Mondays
     ('week', '2013-03-12', False),
     ('month', '2013-03-13', False),
     ('month', '2013-03-31', False),

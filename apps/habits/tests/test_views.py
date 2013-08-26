@@ -54,7 +54,7 @@ class HabitRecordViewTest(WebTest):
         )
         self.habit = Habit.objects.create(
             description="Brush my teeth",
-            start=datetime.date.today(),
+            start=datetime.date.today() - datetime.timedelta(days=1),
             user=self.user,
             resolution='day',
             target_value=2,
@@ -85,7 +85,7 @@ class HabitRecordViewTest(WebTest):
     def test_record_post_two(self):
         self.habit = Habit.objects.create(
             description="Frob my Hobbits",
-            start=datetime.date.today() - datetime.timedelta(days=1),
+            start=datetime.date.today() - datetime.timedelta(days=2),
             user=self.user,
             resolution='day',
             target_value=2,
@@ -106,7 +106,7 @@ class HabitRecordViewTest(WebTest):
     def test_record_post_two_not_at_start(self):
         self.habit = Habit.objects.create(
             description="Frob my Hobbits",
-            start=datetime.date.today() - datetime.timedelta(days=2),
+            start=datetime.date.today() - datetime.timedelta(days=3),
             user=self.user,
             resolution='day',
             target_value=2,
@@ -133,7 +133,7 @@ class HabitRecordViewTest(WebTest):
     def test_record_post_ignore_existing_buckets(self):
         self.habit = Habit.objects.create(
             description="Frob my Hobbits",
-            start=datetime.date.today() - datetime.timedelta(days=1),
+            start=datetime.date.today() - datetime.timedelta(days=2),
             user=self.user,
             resolution='day',
             target_value=2,
@@ -141,9 +141,9 @@ class HabitRecordViewTest(WebTest):
         self.habit.record(self.habit.get_time_period(self.habit.start), 17)
         time_period = self.habit.get_current_time_period()
         params = {
-            '0-date': time_period.date,
+            '0-date': (time_period.date - datetime.timedelta(days=1)),
             '0-value': 2,
-            '1-date': time_period.date,
+            '1-date': (time_period.date - datetime.timedelta(days=1)),
             '1-value': 2,
         }
         response = self.app.post(reverse('habit_record', args=[self.habit.id]), params, user='someone@example.com')
@@ -169,7 +169,7 @@ class HabitRecordViewTest(WebTest):
     def test_post_yes_no_habit(self):
         self.habit = Habit.objects.create(
             description="Frob my Hobbits",
-            start=datetime.date.today() - datetime.timedelta(days=2),
+            start=datetime.date.today() - datetime.timedelta(days=3),
             user=self.user,
             resolution='day',
             target_value=1,

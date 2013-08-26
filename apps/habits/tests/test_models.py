@@ -185,9 +185,32 @@ STREAKS_FIXTURES = (
 RTPT = namedtuple('RecentTimePeriodTest', 'start resolution data date expected')
 
 RECENT_TIME_PERIODS_FIXTURES = (
-    RTPT('2013-03-01', 'day', (), '2013-03-05', [4,3,2,1,0]),
-    RTPT('2013-03-01', 'day', (('2013-03-03',1),), '2013-03-05', [4,3]),
+    # Habit started 1st March, daily, no data has been entered.
+    # Today is 5th March.
+    # Therefore, we expect data from the four days from 1st to 4th March
+    RTPT('2013-03-01', 'day', (), '2013-03-05', [3,2,1,0]),
+    # Habit started 1st March, daily, data has been entered for March 3rd.
+    # Today is 5th March.
+    # Therefore we expect data for the 4th of March
+    # We have written off the 0th and 1st time period (1st, 2nd March).
+    RTPT('2013-03-01', 'day', (('2013-03-03',1),), '2013-03-05', [3]),
+    # Habit started 1st March, daily, data has been entered for 5th March.
+    # Today is 5th March.
+    # Therefore, we consider ourselves to be up-to-date with data.
     RTPT('2013-03-01', 'day', (('2013-03-05',1),), '2013-03-05', []),
+    # Habit started 1st May, weekly, no data has been entered.
+    # Today is 2nd May.
+    # Therefore we consider ourselves to be up-to-date with data
+    RTPT('2013-05-01', 'week', (), '2013-05-02', []),
+    # Habit started 1st May, weekly, data has been entered for 2nd week
+    # Today is 29th May (4th week).
+    # Therefore we expect data for the 3rd week
+    RTPT('2013-05-01', 'week', (('2013-05-13',1),), '2013-05-29', [3]),
+    # Habit started 1st May, weekly.
+    # Data has been entered for 1st week, 2nd week and 4th week
+    # Today is 18th June (7th week).
+    # Therefore we expect data for the 5th and 6th week
+    RTPT('2013-05-01', 'week', (('2013-05-06',1),('2013-05-13',1),('2013-05-27',1)), '2013-06-18', [6,5]),
 )
 
 TPFNF = namedtuple('TimePeriodFriendlyNameFixture', 'start resolution relative expected')
