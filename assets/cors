@@ -1,0 +1,6 @@
+<CORSConfiguration>
+ <CORSRule>
+   <AllowedOrigin>https://www.behabitual.com/</AllowedOrigin>
+   <AllowedMethod>GET</AllowedMethod>
+ </CORSRule>
+</CORSConfiguration>
